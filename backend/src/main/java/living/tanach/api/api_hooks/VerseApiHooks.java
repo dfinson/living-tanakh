@@ -1,0 +1,132 @@
+package living.tanach.api.api_hooks;
+
+import dev.sanda.apifi.service.ApiHooks;
+import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
+import dev.sanda.datafi.dto.Page;
+import dev.sanda.datafi.service.DataManager;
+import living.tanach.api.model.Verse;
+import lombok.val;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.Sort;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.FullTextQuery;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.MustJunction;
+import org.hibernate.search.query.dsl.QueryBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static living.tanach.api.utils.StaticUtils.*;
+
+@Service
+public class VerseApiHooks implements ApiHooks<Verse> {
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Page<Verse> executeCustomFreeTextSearch(FreeTextSearchPageRequest request, DataManager<Verse> dataManager) {
+        val queryBuilder = queryBuilder(dataManager);
+        val query = query(request, queryBuilder);
+        val sort = sort(request, queryBuilder);
+        val fullTextEntityManager = Search.getFullTextEntityManager(dataManager.entityManager());
+        val fullTextQuery = fullTextQuery(query, sort, fullTextEntityManager, request);
+        val results = fullTextQuery.getResultList();
+        val totalHits = fullTextQuery.getResultSize();
+        val response = new Page<Verse>();
+        response.setContent(results);
+        response.setPageNumber(request.getPageNumber());
+        response.setTotalItemsCount((long) totalHits);
+        response.setTotalPagesCount((long) Math.ceil((double) totalHits / request.getPageSize()));
+        return response;
+    }
+
+    private FullTextQuery fullTextQuery(Query query, Sort sort, FullTextEntityManager textEntityManager, FreeTextSearchPageRequest request) {
+        val fullTextQuery = textEntityManager.createFullTextQuery(query, Verse.class).setSort(sort);
+        if(!request.getFetchAll()){
+            var offset = request.getPageNumber() * request.getPageSize();
+            var limit = request.getPageSize();
+            fullTextQuery.setFirstResult(offset).setMaxResults(limit);
+        }
+        return fullTextQuery;
+    }
+    private Sort sort(FreeTextSearchPageRequest request, QueryBuilder queryBuilder) {
+        Sort sort;
+        if(request.getSortDirection().equals(org.springframework.data.domain.Sort.Direction.ASC)){
+            sort = queryBuilder
+                    .sort()
+                    .byField(request.getSortBy())
+                    .createSort();
+        }else {
+            sort = queryBuilder
+                    .sort()
+                    .byField(request.getSortBy()).desc()
+                    .createSort();
+        }
+        return sort;
+    }
+    private Query query(FreeTextSearchPageRequest request, QueryBuilder queryBuilder) {
+        val searchableHebrewText = queryBuilder
+                .keyword()
+                .onField("searchableHebrewText")
+                .matching(request.getSearchTerm())
+                .createQuery();
+        val baseQuery = queryBuilder.bool().must(searchableHebrewText);
+        addPathFilters(request, queryBuilder, baseQuery);
+        return baseQuery.createQuery();
+    }
+    private void addPathFilters(FreeTextSearchPageRequest request, QueryBuilder queryBuilder, MustJunction baseQuery) {
+        if(request.getCustomArgs().containsKey("validPathPrefixes")){
+            List<String> prefixes = validPathPrefixes(request);
+            val prefixesQueryString = String.join("|", prefixes);
+            val path = queryBuilder.keyword().onField("path").matching(prefixesQueryString).createQuery();
+            baseQuery.must(path);
+        }
+    }
+    @SuppressWarnings("unchecked")
+    private List<String> validPathPrefixes(FreeTextSearchPageRequest request) {
+        var prefixes = (List<String>) request.getCustomArgs().get("validPathPrefixes");
+        var finalPrefixes = new HashSet<String>();
+        prefixes.forEach(prefix -> {
+            switch (prefix) {
+                case "TORAH":
+                    finalPrefixes.addAll(booksInTorah().stream().map(book -> "TORAH." + book).collect(Collectors.toSet()));
+                    break;
+                case "PROPHETS":
+                    finalPrefixes.addAll(booksInProphets().stream().map(book -> "PROPHETS." + book).collect(Collectors.toSet()));
+                    break;
+                case "WRITINGS":
+                    finalPrefixes.addAll(booksInWritings().stream().map(book -> "WRITINGS." + book).collect(Collectors.toSet()));
+                    break;
+                default:
+                    finalPrefixes.add(prefix);
+                    break;
+            }
+
+        });
+        return new ArrayList<>(finalPrefixes);
+    }
+    private QueryBuilder queryBuilder(DataManager<Verse> dataManager){
+        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(dataManager.entityManager());
+        return fullTextEntityManager
+                .getSearchFactory()
+                .buildQueryBuilder()
+                .forEntity(Verse.class)
+                .get();
+    }
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
+    @PostConstruct
+    public void initHibernateSearch() throws InterruptedException {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
+        fullTextEntityManager.createIndexer().startAndWait();
+    }
+}

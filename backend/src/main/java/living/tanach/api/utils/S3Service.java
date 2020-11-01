@@ -1,0 +1,118 @@
+package living.tanach.api.utils;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.Collection;
+import java.util.stream.Collectors;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
+@Slf4j
+@Component
+public class S3Service {
+
+    @Value("${aws.s3.bucket-name}")
+    private String bucketName;
+    @Value("#{new Integer('${s3.url-ttl:60}')}")
+    private Integer urlTtl;
+
+    private S3Client s3Client;
+    private S3Presigner s3Presigner;
+
+    @PostConstruct
+    @SneakyThrows
+    private void init(){
+        s3Presigner = S3Presigner.create();
+        s3Client = S3Client.create();
+    }
+
+    public String generateUploadUrl(String key, String contentType){
+        val objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .contentType(contentType)
+                .build();
+        val presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(urlTtl))
+                .putObjectRequest(objectRequest)
+                .build();
+        val presignedRequest = s3Presigner.presignPutObject(presignRequest);
+        val url = presignedRequest.url();
+        return url.toString();
+    }
+    public String generateDownloadUrl(String key){
+        try {
+            val getObjectRequest =
+                    GetObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(key)
+                            .build();
+            val getObjectPresignRequest =
+                    GetObjectPresignRequest.builder()
+                            .signatureDuration(Duration.ofMinutes(urlTtl))
+                            .getObjectRequest(getObjectRequest)
+                            .build();
+            val presignedGetObjectRequest = s3Presigner.presignGetObject(getObjectPresignRequest);
+            return presignedGetObjectRequest.url().toString();
+        } catch (S3Exception e) {
+            e.getStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+    public void deleteObjects(Collection<String> keys){
+        try {
+
+            val identifiers = keys
+                    .stream()
+                    .map(key -> ObjectIdentifier.builder().key(key).build())
+                    .collect(Collectors.toList());
+
+            val deleteObjectsRequest = DeleteObjectsRequest.builder()
+                    .bucket(bucketName)
+                    .delete(Delete.builder().objects(identifiers).build())
+                    .build();
+            s3Client.deleteObjects(deleteObjectsRequest);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public void uploadObject(File object, String key){
+        s3Client.putObject(PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(key)
+                .build(), RequestBody.fromFile(object));
+    }
+    public File getObject(String key){
+        try {
+            val request = GetObjectRequest.builder().bucket(bucketName).key(key).build();
+            val response =  s3Client.getObjectAsBytes(request);
+            val inStream = response.asInputStream();
+            Files.deleteIfExists(Paths.get(key));
+            File targetFile = new File(key);
+            Files.copy(inStream, targetFile.toPath(), REPLACE_EXISTING);
+            IOUtils.closeQuietly(inStream);
+            return targetFile;
+        }catch (Exception e){
+            log.error( e.getClass().getName() + " while getting object with key: \"" + key + "\" from S3. Message is: \n" + e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+}
