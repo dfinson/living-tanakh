@@ -1,14 +1,15 @@
 package living.tanach.api.service;
 
-import com.github.javafaker.Faker;
 import dev.sanda.apifi.test_utils.TestableGraphQLService;
+import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
+import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.Chapter;
 import living.tanach.api.model.MediaTag;
 import living.tanach.api.model.Verse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static living.tanach.api.utils.StaticTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -29,18 +30,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class VerseGraphQLApiServiceTest {
 
-    @Autowired
-    private DataManager<Verse> verseDataManager;
-    @Autowired
-    private DataManager<MediaTag> tagDataManager;
-    @Autowired
-    private TestableGraphQLService<Verse> testApi;
+    private final DataManager<Verse> verseDataManager;
+    private final DataManager<MediaTag> tagDataManager;
+    private final TestableGraphQLService<Verse> testApi;
 
     @Test
     public void chapter() {
-        List<Verse> firstHundredVerses = firstNVerses(100);
+        List<Verse> firstHundredVerses = firstNVerses(100, verseDataManager);
         List<Chapter> expected = firstHundredVerses.stream().map(Verse::getChapter).collect(Collectors.toList());
         List<Chapter> actual = testApi.invokeEndpoint("chapter", firstHundredVerses);
         assertEquals(expected, actual);
@@ -48,7 +47,7 @@ public class VerseGraphQLApiServiceTest {
 
     @Test
     public void mediaTags() {
-        List<Verse> first20Verses = firstNVerses(20);
+        List<Verse> first20Verses = firstNVerses(20, verseDataManager);
         setMockMediaTags(first20Verses);
         Map<Verse, List<MediaTag>> expectedTagsPerVerse =
                 first20Verses.stream().collect(Collectors.toMap(Function.identity(), verse -> new ArrayList<>(verse.getMediaTags())));
@@ -65,7 +64,7 @@ public class VerseGraphQLApiServiceTest {
 
     @Test
     public void associateMediaTagsWithVerse() {
-        Verse verse = firstNVerses(1).get(0);
+        Verse verse = firstNVerses(1, verseDataManager).get(0);
         List<MediaTag> tags = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
         List<MediaTag> result = testApi.invokeEndpoint("associateMediaTagsWithVerse", verse, tags);
         tags.forEach(tag -> assertTrue(verse.getMediaTags().contains(tag)));
@@ -75,7 +74,7 @@ public class VerseGraphQLApiServiceTest {
     @Test
     public void updateMediaTagsOfVerse() {
 
-        Verse verse = firstNVerses(1).get(0);
+        Verse verse = firstNVerses(1, verseDataManager).get(0);
         List<MediaTag> tags = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
         verse.setMediaTags(new HashSet<>(tags));
         verse.getMediaTags().forEach(tag -> tag.getVerses().add(verse));
@@ -99,52 +98,33 @@ public class VerseGraphQLApiServiceTest {
     }
 
     @Test
-    public void removeTagsFromVerse() {
-        Verse verse = firstNVerses(1).get(0);
+    public void removeMediaTagsFromVerse() {
+        Verse verse = firstNVerses(1, verseDataManager).get(0);
         List<MediaTag> input = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
         List<MediaTag> associatedTags = testApi.invokeEndpoint("associateMediaTagsWithVerse", verse, input);
         assertEquals(verse.getMediaTags().size(), associatedTags.size());
-        List<MediaTag> disassociatedTags = testApi.invokeEndpoint("removeTagsFromVerse", associatedTags);
+        List<MediaTag> disassociatedTags = testApi.invokeEndpoint("removeMediaTagsFromVerse", verse, associatedTags);
         assertEquals(associatedTags.size(), disassociatedTags.size());
         assertEquals(0, verse.getMediaTags().size());
     }
 
     @Test
     public void verseFreeTextSearch() {
+        var methodName = "verseFreeTextSearch";
+        var searchTerm = "חרב";
+        var request = new FreeTextSearchPageRequest();
+        request.setSearchTerm(searchTerm);
+        request.setFetchAll(true);
+        Page<Verse> result = testApi.invokeEndpoint(methodName, request);
+        assertEquals(99, result.getContent().size());
     }
 
     @Test
     public void findVerseByUniquePath() {
-    }
-
-    // helpers
-
-    private final Faker faker = new Faker();
-
-    @SuppressWarnings("unchecked")
-    private List<Verse> firstNVerses(int n) {
-        return (List<Verse>)
-                verseDataManager
-                        .entityManager()
-                        .createQuery("SELECT verse FROM Verse verse")
-                        .setMaxResults(n)
-                        .getResultList();
-    }
-
-    private void setMockMediaTags(List<Verse> verses) {
-        verses.forEach(verse -> {
-            for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 5); i++) {
-                var tag = generateMockMediaTag();
-                verse.getMediaTags().add(tag);
-                tag.getVerses().add(verse);
-            }
-        });
-    }
-
-    private MediaTag generateMockMediaTag(){
-        val tag = new MediaTag();
-        tag.setTitle(faker.lordOfTheRings().location());
-        tag.setDescription(faker.lorem().paragraph());
-        return tag;
+        var methodName = "findVerseByUniquePath";
+        var verse = firstNVerses(1, verseDataManager).get(0);
+        var path = verse.getPath();
+        var result = testApi.invokeEndpoint(methodName, path);
+        assertEquals(verse, result);
     }
 }

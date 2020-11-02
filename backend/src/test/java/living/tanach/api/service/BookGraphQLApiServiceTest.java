@@ -4,6 +4,7 @@ import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.Book;
 import living.tanach.api.model.Chapter;
+import lombok.AllArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,14 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class BookGraphQLApiServiceTest {
 
-    @Autowired
-    private TestableGraphQLService<Book> testApi;
-    @Autowired
-    private DataManager<Book> bookDataManager;
+    private final TestableGraphQLService<Book> testApi;
+    private final DataManager<Book> bookDataManager;
 
-    // test to see if the batched fetchingnof the chapters field within book works as expected
+    // test to see if the batched fetching of the chapters field within book works as expected
     @Test
     public void chapters() {
         // load a few books

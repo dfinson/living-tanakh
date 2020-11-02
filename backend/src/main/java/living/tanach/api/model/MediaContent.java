@@ -20,8 +20,11 @@ public class MediaContent {
     private MediaTag mediaTag;
     @Enumerated(STRING)
     private MediaType mediaType;
+    @Column(columnDefinition = "TEXT")
     private String name;
+    @Column(columnDefinition = "TEXT")
     private String description;
+    @Column(columnDefinition = "TEXT")
     private String storageKey;
 
     @Transient

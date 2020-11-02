@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
+import static javax.persistence.CascadeType.ALL;
 import static org.hibernate.annotations.FetchMode.JOIN;
 
 @Data
@@ -22,13 +23,14 @@ public class MediaTag {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(columnDefinition = "TEXT")
     private String title;
     @Column(columnDefinition = "TEXT")
     private String description;
     @ManyToMany
     private Set<Verse> verses = new HashSet<>();
     @Fetch(JOIN)
-    @OneToMany
+    @OneToMany(cascade = ALL)
     @EntityCollectionApi(
             endpoints = {ASSOCIATE_WITH, UPDATE_IN, REMOVE_FROM},
             apiHooks = LinkedMediaContentOfTagApiHooks.class

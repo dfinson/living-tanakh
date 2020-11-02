@@ -31,12 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class ChapterGraphQLApiServiceTest {
 
-    @Autowired
-    private TestableGraphQLService<Chapter> testApi;
-    @Autowired
-    private DataManager<Chapter> dataManager;
+    private final TestableGraphQLService<Chapter> testApi;
+    private final DataManager<Chapter> dataManager;
 
     // simple test to check if the findChapterByUniquePath endpoint for chapter works as expected
     @Test

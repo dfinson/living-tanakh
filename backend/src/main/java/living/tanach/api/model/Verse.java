@@ -3,26 +3,24 @@ package living.tanach.api.model;
 import dev.sanda.apifi.annotations.ApiFindByUnique;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithApiFreeTextSearchByFields;
-import io.leangen.graphql.annotations.GraphQLQuery;
 import living.tanach.api.api_hooks.MediaTagsOfVerseApiHooks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.SortableField;
 
 import javax.persistence.*;
-import javax.persistence.Index;
 import java.util.HashSet;
 import java.util.Set;
 
 import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
-import static javax.persistence.CascadeType.*;
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static living.tanach.api.utils.StaticUtils.toHebrewNumeral;
 import static org.hibernate.annotations.FetchMode.JOIN;
-import static org.hibernate.search.annotations.TermVector.YES;
 
 @Data
 @Entity
