@@ -53,7 +53,12 @@ public class DBInitializer {
 
     private void initTanakh() {
         // if db is initialized we stop here
-        if(!bookDataManager.findAll().isEmpty()) {
+        long bookCount = (Long) bookDataManager
+                .entityManager()
+                .createQuery("SELECT COUNT(book.id) FROM Book book")
+                .getSingleResult();
+
+        if(bookCount > 0) {
             log.info("db already initialized - returning");
             return;
         }

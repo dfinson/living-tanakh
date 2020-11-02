@@ -53,7 +53,7 @@ public class Verse {
             endpoints = {ASSOCIATE_WITH, UPDATE_IN, REMOVE_FROM},
             apiHooks = MediaTagsOfVerseApiHooks.class
     )
-    private Set<MediaTag> mediaTags;
+    private Set<MediaTag> mediaTags = new HashSet<>();
     @Column(columnDefinition = "TEXT")
     private String fullHebrewText;
     @Column(columnDefinition = "TEXT")

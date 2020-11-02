@@ -1,5 +1,6 @@
 package living.tanach.api.service;
 
+import com.github.javafaker.Faker;
 import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.Chapter;
@@ -7,22 +8,22 @@ import living.tanach.api.model.MediaTag;
 import living.tanach.api.model.Verse;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @Transactional
@@ -32,6 +33,8 @@ public class VerseGraphQLApiServiceTest {
 
     @Autowired
     private DataManager<Verse> verseDataManager;
+    @Autowired
+    private DataManager<MediaTag> tagDataManager;
     @Autowired
     private TestableGraphQLService<Verse> testApi;
 
@@ -61,15 +64,49 @@ public class VerseGraphQLApiServiceTest {
     }
 
     @Test
-    public void associateTagsWithVerse() {
+    public void associateMediaTagsWithVerse() {
+        Verse verse = firstNVerses(1).get(0);
+        List<MediaTag> tags = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
+        List<MediaTag> result = testApi.invokeEndpoint("associateMediaTagsWithVerse", verse, tags);
+        tags.forEach(tag -> assertTrue(verse.getMediaTags().contains(tag)));
+        assertEquals(tags, result);
     }
 
     @Test
-    public void updateTagsOfVerse() {
+    public void updateMediaTagsOfVerse() {
+
+        Verse verse = firstNVerses(1).get(0);
+        List<MediaTag> tags = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
+        verse.setMediaTags(new HashSet<>(tags));
+        verse.getMediaTags().forEach(tag -> tag.getVerses().add(verse));
+        verseDataManager.save(verse);
+        tagDataManager.saveAll(tags);
+
+        List<MediaTag> toUpdate = tags.stream().map(currentTag -> {
+            val updatedTag = new MediaTag();
+            updatedTag.setId(currentTag.getId());
+            updatedTag.setTitle("test title");
+            updatedTag.setDescription("test description");
+            return updatedTag;
+        }).collect(Collectors.toList());
+
+        List<MediaTag> result = testApi.invokeEndpoint("updateMediaTagsOfVerse", verse, toUpdate);
+
+        result.forEach(tag -> {
+            assertEquals("test title", tag.getTitle());
+            assertEquals("test description", tag.getDescription());
+        });
     }
 
     @Test
     public void removeTagsFromVerse() {
+        Verse verse = firstNVerses(1).get(0);
+        List<MediaTag> input = IntStream.range(0, 5).mapToObj( i-> generateMockMediaTag()).collect(Collectors.toList());
+        List<MediaTag> associatedTags = testApi.invokeEndpoint("associateMediaTagsWithVerse", verse, input);
+        assertEquals(verse.getMediaTags().size(), associatedTags.size());
+        List<MediaTag> disassociatedTags = testApi.invokeEndpoint("removeTagsFromVerse", associatedTags);
+        assertEquals(associatedTags.size(), disassociatedTags.size());
+        assertEquals(0, verse.getMediaTags().size());
     }
 
     @Test
@@ -82,6 +119,8 @@ public class VerseGraphQLApiServiceTest {
 
     // helpers
 
+    private final Faker faker = new Faker();
+
     @SuppressWarnings("unchecked")
     private List<Verse> firstNVerses(int n) {
         return (List<Verse>)
@@ -93,6 +132,19 @@ public class VerseGraphQLApiServiceTest {
     }
 
     private void setMockMediaTags(List<Verse> verses) {
+        verses.forEach(verse -> {
+            for (int i = 0; i < ThreadLocalRandom.current().nextInt(1, 5); i++) {
+                var tag = generateMockMediaTag();
+                verse.getMediaTags().add(tag);
+                tag.getVerses().add(verse);
+            }
+        });
+    }
 
+    private MediaTag generateMockMediaTag(){
+        val tag = new MediaTag();
+        tag.setTitle(faker.lordOfTheRings().location());
+        tag.setDescription(faker.lorem().paragraph());
+        return tag;
     }
 }

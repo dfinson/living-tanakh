@@ -3,6 +3,8 @@ package living.tanach.api.model;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import living.tanach.api.api_hooks.LinkedMediaContentOfTagApiHooks;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
@@ -14,6 +16,8 @@ import static org.hibernate.annotations.FetchMode.JOIN;
 
 @Data
 @Entity
+@ToString(exclude = {"verses", "linkedContent"})
+@EqualsAndHashCode(exclude = {"verses", "linkedContent"})
 public class MediaTag {
     @Id
     @GeneratedValue
@@ -29,5 +33,5 @@ public class MediaTag {
             endpoints = {ASSOCIATE_WITH, UPDATE_IN, REMOVE_FROM},
             apiHooks = LinkedMediaContentOfTagApiHooks.class
             )
-    private Set<MediaContent> linkedContent;
+    private Set<MediaContent> linkedContent = new HashSet<>();
 }
