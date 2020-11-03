@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import api from "@/api_clients_and_helpers/api";
-import SefariaTextsApiRequest from "@/dto/SefariaTextsApiRequest";
-import SefariaTextsApiResponse from "@/dto/SefariaTextsApiResponse";
+
 
 Vue.use(Vuex)
 
