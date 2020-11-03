@@ -11,11 +11,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.SortableField;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-
 import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;

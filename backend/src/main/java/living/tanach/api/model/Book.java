@@ -1,6 +1,6 @@
 package living.tanach.api.model;
 
-import dev.sanda.apifi.annotations.ApiFindByUnique;
+
 import living.tanach.api.model.contstants.TanakhSection;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

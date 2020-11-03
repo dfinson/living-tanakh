@@ -21,11 +21,9 @@ public class MediaContent {
     @Enumerated(STRING)
     private MediaType mediaType;
     @Column(columnDefinition = "TEXT")
-    private String name;
-    @Column(columnDefinition = "TEXT")
     private String description;
     @Column(columnDefinition = "TEXT")
-    private String storageKey;
+    private String key;
 
     @Transient
     @Getter(onMethod_ = @GraphQLQuery)

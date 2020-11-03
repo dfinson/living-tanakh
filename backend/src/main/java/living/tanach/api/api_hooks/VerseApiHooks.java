@@ -81,37 +81,16 @@ public class VerseApiHooks implements ApiHooks<Verse> {
         addPathFilters(request, queryBuilder, baseQuery);
         return baseQuery.createQuery();
     }
+
     private void addPathFilters(FreeTextSearchPageRequest request, QueryBuilder queryBuilder, MustJunction baseQuery) {
         if(request.getCustomArgs().containsKey("validPathPrefixes")){
-            List<String> prefixes = validPathPrefixes(request);
+            List<String> prefixes = request.getCustomArg("validPathPrefixes");
             val prefixesQueryString = String.join("|", prefixes);
-            val path = queryBuilder.keyword().onField("path").matching(prefixesQueryString).createQuery();
+            val path = queryBuilder.phrase().onField("path").sentence(prefixesQueryString).createQuery();
             baseQuery.must(path);
         }
     }
-    @SuppressWarnings("unchecked")
-    private List<String> validPathPrefixes(FreeTextSearchPageRequest request) {
-        var prefixes = (List<String>) request.getCustomArgs().get("validPathPrefixes");
-        var finalPrefixes = new HashSet<String>();
-        prefixes.forEach(prefix -> {
-            switch (prefix) {
-                case "TORAH":
-                    finalPrefixes.addAll(booksInTorah().stream().map(book -> "TORAH." + book).collect(Collectors.toSet()));
-                    break;
-                case "PROPHETS":
-                    finalPrefixes.addAll(booksInProphets().stream().map(book -> "PROPHETS." + book).collect(Collectors.toSet()));
-                    break;
-                case "WRITINGS":
-                    finalPrefixes.addAll(booksInWritings().stream().map(book -> "WRITINGS." + book).collect(Collectors.toSet()));
-                    break;
-                default:
-                    finalPrefixes.add(prefix);
-                    break;
-            }
 
-        });
-        return new ArrayList<>(finalPrefixes);
-    }
     private QueryBuilder queryBuilder(DataManager<Verse> dataManager){
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(dataManager.entityManager());
         return fullTextEntityManager

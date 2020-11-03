@@ -97,7 +97,7 @@ class MediaTagGraphQLApiServiceTest {
             var updatedMediaContent = new MediaContent();
             updatedMediaContent.setId(originalMediaContent.getId());
             updatedMediaContent.setMediaType(AUDIO);
-            updatedMediaContent.setName("foo");
+            updatedMediaContent.setKey("foo");
             updatedMediaContent.setDescription("bar");
             updatedMediaContent.setMediaTag(originalMediaContent.getMediaTag());
             updated.add(updatedMediaContent);
@@ -109,7 +109,7 @@ class MediaTagGraphQLApiServiceTest {
             var actualObject = actual.get(i);
             assertEquals(expectedObject.getId(), actualObject.getId());
             assertEquals(expectedObject.getDescription(), actualObject.getDescription());
-            assertEquals(expectedObject.getName(), actualObject.getName());
+            assertEquals(expectedObject.getKey(), actualObject.getKey());
             assertEquals(expectedObject.getMediaType(), actualObject.getMediaType());
             assertEquals(expectedObject.getMediaTag(), actualObject.getMediaTag());
         }
@@ -163,7 +163,7 @@ class MediaTagGraphQLApiServiceTest {
         var mediaContentObject = new MediaContent();
         mediaContentObject.setMediaTag(tag);
         mediaContentObject.setMediaType(randomMediaType());
-        mediaContentObject.setName(faker.starTrek().character());
+        mediaContentObject.setKey(faker.starTrek().character());
         mediaContentObject.setDescription(faker.lorem().paragraph());
         return mediaContentObject;
     }

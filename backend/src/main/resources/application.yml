@@ -12,7 +12,7 @@ hibernate:
       directory_provider: filesystem
       indexBase: /data/index/default
 
-apifi.endpoint: /
+apifi.endpoint: /api
 
 sefaria:
   texts-api-base-url: http://www.sefaria.org/api/texts/

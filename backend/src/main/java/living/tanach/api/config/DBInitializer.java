@@ -116,7 +116,7 @@ public class DBInitializer {
         val book = new Book();
         val hebrewName = json.getString("heRef");
         val tanakhSection = determineTanakhSection(bookName);
-        val path = tanakhSection.toString() + "." + bookName;
+        val path = tanakhSection.toString() + "/" + bookName;
         book.setEnglishName(bookName);
         book.setHebrewName(hebrewName);
         book.setTanakhSection(tanakhSection);
@@ -137,7 +137,7 @@ public class DBInitializer {
 
     private Chapter parseChapter(JSONArray hebrewText, JSONArray englishText, String parentPath, int chapterNumber) {
         Chapter chapter = new Chapter();
-        val path = parentPath + "." + chapterNumber;
+        val path = parentPath + "/" + chapterNumber;
         chapter.setPath(path);
         chapter.setNumber(chapterNumber);
         chapter.setVerses(parseVerses(hebrewText, englishText, path));
@@ -153,7 +153,7 @@ public class DBInitializer {
     }
 
     private Verse parseVerse(String hebrewText, String englishText, String parentPath, int verseNumber) {
-        val path = parentPath + "." + verseNumber;
+        val path = parentPath + "/" + verseNumber;
         Verse verse = new Verse();
         verse.setPath(path);
         verse.setFullEnglishText(englishText.replaceAll("<i>", "").replaceAll("</i>", ""));
