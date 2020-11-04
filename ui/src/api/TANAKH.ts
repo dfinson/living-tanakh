@@ -45,7 +45,7 @@ export const WRITINGS = {
     ESTHER: 'WRITINGS/Esther'
 }
 
-export function stripPrefix(pathWithPrefix: string){
+export function stripPrefix(pathWithPrefix: string): string{
     return pathWithPrefix.split("/")[1];
 }
 

@@ -188,4 +188,42 @@ export default{
 			return await (await fetch(apiUrl, opts)).json();
 	},
 
+	async errorReports(input, expectedReturn, customHeaders){
+		let requestHeaders = { "Content-Type": "application/json" }
+		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+		if(bearerToken !== undefined) requestHeaders["Authorization"] = bearerToken;
+		const opts = {
+			method: "POST",
+			credentials: "include",
+			headers: requestHeaders,
+			body: JSON.stringify({
+				query: `query errorReports($input: PageRequestInput) { errorReports(input: $input)${expectedReturn} }`,
+				variables: {
+					"input": input
+				},
+				operationName: "errorReports"
+			})
+		};
+		return await (await fetch(apiUrl, opts)).json();
+	},
+
+	async createErrorReport(input, expectedReturn, customHeaders){
+		let requestHeaders = { "Content-Type": "application/json" }
+		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+		if(bearerToken !== undefined) requestHeaders["Authorization"] = bearerToken;
+		const opts = {
+			method: "POST",
+			credentials: "include",
+			headers: requestHeaders,
+			body: JSON.stringify({
+				query: `mutation createErrorReport($input: ErrorReportInput) { createErrorReport(input: $input)${expectedReturn} }`,
+				variables: {
+					"input": input
+				},
+				operationName: "createErrorReport"
+			})
+		};
+		return await (await fetch(apiUrl, opts)).json();
+	},
+
 }
