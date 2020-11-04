@@ -1,5 +1,7 @@
 package living.tanach.api.model;
 
+import dev.sanda.apifi.annotations.WithCRUDEndpoints;
+import dev.sanda.apifi.generator.entity.CRUDEndpoints;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -8,8 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
 
+import static dev.sanda.apifi.generator.entity.CRUDEndpoints.CREATE;
+import static dev.sanda.apifi.generator.entity.CRUDEndpoints.GET_PAGINATED_BATCH;
+
 @Data
 @Entity
+@WithCRUDEndpoints({CREATE, GET_PAGINATED_BATCH})
 public class ErrorReport {
     @Id
     @GeneratedValue
