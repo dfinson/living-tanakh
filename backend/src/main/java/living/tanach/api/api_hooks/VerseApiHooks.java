@@ -85,9 +85,12 @@ public class VerseApiHooks implements ApiHooks<Verse> {
     private void addPathFilters(FreeTextSearchPageRequest request, QueryBuilder queryBuilder, MustJunction baseQuery) {
         if(request.getCustomArgs().containsKey("validPathPrefixes")){
             List<String> prefixes = request.getCustomArg("validPathPrefixes");
-            val prefixesQueryString = String.join("|", prefixes);
-            val path = queryBuilder.phrase().onField("path").sentence(prefixesQueryString).createQuery();
-            baseQuery.must(path);
+            val hasValidPathPrefix = queryBuilder.bool();
+            prefixes
+                    .stream()
+                    .map(prefix -> queryBuilder.keyword().onField("path").matching(prefix).createQuery())
+                    .forEach(hasValidPathPrefix::should);
+            baseQuery.must(hasValidPathPrefix.createQuery());
         }
     }
 

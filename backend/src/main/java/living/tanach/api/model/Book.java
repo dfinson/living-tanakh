@@ -1,6 +1,7 @@
 package living.tanach.api.model;
 
 
+import dev.sanda.apifi.annotations.ApiFindByUnique;
 import living.tanach.api.model.contstants.TanakhSection;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +26,7 @@ public class Book {
     @Id
     @GeneratedValue
     private Long id;
+    @ApiFindByUnique
     @Column(unique = true)
     private String path;
     @Enumerated(STRING)
