@@ -4,6 +4,7 @@ import dev.sanda.apifi.service.ApiHooks;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;
+import living.tanach.api.dto.VerseSearchResult;
 import living.tanach.api.model.Verse;
 import lombok.val;
 import org.apache.lucene.search.Query;
@@ -19,9 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static living.tanach.api.utils.StaticUtils.*;
@@ -44,7 +43,16 @@ public class VerseApiHooks implements ApiHooks<Verse> {
         response.setPageNumber(request.getPageNumber());
         response.setTotalItemsCount((long) totalHits);
         response.setTotalPagesCount((long) Math.ceil((double) totalHits / request.getPageSize()));
+        response.setCustomValues(generateVerseSearchResults(results, request.getSearchTerm()));
         return response;
+    }
+
+    private Map<String, List<VerseSearchResult>> generateVerseSearchResults(List<Verse> results, String searchTerm) {
+        List<VerseSearchResult> verseSearchResults = results
+                .stream()
+                .map(verse -> new VerseSearchResult(verse, searchTerm))
+                .collect(Collectors.toList());
+        return new HashMap<>(){{put("verseSearchResults", verseSearchResults);}};
     }
 
     private FullTextQuery fullTextQuery(Query query, Sort sort, FullTextEntityManager textEntityManager, FreeTextSearchPageRequest request) {

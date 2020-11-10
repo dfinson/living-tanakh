@@ -163,11 +163,10 @@ public class DBInitializer {
         return verse;
     }
 
-    private static final Pattern hebrewCharacterOrSpacePattern = Pattern.compile("[\u05D0-\u05EA |\\s+]");
     private String parseSearchableHebrewText(String hebrewText) {
         StringBuilder textBuilder = new StringBuilder();
         for (char c : hebrewText.toCharArray())
-            if (hebrewCharacterOrSpacePattern.matches(String.valueOf(c)))
+            if (isHebrewCharacterOrWhitespace(c))
                 textBuilder.append(c);
         return textBuilder.toString();
     }

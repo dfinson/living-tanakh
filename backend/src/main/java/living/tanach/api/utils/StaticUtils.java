@@ -1,14 +1,10 @@
 package living.tanach.api.utils;
 
-import living.tanach.api.model.Chapter;
+import com.google.re2j.Pattern;
 import lombok.val;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class StaticUtils {
     public static String toHebrewNumeral(int num) {
@@ -53,6 +49,8 @@ public class StaticUtils {
                 }
                 break;
         }
+        if(wasGreaterThan10)
+            ret = new StringBuilder(ret.toString().replaceAll("\"", "''")).reverse();
         return ret.toString();
     }
     public static <T> BinaryOperator<List<T>> defaultMergeFunction()  {
@@ -115,5 +113,63 @@ public class StaticUtils {
                         "Esther"
                 )
         );
+    }
+
+    private static final Map<String, String> hebrewBookNamesDict = new HashMap<>() {{
+        put("Genesis", "בראשית");
+        put("Exodus", "שמות");
+        put("Leviticus", "ויקרא");
+        put("Numbers", "במדבר");
+        put("Deuteronomy", "דברים");
+
+        put("Joshua", "יהושוע");
+        put("Judges", "שופטים");
+        put("Samuel I", "שמואל א");
+        put("Samuel II", "שמואל ב");
+        put("Kings I", "מלכים א");
+        put("Kings II", "מלכים ב");
+        put("Isaiah", "ישעיה");
+        put("Jeremiah", "ירמיהו");
+        put("Ezekiel", "יחזקאל");
+        put("Hosea", "הושע");
+        put("Joel", "יואל");
+        put("Amos", "עמוס");
+        put("Obadiah", "עובדיה");
+        put("Jonah", "יונה");
+        put("Micha", "מיכה");
+        put("Nahum", "נחום");
+        put("Habakkuk", "חבקוק");
+        put("Zephania", "צפניה");
+        put("Haggai", "חגי");
+        put("Zechariah", "זכריה");
+        put("Malachi", "מלאכי");
+        put("Daniel", "דניאל");
+        put("Ezra", "עזרא");
+        put("Nehemiah", "נחמיה");
+        put("Chronicles I", "דברי הימים א");
+        put("Chronicles II", "דברי הימים ב");
+
+        put("Psalms", "תהלים");
+        put("Proverbs", "משלי");
+        put("Job", "איוב");
+        put("Ruth", "רות");
+        put("Lamentations", "איכה");
+        put("Ecclesiastes", "קוהלת");
+        put("Esther", "אסתר");
+    }};
+    public static String toHumanReadableHebrewPath(String path){
+        val pathValues = path.split("/");
+        val hebrewBookName = hebrewBookNamesDict.get(pathValues[1]);
+        val chapterNumeral = toHebrewNumeral(Integer.parseInt(pathValues[2]));
+        val verseNumeral = toHebrewNumeral(Integer.parseInt(pathValues[3]));
+        return String.format("ספר %s, פרק %s, פסוק %s",
+                hebrewBookName,
+                chapterNumeral,
+                verseNumeral);
+    }
+
+    private static final Pattern hebrewCharacterOrSpacePattern = Pattern.compile("[\u05D0-\u05EA |\\s+]");
+    public static boolean isHebrewCharacterOrWhitespace(char c){
+        return hebrewCharacterOrSpacePattern.matches(String.valueOf(c));
     }
 }
