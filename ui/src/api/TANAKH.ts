@@ -101,14 +101,14 @@ export function toHebrewBookName(path: string): string{
 }
 
 export function hebrewBooksInTorah(){
-    return Object.keys(TORAH).map(bookName => toHebrewBookName(HEBREW_NAMES_DICT[bookName]))
+    return Object.keys(TORAH).map(bookName => toHebrewBookName(bookName))
 }
 
 export function hebrewBooksInProphets(){
-    return Object.keys(PROPHETS).map(bookName => toHebrewBookName(HEBREW_NAMES_DICT[bookName]))
+    return Object.keys(PROPHETS).map(bookName => toHebrewBookName(bookName))
 }
 
 export function hebrewBooksInWritings(){
-    return Object.keys(WRITINGS).map(bookName => toHebrewBookName(HEBREW_NAMES_DICT[bookName]))
+    return Object.keys(WRITINGS).map(bookName => toHebrewBookName(bookName))
 }
 
