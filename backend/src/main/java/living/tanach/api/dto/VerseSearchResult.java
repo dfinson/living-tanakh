@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.val;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static living.tanach.api.utils.StaticUtils.isHebrewCharacterOrWhitespace;
 import static living.tanach.api.utils.StaticUtils.toHumanReadableHebrewPath;
@@ -15,38 +15,40 @@ import static living.tanach.api.utils.StaticUtils.toHumanReadableHebrewPath;
 public class VerseSearchResult {
     public VerseSearchResult(Verse verse, String searchTerm){
         this.humanReadableHebrewPath = toHumanReadableHebrewPath(verse.getPath());
-        this.searchTerm = actualSearchTerm(verse.getFullHebrewText(), searchTerm);
+        this.segments = parsePrefixedSegments(verse.getFullHebrewText(), searchTerm);
         this.path = verse.getPath();
-        parseAndAssignPrefixesAndSuffix(verse.getFullHebrewText());
         this.fullHebrewText = verse.getFullHebrewText();
     }
 
-    private void parseAndAssignPrefixesAndSuffix(String fullHebrewText) {
-        prefixes = new ArrayList<>();
-        var lastIndex = 0;
-        var nextIndex = 0;
-        val searchTermLength = searchTerm.length();
-        while(nextIndex != -1){
-            nextIndex = fullHebrewText.indexOf(searchTerm, lastIndex);
-            if(nextIndex != -1){
-                prefixes.add(fullHebrewText.substring(lastIndex, nextIndex));
-                lastIndex = nextIndex + searchTermLength;
+    private List<PrefixedVerseSegment> parsePrefixedSegments(String fullHebrewText, String searchTerm) {
+        int verseIndex = 0;
+        var segmentsList = new ArrayList<PrefixedVerseSegment>();
+        PrefixedVerseSegment segment = null;
+
+        do {
+            segment = nextPrefixedSegment(fullHebrewText, searchTerm, verseIndex);
+            if(segment != null) {
+                verseIndex = segment.nextStartFrom(verseIndex);
+                segmentsList.add(segment);
             }
         }
-        val lastIndexPastSearchTerm = fullHebrewText.lastIndexOf(searchTerm) + searchTermLength;
-        finalSuffix = lastIndexPastSearchTerm < fullHebrewText.length() ? fullHebrewText.substring(lastIndexPastSearchTerm) : "";
+        while (segment != null);
+        this.finalSuffix = fullHebrewText.substring(verseIndex + 1);
+        return segmentsList;
     }
-    private String actualSearchTerm(String verseText, String rawSearchTerm){
+
+    private PrefixedVerseSegment nextPrefixedSegment(String verseText, String rawSearchTerm, int startFrom){
+
         val verseChars = verseText.toCharArray();
         val searchTermChars = rawSearchTerm.toCharArray();
-        var verseIndex = 0;
+        var verseIndex = startFrom;
         var searchTermIndex = 0;
         var start = -1;
         var end = -1;
-        var done = false;
+        var matched = false;
         var charsMatched = 0;
 
-        while (verseIndex < verseChars.length && !done){
+        while (verseIndex < verseChars.length && !matched){
             val verseChar = verseChars[verseIndex];
             if(isHebrewCharacterOrWhitespace(verseChar)){
                 val searchTermChar = searchTermChars[searchTermIndex];
@@ -56,7 +58,7 @@ public class VerseSearchResult {
                     searchTermIndex++;
                     if(charsMatched == searchTermChars.length){
                         end = verseIndex;
-                        done = true;
+                        matched = true;
                     }
                 }else {
                     searchTermIndex = 0;
@@ -67,13 +69,15 @@ public class VerseSearchResult {
             }
             verseIndex++;
         }
-        return verseText.substring(start, end + 1);
+        if(!matched) return null;
+        val prefix = verseText.substring(startFrom, start);
+        val searchTerm = verseText.substring(start, end + 1);
+        return new PrefixedVerseSegment(prefix, searchTerm);
     }
 
     private String path;
     private String fullHebrewText;
     private String humanReadableHebrewPath;
-    private String searchTerm;
-    private List<String> prefixes;
+    private List<PrefixedVerseSegment> segments;
     private String finalSuffix;
 }

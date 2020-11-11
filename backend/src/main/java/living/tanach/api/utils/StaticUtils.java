@@ -18,39 +18,29 @@ public class StaticUtils {
             ret.append("קרש".charAt(num / 100 - 1));
             num %= 100;
         }
-        boolean wasGreaterThan10 = false;
+        boolean wasGreaterThan10 = num > 10;
         switch(num)
         {
             // Avoid letter combinations from the Tetragrammaton
             case 16:
-                ret.append("ט\"ז");
-                ret.reverse();
+                ret.append("ט''ז");
                 break;
             case 15:
-                ret.append("ט\"ו");
-                ret.reverse();
+                ret.append("ט''ו");
                 break;
             default:
                 if (num >= 10)
                 {
-                    wasGreaterThan10 = num > 10;
                     ret.append("יכלמנסעפצ".charAt(num / 10 - 1));
                     num %= 10;
                 }
                 if(num > 0) {
-                    if (wasGreaterThan10 && !ret.toString().contains("\""))
-                        ret.append("\"");
+                    if (wasGreaterThan10)
+                        ret.append("''");
                     ret.append ( "אבגדהוזחט".charAt(num - 1));
-                    if(!wasGreaterThan10) {
-                        ret.append("'");
-                    }else {
-                        ret.reverse();
-                    }
                 }
                 break;
         }
-        if(wasGreaterThan10)
-            ret = new StringBuilder(ret.toString().replaceAll("\"", "''")).reverse();
         return ret.toString();
     }
     public static <T> BinaryOperator<List<T>> defaultMergeFunction()  {

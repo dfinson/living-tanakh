@@ -1,5 +1,6 @@
 package living.tanach.api.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import dev.sanda.apifi.annotations.ApiFindByUnique;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithApiFreeTextSearchByFields;

@@ -39,7 +39,7 @@ public class Chapter {
     private Book book;
 
     @Fetch(JOIN)
-    @OrderBy("number")
+    @OrderBy("number ASC")
     @OneToMany(cascade = ALL, mappedBy = "chapter")
     private List<Verse> verses;
 
