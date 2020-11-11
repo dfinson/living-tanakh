@@ -96,6 +96,15 @@ export function stripPrefix(pathWithPrefix: string): string{
     return pathWithPrefix.split("/")[1];
 }
 
+export function toEnglishBookName(hebrewName: string): string{
+    for (let entry in HEBREW_NAMES_DICT){
+        if(entry[1] === hebrewName){
+            return entry[0];
+        }
+    }
+    return "null";
+}
+
 export function toHebrewBookName(path: string): string{
     return HEBREW_NAMES_DICT[path];
 }
