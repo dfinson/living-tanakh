@@ -3,9 +3,7 @@ package living.tanach.api.dto;
 import living.tanach.api.model.Verse;
 import lombok.Data;
 import lombok.val;
-
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static living.tanach.api.utils.StaticUtils.isHebrewCharacterOrWhitespace;
@@ -13,6 +11,7 @@ import static living.tanach.api.utils.StaticUtils.toHumanReadableHebrewPath;
 
 @Data
 public class VerseSearchResult {
+
     public VerseSearchResult(Verse verse, String searchTerm){
         this.humanReadableHebrewPath = toHumanReadableHebrewPath(verse.getPath());
         this.segments = parsePrefixedSegments(verse.getFullHebrewText(), searchTerm);
@@ -23,7 +22,7 @@ public class VerseSearchResult {
     private List<PrefixedVerseSegment> parsePrefixedSegments(String fullHebrewText, String searchTerm) {
         int verseIndex = 0;
         var segmentsList = new ArrayList<PrefixedVerseSegment>();
-        PrefixedVerseSegment segment = null;
+        PrefixedVerseSegment segment;
 
         do {
             segment = nextPrefixedSegment(fullHebrewText, searchTerm, verseIndex);
@@ -31,8 +30,7 @@ public class VerseSearchResult {
                 verseIndex = segment.nextStartFrom(verseIndex);
                 segmentsList.add(segment);
             }
-        }
-        while (segment != null);
+        } while (segment != null);
         this.finalSuffix = fullHebrewText.substring(verseIndex + 1);
         return segmentsList;
     }

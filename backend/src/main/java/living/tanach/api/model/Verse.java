@@ -1,6 +1,5 @@
 package living.tanach.api.model;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import dev.sanda.apifi.annotations.ApiFindByUnique;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithApiFreeTextSearchByFields;
@@ -12,14 +11,17 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.SortableField;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
 import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static living.tanach.api.utils.StaticUtils.toHebrewNumeral;
 import static org.hibernate.annotations.FetchMode.JOIN;
+import static org.hibernate.search.annotations.Index.NO;
 
 @Data
 @Entity
@@ -33,8 +35,8 @@ public class Verse {
     @GeneratedValue
     @SortableField
     private Long id;
-    @SortableField
     @Field
+    @SortableField
     @ApiFindByUnique
     @Column(unique = true)
     private String path;

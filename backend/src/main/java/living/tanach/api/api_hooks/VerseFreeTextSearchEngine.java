@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static living.tanach.api.utils.StaticUtils.*;
 
 @Service
-public class VerseApiHooks implements ApiHooks<Verse> {
+public class VerseFreeTextSearchEngine implements ApiHooks<Verse> {
 
     @Override
     @SuppressWarnings("unchecked")
@@ -96,7 +96,7 @@ public class VerseApiHooks implements ApiHooks<Verse> {
             val hasValidPathPrefix = queryBuilder.bool();
             prefixes
                     .stream()
-                    .map(prefix -> queryBuilder.keyword().onField("path").matching(prefix).createQuery())
+                    .map(prefix -> queryBuilder.phrase().onField("path").sentence(prefix).createQuery())
                     .forEach(hasValidPathPrefix::should);
             baseQuery.must(hasValidPathPrefix.createQuery());
         }
