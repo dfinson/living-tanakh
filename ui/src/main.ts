@@ -5,7 +5,7 @@ import apifiClient from "@/api/apifiClient";
 
 Vue.config.productionTip = false
 
-apifiClient.setApiUrl('http://tanakhproject-env.eba-24em36yg.us-east-2.elasticbeanstalk.com//api')
+apifiClient.setApiUrl('http://livingtanakhapplicationde-env.eba-i3mkpska.eu-central-1.elasticbeanstalk.com/api')
 
 new Vue({
   store,
