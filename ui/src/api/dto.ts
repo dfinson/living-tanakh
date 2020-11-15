@@ -50,6 +50,13 @@ export class MediaContent {
     signedUploadUrl?: string;
 }
 
+export class SearchCriteria{
+    searchTerm: string;
+    category: string;
+    book: string;
+    chapter: number;
+}
+
 export enum MediaType {
     VIDEO = "VIDEO",
     IMAGE = "IMAGE",

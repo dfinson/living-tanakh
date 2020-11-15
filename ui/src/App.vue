@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-    <header>The Living Tanakh</header>
-    <base-card>
-<form-page></form-page>
-    </base-card>
+    <Dashboard/>
   </div>
 
 </template>
@@ -18,14 +15,16 @@ import BaseCard from "./Components/BaseComponents/BaseCard.vue";
 import CategoryList from "@/Components/SearchComponents/CategoryList.vue";
 import FindVerseByPath from "@/Components/SearchComponents/FindVerseByPath.vue";
 import FormPage from "@/Components/SearchComponents/FormPage.vue";
+import Dashboard from "@/components/Dashboard.vue";
 
 @Component(
     {
         components:{
           BaseCard,
-        CategoryList,
-            FindVerseByPath,
-          FormPage
+          CategoryList,
+          FindVerseByPath,
+          FormPage,
+          Dashboard
         }
     }
 )
