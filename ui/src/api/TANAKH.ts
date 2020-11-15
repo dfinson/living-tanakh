@@ -1,3 +1,5 @@
+
+
 export const TORAH = {
     GENESIS: 'TORAH/Genesis',
     EXODUS: 'TORAH/Exodus',
@@ -45,11 +47,10 @@ export const WRITINGS = {
     ESTHER: 'WRITINGS/Esther'
 }
 
-/*interface IDictionary {
+interface YDictionary {
     [index: string]: string;
 }
-
-const HEBREW_NAMES_DICT = {
+ const HEBREW_NAMES_DICT = {
     'TORAH/Genesis': 'בראשית',
     'TORAH/Exodus': 'שמות',
     'TORAH/Leviticus': 'ויקרא',
@@ -90,14 +91,14 @@ const HEBREW_NAMES_DICT = {
     'WRITINGS/Lamentations': 'איכה',
     'WRITINGS/Ecclesiastes': 'קוהלת',
     'WRITINGS/Esther': 'אסתר'
-} as IDictionary;
+} as YDictionary;
 
 export function stripPrefix(pathWithPrefix: string): string{
     return pathWithPrefix.split("/")[1];
 }
 
 export function toEnglishBookName(hebrewName: string): string{
-    for (let entry in HEBREW_NAMES_DICT){
+    for (const entry in HEBREW_NAMES_DICT){
         if(entry[1] === hebrewName){
             return entry[0];
         }
@@ -120,4 +121,5 @@ export function hebrewBooksInProphets(){
 export function hebrewBooksInWritings(){
     return Object.keys(WRITINGS).map(bookName => toHebrewBookName(bookName))
 }
-*/
+
+
