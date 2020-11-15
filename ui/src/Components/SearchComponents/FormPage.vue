@@ -1,24 +1,24 @@
 <template>
-    <div>
+<div>
         <span>Select Category </span>
         <select v-model="selectedCategory" @change="getBookList">
             <option  v-for="category in categoryList" v-bind:value="category" :key="category" > {{category}}</option>
         </select>
-        <span>Select Book </span>
-        <select v-model="selectedBook" @change="getChapterList" >
-            <option  v-for="book in bookList" v-bind:value="book" :key="book"> {{book}}</option>
-        </select>
-        <span>Select Chapter </span>
-        <select v-model="selectedChapter"  >
-            <option  v-for="chapter in chapterList" v-bind:value="chapter" :key="chapter"> {{chapter}}</option>
-        </select>
-        <span>Free Text Search:</span>
-        <input v-model="freeSearchText" placeholder="Example - 'בראשית'" >
+    <span>Select Book </span>
+    <select v-model="selectedBook" @change="getChapterList" >
+        <option  v-for="book in bookList" v-bind:value="book" :key="book"> {{book}}</option>
+    </select>
+    <span>Select Chapter </span>
+    <select v-model="selectedChapter"  >
+        <option  v-for="chapter in chapterList" v-bind:value="chapter" :key="chapter"> {{chapter}}</option>
+    </select>
+    <span>Free Text Search:</span>
+    <input v-model="freeSearchText" placeholder="Example - 'בראשית'" >
 
-        <button @click="getTextFromPathOrSendToFreeTextSearch">get Text</button>
-        <p>{{requestedText.toString()}}</p>
+    <button @click="getTextFromPathOrSendToFreeTextSearch">get Text</button>
+    <base-card  >{{requestedText.toString()}}</base-card>
 
-    </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -257,7 +257,22 @@
            hebrewNumeral
            number
            }
-           }`).then(res => console.log(res));
+           }`).then(res => {
+               let i;
+                const tempRes: any[] = []
+                for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++) {
+                    console.log(res['data'].verseFreeTextSearch.content[i]);
+                    tempRes.push({
+                        fullHebrewText: res['data'].verseFreeTextSearch.content[i].fullHebrewText,
+                        hebrewNumeral: res['data'].verseFreeTextSearch.content[i].hebrewNumeral,
+                        number: res['data'].verseFreeTextSearch.content[i].number
+                    });
+                    //tempRes.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
+                    let j;
+                    for(j = 0; j < tempRes.length; j++)
+                        this.requestedText.push(tempRes[j]["fullHebrewText"]);
+                }
+            });
             }
 
 
@@ -292,10 +307,11 @@
         padding: 0rem;
         margin:  1rem auto;
     }
-    p{
-        line-height: 1.6;
-        word-spacing: 2px;
+    .base-card{
+
+
     }
+
 </style>
 
 //
