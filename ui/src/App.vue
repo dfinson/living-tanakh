@@ -15,18 +15,19 @@ import BaseCard from "./Components/BaseComponents/BaseCard.vue";
 import CategoryList from "@/Components/SearchComponents/CategoryList.vue";
 import FindVerseByPath from "@/Components/SearchComponents/FindVerseByPath.vue";
 import FormPage from "@/Components/SearchComponents/FormPage.vue";
+import Dashboard from "@/components/Dashboard.vue";
 
 @Component(
     {
         components:{
           BaseCard,
-        CategoryList,
-            FindVerseByPath,
-          FormPage
+          CategoryList,
+          FindVerseByPath,
+          FormPage,
+          Dashboard
         }
     }
 )
-  components: {Dashboard}
 export default class App extends Vue {
 
   searchString = ""

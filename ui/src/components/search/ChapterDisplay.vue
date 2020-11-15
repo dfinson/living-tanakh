@@ -16,6 +16,7 @@
     - Highlight relevant verse / search terms if chapter is being displayed after user double-clicks on a search result
     - Size adjustable text
     - Scrollable text reader
+    - Auto scroll to highlighted search result(?)
 
   Parents:
     - Dashboard
