@@ -17,6 +17,7 @@
   Children:
     - SearchController
     - ChapterDisplay
+    - AggregatedMediaDisplay (popup / modal)
 
   Parents:
     - App
