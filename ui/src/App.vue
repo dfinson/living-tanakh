@@ -1,38 +1,16 @@
 <template>
   <div id="app">
+    <Dashboard/>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import apifiClient from "@/api/apifiClient";
-import {Chapter} from "@/api/dto";
-import {PROPHETS} from "@/api/TANAKH";
-
-
-@Component
+import Dashboard from "@/components/Dashboard.vue";
+@Component({
+  components: {Dashboard}
+})
 export default class App extends Vue {
-
-  /*private chapter = new Chapter();
-  mounted(){
-    apifiClient.findChapterByUniquePath(PROPHETS.AMOS + ".2", `{
-                                            book{
-                                              id
-                                              hebrewName
-                                            }
-                                            hebrewNumeral
-                                            id
-                                            number
-                                            path
-                                            verses{
-                                              id
-                                              path
-                                              fullHebrewText
-                                              fullEnglishText
-                                            }
-                                          }`)
-    .then(res => this.chapter = res.data.findChapterByUniquePath)
-  }*/
 }
 </script>
 
