@@ -45,7 +45,7 @@ export const WRITINGS = {
     ESTHER: 'WRITINGS/Esther'
 }
 
-interface IDictionary {
+/*interface IDictionary {
     [index: string]: string;
 }
 
@@ -120,4 +120,4 @@ export function hebrewBooksInProphets(){
 export function hebrewBooksInWritings(){
     return Object.keys(WRITINGS).map(bookName => toHebrewBookName(bookName))
 }
-
+*/
