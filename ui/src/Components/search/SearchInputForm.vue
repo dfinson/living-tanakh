@@ -10,7 +10,7 @@
             <option  v-for="book in bookList" v-bind:value="book" :key="book" > {{book}}</option>
         </select>
         <select v-model="searchCriteria.chapter" @change="updateChapterSelection">
-            <option  v-for="chapter in chaptersList" v-bind:value="chapter" :key="chapter.number" > {{chapter.hebrewNumeral}}</option>
+            <option  v-for="chapter in chaptersList" v-bind:value="chapter.number" :key="chapter.number" > {{chapter.hebrewNumeral}}</option>
         </select>
         <span>Free Text Search:</span>
         <input v-model="searchCriteria.searchTerm" placeholder="Example - 'בראשית'" >

@@ -11,14 +11,6 @@ export class Book {
 }
 
 export class Chapter {
-    constructor(id?:number,path?:string,number?:number,book?:Book,verses?:Verse[],hebrewNumeral?:string) {
-        this.id = id;
-        this.path = path;
-        this.number = number;
-        this.book = book;
-        this.verses = verses;
-        this.hebrewNumeral = hebrewNumeral;
-    }
     id?: number;
     path?: string;
     number?: number;
@@ -62,7 +54,7 @@ export class SearchCriteria{
     searchTerm: string;
     category: string;
     book: string;
-    chapter: Chapter;
+    chapter: string;
 }
 
 export enum MediaType {

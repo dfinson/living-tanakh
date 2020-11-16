@@ -91,48 +91,18 @@ export default class SearchController extends Vue{
 
   }
 
+  public freeTextSearchWithPath(searchPath: string){
+    console.log("searching with path" + searchPath);
+    //the api call:
+    apifiClient.verseFreeTextSearch({
+      customArgs: {
+        validPathPrefixes:  [searchPath]
+      },
+      pageSize: 20,
+      pageNumber: 0,
+      searchTerm: this.searchCriteria.searchTerm
 
-  public freeTextSearch(): void{
-    let validSearchPath = ""
-    let defaultSearchPath: string[] = []
-      if(this.searchCriteria.category !== ""){
-        //a category has been selected to narrow down the free text search
-        if(this.searchCriteria.book !== ""){
-          //a book has been selected to further narrow down the free text search
-          if(this.searchCriteria.chapter.number !== 0){
-            //a chapter has been selected to further narrow down the free text search
-            validSearchPath = this.searchCriteria.book + "/" + this.searchCriteria.chapter.number;
-            console.log(validSearchPath);
-            console.log(this.searchCriteria.searchTerm);
-          }
-          else{
-            //book but no chapter
-            validSearchPath = this.searchCriteria.book;
-            console.log(validSearchPath);
-          }
-        }
-        else{
-          //category but no book
-          validSearchPath = this.searchCriteria.category;
-          console.log(validSearchPath);
-
-        }
-      }
-      else {
-        //no category - the free search will be over the entire tanach..
-         defaultSearchPath = ["TORAH", "PROPHETS", "WRITINGS"];
-      }
-      if(validSearchPath !== ""){
-        //there is a path to narrow down our text search
-        apifiClient.verseFreeTextSearch({
-          customArgs: {
-            validPathPrefixes:  [validSearchPath]
-          },
-          pageSize: 20,
-          pageNumber: 0,
-          searchTerm: this.searchCriteria.searchTerm
-
-        }, `{
+    }, `{
             content{
            chapter{
             path
@@ -141,21 +111,24 @@ export default class SearchController extends Vue{
            hebrewNumeral
 
           } }`).then(res => {
-            let i;
-            for(i = 0; i < 20; i++)
-              console.log(res['data'].verseFreeTextSearch.content[i].chapter.path);
-          });
-      }
-      else{ //no path
-        apifiClient.verseFreeTextSearch({
-          customArgs: {
-            validPathPrefixes: ["TORAH", "PROPHETS", "WRITINGS"]
-          },
-          pageSize: 20,
-          pageNumber: 0,
-          searchTerm: this.searchCriteria.searchTerm
+      let i;
+      for(i = 0; i < 20; i++)
+        console.log(res['data'].verseFreeTextSearch.content[i]);
+    });
+  }
 
-        }, `{
+  public freeTextSearchWithoutPath(){
+    console.log("Searching without path");
+    //the api call:
+    apifiClient.verseFreeTextSearch({
+      customArgs: {
+        validPathPrefixes: ["TORAH", "PROPHETS", "WRITINGS"]
+      },
+      pageSize: 20,
+      pageNumber: 0,
+      searchTerm: this.searchCriteria.searchTerm
+
+    }, `{
             content{
            chapter{
             path
@@ -163,51 +136,84 @@ export default class SearchController extends Vue{
            fullHebrewText
            hebrewNumeral
            }}`).then(res => {
-             let i
-          for(i = 0; i < 20; i++)
-            console.log(res['data'].verseFreeTextSearch.content[i].chapter.path);
-                }
-        );
-      }
+              let i
+              for(i = 0; i < 20; i++)
+                console.log(res['data'].verseFreeTextSearch.content[i]);
+            }
+    );
   }
 
-  public searchSorter(): void{
+  public freeTextSearchSorter(): void{
+    let searchPath = ""
+    if(this.searchCriteria.category !== "" && this.searchCriteria.category !== undefined)    //if there is a category selected:
+      searchPath = this.searchCriteria.category;
+
+    if(this.searchCriteria.book !== "" && this.searchCriteria.book !== undefined) // if there is a book selected
+      searchPath = this.searchCriteria.book;
+
+    if(this.searchCriteria.chapter !== "" && this.searchCriteria.chapter !== undefined) //if there is chapter selected
+      searchPath += "/" + this.searchCriteria.chapter;
+
+    if(searchPath === "") //there is no Path to narrow down the FreeTextSearch
+      this.freeTextSearchWithoutPath();
+
+    if(searchPath !== "") //there is a path to narrow down the freeTextSearch
+      this.freeTextSearchWithPath(searchPath);
+
+  }
+
+  public getChapterFromPathSearch(){
+    console.log("getting chapter from path");
+    //the api call:
+    apifiClient.findChapterByUniquePath(this.searchCriteria.book + "/" + this.searchCriteria.chapter.toString(), `{
+             hebrewNumeral
+    id
+    number
+    path
+    verses{
+      fullHebrewText
+      hebrewNumeral
+      number
+    }
+            }`).then(res => console.log(res));
+  }
+
+  public generalSearchSorter(): void{
     //if there is a search term, we'll call the free text search function - (which will also make use of the search path..)
-      if(this.searchCriteria.searchTerm !== ""){
-        this.freeTextSearch();
+      if(this.searchCriteria.searchTerm !== "" && this.searchCriteria.searchTerm !== undefined){
+        this.freeTextSearchSorter();
       }
 
       //if there's no search term, we can just search for a chapter based on the path..
       else{
-        if(this.searchCriteria.chapter.id !== 0 && this.searchCriteria.book !== "" && this.searchCriteria.category !== "")
-          //this.getChapterFromPath()
+        if(this.searchCriteria.chapter !== "" && this.searchCriteria.book !== "" && this.searchCriteria.category !== "")
+          this.getChapterFromPathSearch()
           return;
       }
   }
 
   //these functions get the data from the form and update the fields of the searchCriteria object accordingly...
   public updateCategorySelection(selectedCategory: string): void{
-    this.searchCriteria.category = "";
     this.searchCriteria.category = selectedCategory;
-    console.log(this.searchCriteria.category + " from controller");
+    //console.log(this.searchCriteria.category + " from controller");
 
   }
 
   public updateBookSelection(selectedBook: string){
     this.searchCriteria.book = selectedBook;
-    console.log(this.searchCriteria.book + " from controller");
+    //console.log(this.searchCriteria.book + " from controller");
     this.getChapterList();
   }
 
-  public updateChapterSelection(selectedChapter: Chapter){
+  public updateChapterSelection(selectedChapter: string){
     this.searchCriteria.chapter = selectedChapter;
-    console.log(this.searchCriteria.chapter.number + " from controller");
+    //console.log(this.searchCriteria.chapter + " from controller");
   }
 
   public updateSearchTermSelection(searchTerm: string){
     this.searchCriteria.searchTerm = searchTerm;
-    console.log(this.searchCriteria.searchTerm + " from controller")
-    this.searchSorter();
+   // console.log(this.searchCriteria.searchTerm + " from controller")
+    this.generalSearchSorter();
   }
 
 
