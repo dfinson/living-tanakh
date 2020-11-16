@@ -10,12 +10,11 @@ export const TORAH = {
 
 export const PROPHETS = {
     JOSHUA: 'PROPHETS/Joshua',
-    JUDGES_I: 'PROPHETS/Judges 1',
-    JUDGES_II: 'PROPHETS/Judges 2',
-    SAMUEL_I: 'PROPHETS/Samuel 1',
-    SAMUEL_II: 'PROPHETS/Samuel 2',
-    KINGS_I: 'PROPHETS/Kings 1',
-    KINGS_II: 'PROPHETS/Kings 2',
+    JUDGES_I: 'PROPHETS/Judges',
+    SAMUEL_I: 'PROPHETS/Samuel I',
+    SAMUEL_II: 'PROPHETS/Samuel II',
+    KINGS_I: 'PROPHETS/Kings I',
+    KINGS_II: 'PROPHETS/Kings II',
     ISAIAH: 'PROPHETS/Isaiah',
     JEREMIAH: 'PROPHETS/Jeremiah',
     EZEKIEL: 'PROPHETS/Ezekiel',
