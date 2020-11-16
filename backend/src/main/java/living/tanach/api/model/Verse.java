@@ -10,6 +10,7 @@ import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Normalizer;
 import org.hibernate.search.annotations.SortableField;
 
 import javax.persistence.*;

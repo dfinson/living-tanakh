@@ -82,8 +82,9 @@ public class VerseFreeTextSearchEngine implements ApiHooks<Verse> {
     private Query query(FreeTextSearchPageRequest request, QueryBuilder queryBuilder) {
         val searchableHebrewText = queryBuilder
                 .keyword()
+                .wildcard()
                 .onField("searchableHebrewText")
-                .matching(request.getSearchTerm())
+                .matching("*" + request.getSearchTerm() + "*")
                 .createQuery();
         val baseQuery = queryBuilder.bool().must(searchableHebrewText);
         addPathFilters(request, queryBuilder, baseQuery);
