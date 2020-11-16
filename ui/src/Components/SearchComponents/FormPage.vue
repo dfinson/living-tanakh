@@ -93,9 +93,9 @@
 
 
             }`).then( res =>{
-                let i;
-                for(i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++)
-                   this.chapterList.push(res['data'].findBookByUniquePath.chapters[i].number);
+                    let i;
+                    for(i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++)
+                        this.chapterList.push(res['data'].findBookByUniquePath.chapters[i].number);
 
                 }
 
@@ -201,32 +201,25 @@
                     customArgs: {
                         validPathPrefixes: ["TORAH","PROPHETS","WRITINGS"]
                     },
-                    fetchAll: true,
                     pageSize: 20,
                     pageNumber: 0,
                     searchTerm: this.freeSearchText
 
                 }, `{
            content{
+           chapter{
+            path
+           }
            fullHebrewText
            hebrewNumeral
+           id
            number
+
            }
            }`).then(res => {
-                    let i;
-                    const tempRes: any[] = []
+               let i
                     for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++) {
-                        console.log(res['data'].verseFreeTextSearch.content[i]);
-                        tempRes.push({
-                            fullHebrewText: res['data'].verseFreeTextSearch.content[i].fullHebrewText,
-                            hebrewNumeral: res['data'].verseFreeTextSearch.content[i].hebrewNumeral,
-                            number: res['data'].verseFreeTextSearch.content[i].number
-                        });
-                        //tempRes.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
-                        let j;
-                        for(j = 0; j < tempRes.length; j++)
-                            this.requestedText.push(tempRes[j]["fullHebrewText"]);
-                    }
+                        console.log(res['data'].verseFreeTextSearch.content[i].fullHebrewText);}
            });
                     /*for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++)
                         tempRes.push({
@@ -246,32 +239,25 @@
                     customArgs: {
                         validPathPrefixes: [validSearchPath]
                     },
-                    fetchAll: true,
                     pageSize: 20,
                     pageNumber: 0,
                     searchTerm: this.freeSearchText
 
                 }, `{
-           content{
-            fullHebrewText
+             content{
+           chapter{
+            path
+           }
+           fullHebrewText
            hebrewNumeral
+           id
            number
+
            }
            }`).then(res => {
                let i;
-                const tempRes: any[] = []
                 for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++) {
-                    console.log(res['data'].verseFreeTextSearch.content[i]);
-                    tempRes.push({
-                        fullHebrewText: res['data'].verseFreeTextSearch.content[i].fullHebrewText,
-                        hebrewNumeral: res['data'].verseFreeTextSearch.content[i].hebrewNumeral,
-                        number: res['data'].verseFreeTextSearch.content[i].number
-                    });
-                    //tempRes.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
-                    let j;
-                    for(j = 0; j < tempRes.length; j++)
-                        this.requestedText.push(tempRes[j]["fullHebrewText"]);
-                }
+                    console.log(res['data'].verseFreeTextSearch.content[i].fullHebrewText);}
             });
             }
 

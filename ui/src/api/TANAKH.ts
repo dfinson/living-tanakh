@@ -50,7 +50,7 @@ export const WRITINGS = {
 interface YDictionary {
     [index: string]: string;
 }
- const HEBREW_NAMES_DICT = {
+ export const HEBREW_NAMES_DICT = {
     'TORAH/Genesis': 'בראשית',
     'TORAH/Exodus': 'שמות',
     'TORAH/Leviticus': 'ויקרא',
@@ -91,7 +91,7 @@ interface YDictionary {
     'WRITINGS/Lamentations': 'איכה',
     'WRITINGS/Ecclesiastes': 'קוהלת',
     'WRITINGS/Esther': 'אסתר'
-} as YDictionary;
+}as YDictionary
 
 export function stripPrefix(pathWithPrefix: string): string{
     return pathWithPrefix.split("/")[1];
@@ -107,7 +107,8 @@ export function toEnglishBookName(hebrewName: string): string{
 }
 
 export function toHebrewBookName(path: string): string{
-    return HEBREW_NAMES_DICT[path];
+   return HEBREW_NAMES_DICT[path];
+
 }
 
 export function hebrewBooksInTorah(){
