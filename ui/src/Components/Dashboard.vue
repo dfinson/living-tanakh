@@ -1,6 +1,14 @@
 <template>
   <div>
-    <search-controller ></search-controller>
+    <h1>The Ma'ayan Tanach Project</h1>
+    <search-controller class="split right"
+            @display-selected-chapter="sendChapterToChapterDisplay($event)"
+            @stop-chapter-display="stopDisplay($event)"
+    ></search-controller>
+    <chapter-display class="split left"
+            :selected-chapter="this.selectedChapter"
+            :display-results="this.displayResults"
+    ></chapter-display>
   </div>
 </template>
 
@@ -36,13 +44,29 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-import {SearchCriteria} from "@/api/dto";
+import {SearchCriteria, Verse} from "@/api/dto";
 
 @Component({
-  components: {ChapterDisplay, SearchController}
+  components: {
+    ChapterDisplay,
+    SearchController
+  }
 })
 export default class Dashboard extends Vue{
   searchCriteria: SearchCriteria
+  public selectedChapter = [new Verse()]
+  public displayResults = false
+
+  public sendChapterToChapterDisplay(selectedChapter: Verse[]): void{
+    this.selectedChapter = selectedChapter;
+    this.displayResults = true;
+  }
+
+  public stopDisplay(displayChapter: boolean){
+    this.displayResults = displayChapter;
+  }
+
+
 
 }
 
