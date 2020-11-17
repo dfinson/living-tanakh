@@ -1,24 +1,24 @@
 <template>
-    <div>
+<div>
         <span>Select Category </span>
         <select v-model="selectedCategory" @change="getBookList">
             <option  v-for="category in categoryList" v-bind:value="category" :key="category" > {{category}}</option>
         </select>
-        <span>Select Book </span>
-        <select v-model="selectedBook" @change="getChapterList" >
-            <option  v-for="book in bookList" v-bind:value="book" :key="book"> {{book}}</option>
-        </select>
-        <span>Select Chapter </span>
-        <select v-model="selectedChapter"  >
-            <option  v-for="chapter in chapterList" v-bind:value="chapter" :key="chapter"> {{chapter}}</option>
-        </select>
-        <span>Free Text Search:</span>
-        <input v-model="freeSearchText" placeholder="Example - 'בראשית'" >
+    <span>Select Book </span>
+    <select v-model="selectedBook" @change="getChapterList" >
+        <option  v-for="book in bookList" v-bind:value="book" :key="book"> {{book}}</option>
+    </select>
+    <span>Select Chapter </span>
+    <select v-model="selectedChapter"  >
+        <option  v-for="chapter in chapterList" v-bind:value="chapter" :key="chapter"> {{chapter}}</option>
+    </select>
+    <span>Free Text Search:</span>
+    <input v-model="freeSearchText" placeholder="Example - 'בראשית'" >
 
-        <button @click="getTextFromPathOrSendToFreeTextSearch">get Text</button>
-        <p>{{requestedText.toString()}}</p>
+    <button @click="getTextFromPathOrSendToFreeTextSearch">get Text</button>
+    <base-card  >{{requestedText.toString()}}</base-card>
 
-    </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -93,9 +93,9 @@
 
 
             }`).then( res =>{
-                let i;
-                for(i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++)
-                   this.chapterList.push(res['data'].findBookByUniquePath.chapters[i].number);
+                    let i;
+                    for(i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++)
+                        this.chapterList.push(res['data'].findBookByUniquePath.chapters[i].number);
 
                 }
 
@@ -201,32 +201,25 @@
                     customArgs: {
                         validPathPrefixes: ["TORAH","PROPHETS","WRITINGS"]
                     },
-                    fetchAll: true,
                     pageSize: 20,
                     pageNumber: 0,
                     searchTerm: this.freeSearchText
 
                 }, `{
            content{
+           chapter{
+            path
+           }
            fullHebrewText
            hebrewNumeral
+           id
            number
+
            }
            }`).then(res => {
-                    let i;
-                    const tempRes: any[] = []
+               let i
                     for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++) {
-                        console.log(res['data'].verseFreeTextSearch.content[i]);
-                        tempRes.push({
-                            fullHebrewText: res['data'].verseFreeTextSearch.content[i].fullHebrewText,
-                            hebrewNumeral: res['data'].verseFreeTextSearch.content[i].hebrewNumeral,
-                            number: res['data'].verseFreeTextSearch.content[i].number
-                        });
-                        //tempRes.sort((a, b) => parseFloat(a.number) - parseFloat(b.number));
-                        let j;
-                        for(j = 0; j < tempRes.length; j++)
-                            this.requestedText.push(tempRes[j]["fullHebrewText"]);
-                    }
+                        console.log(res['data'].verseFreeTextSearch.content[i].fullHebrewText);}
            });
                     /*for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++)
                         tempRes.push({
@@ -246,18 +239,26 @@
                     customArgs: {
                         validPathPrefixes: [validSearchPath]
                     },
-                    fetchAll: true,
                     pageSize: 20,
                     pageNumber: 0,
                     searchTerm: this.freeSearchText
 
                 }, `{
-           content{
-            fullHebrewText
-           hebrewNumeral
-           number
+             content{
+           chapter{
+            path
            }
-           }`).then(res => console.log(res));
+           fullHebrewText
+           hebrewNumeral
+           id
+           number
+
+           }
+           }`).then(res => {
+               let i;
+                for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++) {
+                    console.log(res['data'].verseFreeTextSearch.content[i].fullHebrewText);}
+            });
             }
 
 
@@ -292,10 +293,11 @@
         padding: 0rem;
         margin:  1rem auto;
     }
-    p{
-        line-height: 1.6;
-        word-spacing: 2px;
+    .base-card{
+
+
     }
+
 </style>
 
 //

@@ -54,7 +54,7 @@ export class SearchCriteria{
     searchTerm: string;
     category: string;
     book: string;
-    chapter: number;
+    chapter: string;
 }
 
 export enum MediaType {

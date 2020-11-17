@@ -12,33 +12,19 @@ import apifiClient from "./api/apifiClient.js";
 import {Chapter, Book, Verse} from "./api/dto.js";
 import {PROPHETS, TORAH, WRITINGS} from "./api/TANAKH.js";
 import BaseCard from "./Components/BaseComponents/BaseCard.vue";
-import CategoryList from "@/Components/SearchComponents/CategoryList.vue";
-import FindVerseByPath from "@/Components/SearchComponents/FindVerseByPath.vue";
 import FormPage from "@/Components/SearchComponents/FormPage.vue";
-import Dashboard from "@/components/Dashboard.vue";
+import Dashboard from "@/Components/Dashboard.vue";
 
 @Component(
     {
         components:{
           BaseCard,
-          CategoryList,
-          FindVerseByPath,
           FormPage,
           Dashboard
         }
     }
 )
 export default class App extends Vue {
-
-  searchString = ""
-  verse = ""
-  books = ["TORAH","PROPHETS","WRITINGS"]
-  selectedBook =""
-
-
-
-
-
 
 
 }
@@ -50,7 +36,7 @@ export default class App extends Vue {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #050a50;
   margin-top: 60px;
 }
 header {
@@ -83,7 +69,7 @@ button:active {
 
 .flat {
   background-color: transparent;
-  color: #3a0061;
+  color: #064661;
   border: none;
 }
 
