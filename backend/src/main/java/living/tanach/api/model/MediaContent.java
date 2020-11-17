@@ -25,6 +25,10 @@ public class MediaContent {
     @Column(columnDefinition = "TEXT")
     private String key;
 
+    public String getMimeType(){
+        return mediaType.getMimeType();
+    }
+
     @Transient
     @Getter(onMethod_ = @GraphQLQuery)
     private String signedDownloadUrl;

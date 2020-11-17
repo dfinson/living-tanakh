@@ -20,5 +20,5 @@ sefaria:
 
 aws:
   s3:
-    bucket-name: s3-file-storage-foundationstone
+    bucket-name: maayan-bucket
 
