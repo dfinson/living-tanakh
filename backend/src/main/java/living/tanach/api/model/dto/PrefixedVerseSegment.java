@@ -1,13 +1,11 @@
 package living.tanach.api.model.dto;
 
 import living.tanach.api.model.entities.MediaTag;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @RequiredArgsConstructor
 public class PrefixedVerseSegment {
     @NonNull
@@ -18,5 +16,9 @@ public class PrefixedVerseSegment {
 
     public int nextStartFrom(int startOffset){
         return startOffset + prefix.length() + highlightedKeyword.length();
+    }
+
+    public int totalLength(){
+        return prefix.length() + highlightedKeyword.length();
     }
 }

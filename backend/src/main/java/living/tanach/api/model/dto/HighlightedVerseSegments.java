@@ -1,10 +1,12 @@
 package living.tanach.api.model.dto;
 
+import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
 import lombok.Data;
 import lombok.val;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static living.tanach.api.utils.StaticUtils.isHebrewCharacterOrWhitespace;
@@ -14,13 +16,19 @@ public class HighlightedVerseSegments {
 
     public HighlightedVerseSegments(Verse verse){
         this.segments = parsePrefixedSegmentsByTags(verse);
+        var cumulativeSegmentsLen = segments
+                .stream()
+                .map(PrefixedVerseSegment::totalLength)
+                .reduce(Integer::sum)
+                .orElse(0);
+        this.finalSuffix = verse.getFullHebrewText().substring(cumulativeSegmentsLen);
     }
 
     public HighlightedVerseSegments(Verse verse, String highlightedKeyword){
-        this.segments = parsePrefixedSegmentsBySearchTerm(verse, highlightedKeyword);
+        this.segments = parsePrefixedSegmentsByKeyword(verse, highlightedKeyword);
     }
 
-    private List<PrefixedVerseSegment> parsePrefixedSegmentsBySearchTerm(Verse verse, String highlightedKeyword) {
+    private List<PrefixedVerseSegment> parsePrefixedSegmentsByKeyword(Verse verse, String highlightedKeyword) {
         val fullHebrewText = verse.getFullHebrewText();
         int verseIndex = 0;
         var segmentsList = new ArrayList<PrefixedVerseSegment>();
@@ -76,12 +84,44 @@ public class HighlightedVerseSegments {
     }
 
     private List<PrefixedVerseSegment> parsePrefixedSegmentsByTags(Verse verse) {
+
         val tags = verse.getMediaTags();
         val segments = new ArrayList<PrefixedVerseSegment>();
+
+        if(tags.isEmpty())
+            segments.add(new PrefixedVerseSegment(verse.getFullHebrewText(), ""));
+
         tags.forEach(tag -> {
-            
+            val tagSegments = parsePrefixedSegmentsByKeyword(verse, tag.getKey());
+            tagSegments.forEach(segment -> segment.setTag(tag));
+            segments.addAll(tagSegments);
         });
+
+        mergeSegmentPrefixes(segments, verse.getFullHebrewText());
         return segments;
+    }
+
+    private void mergeSegmentPrefixes(List<PrefixedVerseSegment> segments, String fullText){
+        if(segments.size() == 1) return;
+        val prefixToSegmentMap = segments
+                .stream()
+                .collect(Collectors.toMap(PrefixedVerseSegment::getPrefix, Function.identity()));
+        var currentPrefix = new StringBuilder();
+        for(char c : fullText.toCharArray()){
+            currentPrefix.append(c);
+            var prefixKey = currentPrefix.toString();
+            if(prefixToSegmentMap.containsKey(prefixKey)){
+                segments.forEach(segment -> {
+                    var segmentPrefix = segment.getPrefix();
+                    if(!segmentPrefix.equals(prefixKey)){
+                        var keyword = prefixToSegmentMap.get(prefixKey).getHighlightedKeyword();
+                        var updatedSegmentPrefix = segmentPrefix.replaceFirst(prefixKey + keyword, "");
+                        segment.setPrefix(updatedSegmentPrefix);
+                    }
+                });
+                currentPrefix = new StringBuilder();
+            }
+        }
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -108,5 +148,5 @@ public class HighlightedVerseSegments {
     }
 
     private List<PrefixedVerseSegment> segments;
-    private String finalSuffix;
+    private String finalSuffix = "";
 }
