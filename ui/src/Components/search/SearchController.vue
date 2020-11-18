@@ -47,7 +47,7 @@
 
 */
 
-import { Component, Vue,Prop } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
 import SearchInputForm from "@/Components/search/SearchInputForm.vue";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
@@ -55,6 +55,7 @@ import {TORAH} from "@/api/TANAKH";
 import apifiClient from "@/api/apifiClient";
 import SearchResultsList from "@/Components/search/SearchResultsList.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
+//import VerseSearchResult from "../../../../backend/src/main/java/living/tanach/api/dto";
 
 
 @Component({
@@ -74,7 +75,7 @@ export default class SearchController extends Vue{
   public searchResults: Verse[] = [] //will contain the results of our path search - I.e a chapter of verses...
   public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
   public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
-
+  public getChapterSearchResults = new Chapter();
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
   public getChapterList(): void{
@@ -121,6 +122,9 @@ export default class SearchController extends Vue{
 
     }, `{
               content{
+              chapter{
+              path
+              }
            fullHebrewText
            hebrewNumeral
            id
@@ -129,9 +133,18 @@ export default class SearchController extends Vue{
           } }`).then(res => {
       if (res['data'].verseFreeTextSearch.content.length > 0) {
         let i;
+
         for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
           //console.log(res['data'].verseFreeTextSearch.content[i]);
-          this.searchResults.push(res['data'].verseFreeTextSearch.content[i]) ;      }
+          const verse = new Verse();
+          verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+          verse.number = res['data'].verseFreeTextSearch.content[i].number;
+          verse.path = res['data'].verseFreeTextSearch.content[i].path;
+          verse.id = res['data'].verseFreeTextSearch.content[i].id;
+          verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText
+          verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
+          this.searchResults.push(verse);
+        }
           console.log(this.searchResults);
 
       }
@@ -153,6 +166,9 @@ export default class SearchController extends Vue{
 
     }, `{
             content{
+            chapter{
+            path
+            }
            fullHebrewText
            hebrewNumeral
            id
@@ -163,7 +179,15 @@ export default class SearchController extends Vue{
                 let i
                 for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
                   //console.log(res['data'].verseFreeTextSearch.content[i]);
-                this.searchResults.push(res['data'].verseFreeTextSearch.content[i]);}
+                  const verse = new Verse();
+                  verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+                  verse.number = res['data'].verseFreeTextSearch.content[i].number;
+                  verse.path = res['data'].verseFreeTextSearch.content[i].path;
+                  verse.id = res['data'].verseFreeTextSearch.content[i].id;
+                  verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
+                  verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
+                  this.searchResults.push(verse);
+                }
                 //console.log(this.searchResults);
               }
               else alert("No results have been found. Please enter a different search term");
@@ -175,7 +199,7 @@ export default class SearchController extends Vue{
   public freeTextSearchSorter(): void{
 
     let searchPath = ""
-    if(this.searchCriteria.category !== "" && this.searchCriteria.category !== undefined)    //if there is a category selected:
+    if(this.searchCriteria.category !== ""  && this.searchCriteria.category !== undefined)    //if there is a category selected:
       searchPath = this.searchCriteria.category;
 
     if(this.searchCriteria.book !== "" && this.searchCriteria.book !== undefined) // if there is a book selected
@@ -183,6 +207,10 @@ export default class SearchController extends Vue{
 
     if(this.searchCriteria.chapter !== "" && this.searchCriteria.chapter !== undefined) //if there is chapter selected
       searchPath += "/" + this.searchCriteria.chapter;
+
+    //if(this.searchCriteria.category === "ALL")
+
+
 
     if(searchPath === "") //there is no Path to narrow down the FreeTextSearch
       this.freeTextSearchWithoutPath();
@@ -206,18 +234,44 @@ export default class SearchController extends Vue{
       hebrewNumeral
       number
       path
+      id
+      searchableHebrewText
+
     }
             }`).then(res => {
-             if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
+           //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
                console.log(res)
+              const ch = new Chapter();
+              ch.id = res['data'].findChapterByUniquePath.id;
+              ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
+              ch.number = res['data'].findChapterByUniquePath.number;
+              ch.path = res['data'].findChapterByUniquePath.path;
+              ch.verses = [];
                let i;
-               for(i = 0; i < res['data'].findChapterByUniquePath.verses.length; i++ ){
-                 this.searchResults.push(res['data'].findChapterByUniquePath.verses[i]);
-                 //console.log(this.searchResults[i]);
+               for(i = 0; i < res['data'].findChapterByUniquePath.verses.length; i++ ) {
+                 ch.verses.push(res['data'].findChapterByUniquePath.verses[i]);
                }
-             }
-             this.$emit('display-selected-chapter',this.searchResults);
-            });
+                /* const vr = new Verse();
+                 vr.id = res['data'].findChapterByUniquePath.verses[i].id;
+                 vr.hebrewNumeral = res['data'].findChapterByUniquePath.verses[i].hebrewNumeral;
+                 vr.number = res['data'].findChapterByUniquePath.verses[i].number;
+                 vr.path = res['data'].findChapterByUniquePath.verses[i].path;
+                 vr.fullHebrewText = res['data'].findChapterByUniquePath.verses[i].fullHebrewText;
+                 vr.searchableHebrewText = res['data'].findChapterByUniquePath.verses[i].searchableHebrewText;
+               //  console.log(vr);
+                 ch.verses.push(vr);
+                // console.log(ch.verses.length);
+                 this.getChapterSearchResults = ch; */
+               //  console.log(this.getChapterSearchResults);
+
+               //ch.verses.sort((a, b) => a.number - b.number);
+               //console.log(ch.verses);
+              // console.log(ch);
+            // }
+      this.getChapterSearchResults = ch;
+      this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
+      this.$emit('display-selected-chapter',this.getChapterSearchResults);}
+            );
   }
 
   public generalSearchSorter(): void{
