@@ -50,9 +50,9 @@ a {
   text-decoration: none;
   padding: 0.75rem 1.5rem;
   font: inherit;
-  background-color: #3a0061;
+  background-color: #0c2e61;
   border: 1px solid #3a0061;
-  color: white;
+  color: #e8fffc;
   cursor: pointer;
   border-radius: 30px;
   margin-right: 0.5rem;
@@ -63,7 +63,7 @@ a:hover,
 a:active,
 button:hover,
 button:active {
-  background-color: #270041;
+  background-color: #170341;
   border-color: #270041;
 }
 
@@ -76,7 +76,7 @@ button:active {
 .outline {
   background-color: transparent;
   border-color: #270041;
-  color: #270041;
+  color: #410310;
 }
 
 .flat:hover,

@@ -44,7 +44,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-import {SearchCriteria, Verse} from "@/api/dto";
+import {Chapter, SearchCriteria, Verse} from "@/api/dto";
 
 @Component({
   components: {
@@ -54,10 +54,10 @@ import {SearchCriteria, Verse} from "@/api/dto";
 })
 export default class Dashboard extends Vue{
   searchCriteria: SearchCriteria
-  public selectedChapter = [new Verse()]
+  public selectedChapter = new Chapter();
   public displayResults = false
 
-  public sendChapterToChapterDisplay(selectedChapter: Verse[]): void{
+  public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
     this.displayResults = true;
   }

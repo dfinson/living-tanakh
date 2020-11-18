@@ -4,17 +4,14 @@
         <span>Select Category </span>
         <select v-model="searchCriteria.category" @change="updateCategorySelection">
             <option  v-for="category in categories" v-bind:value="category" :key="category" > {{category}}</option>
-            <option v-bind:value="''"></option>
         </select>
         <span>Select Book </span>
         <select v-model="searchCriteria.book" @change="updateBookSelection">
             <option  v-for="book in bookList" v-bind:value="book" :key="book" > {{book}}</option>
-            <option v-bind:value="''"></option>
         </select>
         <span>Select Chapter </span>
         <select v-model="searchCriteria.chapter" @change="updateChapterSelection">
             <option  v-for="chapter in chaptersList" v-bind:value="chapter.number" :key="chapter.number" > {{chapter.hebrewNumeral}}</option>
-            <option v-bind:value="''"></option>
         </select>
         <span> Free Text Search:</span>
         <input v-model="searchCriteria.searchTerm" placeholder="Example - 'בראשית'" >
@@ -48,7 +45,7 @@ export default class SearchInputForm extends Vue{
 
     public updateCategorySelection(): void{  // update to the category selected by the user, and send it up to the controller...
         this.$emit('update-category-selection',this.searchCriteria.category);
-        this.getBookList();
+            this.getBookList();
 
     }
 
@@ -71,7 +68,8 @@ export default class SearchInputForm extends Vue{
     }
 
     public getBookList(): void{
-        this.bookList = []
+        this.bookList = [];
+        this.searchCriteria.chapter = "";
         const tempList: string[] = []
         switch (this.searchCriteria.category) {
             case "TORAH":

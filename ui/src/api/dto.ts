@@ -11,24 +11,24 @@ export class Book {
 }
 
 export class Chapter {
-    id?: number;
-    path?: string;
-    number?: number;
-    book?: Book;
-    verses?: Verse[];
-    hebrewNumeral?: string;
+    id: number;
+    path: string;
+    number: number;
+    book: Book;
+    verses: Verse[];
+    hebrewNumeral: string;
 }
 
 export class Verse {
-    id?: number;
-    path?: string;
-    number?: number;
+    id: number;
+    path: string;
+    number: number;
     chapter?: Chapter;
     mediaTags?: MediaTag[];
-    fullHebrewText?: string;
+    fullHebrewText: string;
     fullEnglishText?: string;
-    searchableHebrewText?: string;
-    hebrewNumeral?: string;
+    searchableHebrewText: string;
+    hebrewNumeral: string;
 }
 
 export class MediaTag {
