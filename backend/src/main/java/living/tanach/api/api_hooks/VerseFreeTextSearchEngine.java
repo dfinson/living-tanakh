@@ -4,8 +4,8 @@ import dev.sanda.apifi.service.ApiHooks;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.dto.VerseSearchResult;
-import living.tanach.api.model.Verse;
+import living.tanach.api.model.dto.HighlightedVerseSegments;
+import living.tanach.api.model.entities.Verse;
 import lombok.val;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
@@ -21,9 +21,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static living.tanach.api.utils.StaticUtils.*;
 
 @Service
 public class VerseFreeTextSearchEngine implements ApiHooks<Verse> {
@@ -43,16 +40,12 @@ public class VerseFreeTextSearchEngine implements ApiHooks<Verse> {
         response.setPageNumber(request.getPageNumber());
         response.setTotalItemsCount((long) totalHits);
         response.setTotalPagesCount((long) Math.ceil((double) totalHits / request.getPageSize()));
-        response.setCustomValues(generateVerseSearchResults(results, request.getSearchTerm()));
+        setHighlightedVerseSegments(results, request.getSearchTerm());
         return response;
     }
 
-    private Map<String, List<VerseSearchResult>> generateVerseSearchResults(List<Verse> results, String searchTerm) {
-        List<VerseSearchResult> verseSearchResults = results
-                .stream()
-                .map(verse -> new VerseSearchResult(verse, searchTerm))
-                .collect(Collectors.toList());
-        return new HashMap<>(){{put("verseSearchResults", verseSearchResults);}};
+    private void setHighlightedVerseSegments(List<Verse> results, String searchTerm) {
+        results.forEach(verse -> verse.setHighlightedVerseSegments(new HighlightedVerseSegments(verse, searchTerm)));
     }
 
     private FullTextQuery fullTextQuery(Query query, Sort sort, FullTextEntityManager textEntityManager, FreeTextSearchPageRequest request) {
@@ -80,15 +73,21 @@ public class VerseFreeTextSearchEngine implements ApiHooks<Verse> {
         return sort;
     }
     private Query query(FreeTextSearchPageRequest request, QueryBuilder queryBuilder) {
-        val searchableHebrewText = queryBuilder
+        val keywordSearch = queryBuilder
                 .keyword()
                 .wildcard()
                 .onField("searchableHebrewText")
                 .matching("*" + request.getSearchTerm() + "*")
                 .createQuery();
-        val baseQuery = queryBuilder.bool().must(searchableHebrewText);
-        addPathFilters(request, queryBuilder, baseQuery);
-        return baseQuery.createQuery();
+        val phraseSearch = queryBuilder
+                .phrase()
+                .onField("searchableHebrewText")
+                .sentence("*" + request.getSearchTerm() + "*")
+                .createQuery();
+        val matches = queryBuilder.bool().should(keywordSearch).should(phraseSearch).createQuery();
+        val isHit = queryBuilder.bool().must(matches);
+        addPathFilters(request, queryBuilder, isHit);
+        return isHit.createQuery();
     }
 
     private void addPathFilters(FreeTextSearchPageRequest request, QueryBuilder queryBuilder, MustJunction baseQuery) {

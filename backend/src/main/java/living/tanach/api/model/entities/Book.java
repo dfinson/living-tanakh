@@ -1,4 +1,4 @@
-package living.tanach.api.model;
+package living.tanach.api.model.entities;
 
 
 import dev.sanda.apifi.annotations.ApiFindByUnique;

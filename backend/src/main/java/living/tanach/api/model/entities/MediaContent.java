@@ -1,4 +1,4 @@
-package living.tanach.api.model;
+package living.tanach.api.model.entities;
 
 import io.leangen.graphql.annotations.GraphQLQuery;
 import living.tanach.api.model.contstants.MediaType;

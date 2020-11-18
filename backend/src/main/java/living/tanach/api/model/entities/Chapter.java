@@ -1,14 +1,10 @@
-package living.tanach.api.model;
+package living.tanach.api.model.entities;
 
 import dev.sanda.apifi.annotations.ApiFindByUnique;
-import dev.sanda.apifi.annotations.WithCRUDEndpoints;
-import dev.sanda.apifi.generator.entity.CRUDEndpoints;
-import io.leangen.graphql.annotations.GraphQLQuery;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 
@@ -16,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static dev.sanda.apifi.generator.entity.CRUDEndpoints.GET_BY_ID;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static living.tanach.api.utils.StaticUtils.toHebrewNumeral;

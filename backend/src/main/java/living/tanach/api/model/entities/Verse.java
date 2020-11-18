@@ -1,16 +1,18 @@
-package living.tanach.api.model;
+package living.tanach.api.model.entities;
 
 import dev.sanda.apifi.annotations.ApiFindByUnique;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithApiFreeTextSearchByFields;
+import io.leangen.graphql.annotations.GraphQLQuery;
 import living.tanach.api.api_hooks.MediaTagsOfVerseApiHooks;
+import living.tanach.api.model.dto.HighlightedVerseSegments;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.Normalizer;
 import org.hibernate.search.annotations.SortableField;
 
 import javax.persistence.*;
@@ -21,8 +23,8 @@ import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static living.tanach.api.utils.StaticUtils.toHebrewNumeral;
+import static living.tanach.api.utils.StaticUtils.toHumanReadableHebrewPath;
 import static org.hibernate.annotations.FetchMode.JOIN;
-import static org.hibernate.search.annotations.Index.NO;
 
 @Data
 @Entity
@@ -65,4 +67,12 @@ public class Verse {
     public String getHebrewNumeral(){
         return toHebrewNumeral(this.number);
     }
+
+    public String getHumanReadablePath(){
+        return toHumanReadableHebrewPath(path);
+    }
+
+    @Transient
+    @Getter(onMethod_ = @GraphQLQuery)
+    private HighlightedVerseSegments highlightedVerseSegments;
 }
