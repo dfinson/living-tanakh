@@ -1,4 +1,4 @@
-package living.tanach.api.model;
+package living.tanach.api.model.entities;
 
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import living.tanach.api.api_hooks.LinkedMediaContentOfTagApiHooks;
@@ -24,7 +24,7 @@ public class MediaTag {
     @GeneratedValue
     private Long id;
     @Column(columnDefinition = "TEXT")
-    private String title;
+    private String key;
     @Column(columnDefinition = "TEXT")
     private String description;
     @ManyToMany

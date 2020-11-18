@@ -1,12 +1,14 @@
 <template>
   <div>
-
   </div>
 </template>
 
-<script>
-export default {
-  name: "SearchResult"
+<script lang="ts">
+import {Component, Vue} from "vue-property-decorator";
+
+@Component
+export default class SearchResult extends Vue{
+  private results;
 }
 </script>
 

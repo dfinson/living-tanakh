@@ -10,12 +10,11 @@ public class StaticUtils {
     public static String toHebrewNumeral(int num) {
         if(num <= 0)
             throw new IllegalArgumentException();
-        StringBuilder ret = new StringBuilder("ת".repeat(num / 400));
-        int index;
+        StringBuilder hebrewNumeralBuilder = new StringBuilder("ת".repeat(num / 400));
         num %= 400;
         if(num >= 100)
         {
-            ret.append("קרש".charAt(num / 100 - 1));
+            hebrewNumeralBuilder.append("קרש".charAt(num / 100 - 1));
             num %= 100;
         }
         boolean wasGreaterThan10 = num > 10;
@@ -23,25 +22,24 @@ public class StaticUtils {
         {
             // Avoid letter combinations from the Tetragrammaton
             case 16:
-                ret.append("ט''ז");
+                hebrewNumeralBuilder.append("ט''ז");
                 break;
             case 15:
-                ret.append("ט''ו");
+                hebrewNumeralBuilder.append("ט''ו");
                 break;
             default:
-                if (num >= 10)
-                {
-                    ret.append("יכלמנסעפצ".charAt(num / 10 - 1));
+                if (num >= 10) {
+                    hebrewNumeralBuilder.append("יכלמנסעפצ".charAt(num / 10 - 1));
                     num %= 10;
                 }
                 if(num > 0) {
                     if (wasGreaterThan10)
-                        ret.append("''");
-                    ret.append ( "אבגדהוזחט".charAt(num - 1));
+                        hebrewNumeralBuilder.append("''");
+                    hebrewNumeralBuilder.append ( "אבגדהוזחט".charAt(num - 1));
                 }
                 break;
         }
-        return ret.toString();
+        return hebrewNumeralBuilder.toString();
     }
     public static <T> BinaryOperator<List<T>> defaultMergeFunction()  {
         return (u, v) -> {

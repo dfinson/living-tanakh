@@ -129,7 +129,7 @@
                 <configuration>
                     <jsonLibrary>jackson2</jsonLibrary>
                     <classes>
-                        <class>living.tanach.api.model.Book</class>
+                        <class>living.tanach.api.model.entities.Book</class>
                     </classes>
                     <outputKind>module</outputKind>
                     <outputFileType>implementationFile</outputFileType>

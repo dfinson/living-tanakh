@@ -2,8 +2,8 @@ package living.tanach.api.api_hooks;
 
 import dev.sanda.apifi.service.EntityCollectionApiHooks;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.MediaTag;
-import living.tanach.api.model.Verse;
+import living.tanach.api.model.entities.MediaTag;
+import living.tanach.api.model.entities.Verse;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;

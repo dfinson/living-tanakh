@@ -2,8 +2,8 @@ package living.tanach.api.service;
 
 import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.Book;
-import living.tanach.api.model.Chapter;
+import living.tanach.api.model.entities.Book;
+import living.tanach.api.model.entities.Chapter;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;

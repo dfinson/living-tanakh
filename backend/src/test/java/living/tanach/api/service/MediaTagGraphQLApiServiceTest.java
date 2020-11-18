@@ -2,10 +2,9 @@ package living.tanach.api.service;
 
 import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.MediaContent;
-import living.tanach.api.model.MediaTag;
-import living.tanach.api.model.Verse;
-import living.tanach.api.model.contstants.MediaType;
+import living.tanach.api.model.entities.MediaContent;
+import living.tanach.api.model.entities.MediaTag;
+import living.tanach.api.model.entities.Verse;
 import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

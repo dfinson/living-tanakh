@@ -1,12 +1,11 @@
 package living.tanach.api.config;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.re2j.Pattern;
 import com.mashape.unirest.http.Unirest;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.Book;
-import living.tanach.api.model.Chapter;
-import living.tanach.api.model.Verse;
+import living.tanach.api.model.entities.Book;
+import living.tanach.api.model.entities.Chapter;
+import living.tanach.api.model.entities.Verse;
 import living.tanach.api.model.contstants.TanakhSection;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -95,7 +94,6 @@ public class DBInitializer {
         log.info("Sefaria API calls and result parsing complete");
         bookDataManager.saveAllAndFlush(books);
         log.info("saved " + books.size() + " books to db - returning");
-        // this method is @Transactional - no need for an additional explicit save operation
     }
 
     private Book initBook(String bookName){

@@ -4,9 +4,9 @@ import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.Chapter;
-import living.tanach.api.model.MediaTag;
-import living.tanach.api.model.Verse;
+import living.tanach.api.model.entities.Chapter;
+import living.tanach.api.model.entities.MediaTag;
+import living.tanach.api.model.entities.Verse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -84,7 +84,7 @@ public class VerseGraphQLApiServiceTest {
         List<MediaTag> toUpdate = tags.stream().map(currentTag -> {
             val updatedTag = new MediaTag();
             updatedTag.setId(currentTag.getId());
-            updatedTag.setTitle("test title");
+            updatedTag.setKey("test title");
             updatedTag.setDescription("test description");
             return updatedTag;
         }).collect(Collectors.toList());
@@ -92,7 +92,7 @@ public class VerseGraphQLApiServiceTest {
         List<MediaTag> result = testApi.invokeEndpoint("updateMediaTagsOfVerse", verse, toUpdate);
 
         result.forEach(tag -> {
-            assertEquals("test title", tag.getTitle());
+            assertEquals("test title", tag.getKey());
             assertEquals("test description", tag.getDescription());
         });
     }

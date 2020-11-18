@@ -2,11 +2,10 @@ package living.tanach.api.service;
 
 import dev.sanda.apifi.test_utils.TestableGraphQLService;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.Book;
-import living.tanach.api.model.Chapter;
-import living.tanach.api.model.Verse;
+import living.tanach.api.model.entities.Book;
+import living.tanach.api.model.entities.Chapter;
+import living.tanach.api.model.entities.Verse;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.val;
 
 
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 
