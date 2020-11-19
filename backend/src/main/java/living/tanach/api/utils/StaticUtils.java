@@ -156,8 +156,10 @@ public class StaticUtils {
                 verseNumeral);
     }
 
-    private static final Pattern hebrewCharacterOrSpacePattern = Pattern.compile("[\u05D0-\u05EA |\\s+]");
-    public static boolean isHebrewCharacterOrWhitespace(char c){
-        return hebrewCharacterOrSpacePattern.matches(String.valueOf(c));
+    private static final Pattern isNikudOrTaamimPattern = Pattern.compile("[\u05B0-\u05C4 | \u0591-\u05AF]");
+    private static final Pattern isStillKosherPattern = Pattern.compile("[\u05BE | \\s+]");
+    public static boolean isPlainHebrewCharacter(char c){
+        String s = String.valueOf(c);
+        return !isNikudOrTaamimPattern.matches(s) || isStillKosherPattern.matches(s);
     }
 }

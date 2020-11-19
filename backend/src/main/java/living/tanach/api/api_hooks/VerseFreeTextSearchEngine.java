@@ -4,7 +4,7 @@ import dev.sanda.apifi.service.ApiHooks;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.dto.HighlightedVerseSegments;
+import living.tanach.api.model.transients.HighlightedVerseSegments;
 import living.tanach.api.model.entities.Verse;
 import lombok.val;
 import org.apache.lucene.search.Query;

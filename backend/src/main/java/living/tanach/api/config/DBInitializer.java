@@ -164,7 +164,7 @@ public class DBInitializer {
     private String parseSearchableHebrewText(String hebrewText) {
         StringBuilder textBuilder = new StringBuilder();
         for (char c : hebrewText.toCharArray())
-            if (isHebrewCharacterOrWhitespace(c) || c == ':')
+            if (isPlainHebrewCharacter(c))
                 textBuilder.append(c);
         return textBuilder.toString();
     }

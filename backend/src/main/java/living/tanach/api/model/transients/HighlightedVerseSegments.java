@@ -1,15 +1,16 @@
-package living.tanach.api.model.dto;
+package living.tanach.api.model.transients;
 
-import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
+import living.tanach.api.utils.StaticUtils;
 import lombok.Data;
 import lombok.val;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static living.tanach.api.utils.StaticUtils.isHebrewCharacterOrWhitespace;
+import static living.tanach.api.utils.StaticUtils.isPlainHebrewCharacter;
 
 @Data
 public class HighlightedVerseSegments {
@@ -58,7 +59,7 @@ public class HighlightedVerseSegments {
 
         while (verseIndex < verseChars.length && !matched){
             val verseChar = verseChars[verseIndex];
-            if(isHebrewCharacterOrWhitespace(verseChar)){
+            if(isPlainHebrewCharacter(verseChar)){
                 val searchTermChar = highlightedKeywordChars[highlightedKeywordIndex];
                 if(verseChar == searchTermChar){
                     if(start == -1) start = verseIndex;
@@ -124,29 +125,14 @@ public class HighlightedVerseSegments {
         }
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    private String commonFinalSuffix(Set<String> finalSuffixes){
-        val resultBuilder = new StringBuilder();
-        val reversedSuffixes = finalSuffixes
-                .stream()
-                .map(s -> new StringBuilder(s).reverse().toString()).collect(Collectors.toSet());
-        int maxLen = reversedSuffixes.stream().min(Comparator.comparingInt(String::length)).orElse("").length();
-        boolean done = false;
-        for (int i = 0; i < maxLen && !done; i++) {
-            char c = reversedSuffixes.stream().findFirst().get().charAt(i);
-            if(isCommonChar(c, i, reversedSuffixes)){
-                resultBuilder.append(c);
-            }else {
-                done = true;
-            }
-        }
-        return resultBuilder.reverse().toString();
-    }
-
-    private boolean isCommonChar(char c, int i, Set<String> strings){
-        return strings.stream().allMatch(s -> s.toCharArray()[i] == c);
-    }
-
     private List<PrefixedVerseSegment> segments;
     private String finalSuffix = "";
+
+    public String getPlainHebrewFinalSuffix(){
+        return finalSuffix.codePoints()
+                .mapToObj(i -> (char)i)
+                .filter(StaticUtils::isPlainHebrewCharacter)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
 }

@@ -2,7 +2,7 @@ package living.tanach.api.api_hooks;
 
 import dev.sanda.apifi.service.ApiHooks;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.dto.HighlightedVerseSegments;
+import living.tanach.api.model.transients.HighlightedVerseSegments;
 import living.tanach.api.model.entities.Chapter;
 import living.tanach.api.utils.S3Service;
 import lombok.AllArgsConstructor;
