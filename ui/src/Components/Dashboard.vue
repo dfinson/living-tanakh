@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>The Ma'ayan Tanach Project</h1>
+    <!--<h1>The Ma'ayan Tanach Project</h1>
     <search-controller class="split right"
             @display-selected-chapter="sendChapterToChapterDisplay($event)"
             @stop-chapter-display="stopDisplay($event)"
@@ -8,7 +8,8 @@
     <chapter-display class="split left"
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
-    ></chapter-display>
+    ></chapter-display>-->
+    <MediaTagModal/>
   </div>
 </template>
 
@@ -44,15 +45,25 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import {Chapter, MediaTag, SearchCriteria, Verse} from "@/api/dto";
+import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
+import apifiClient from "@/api/apifiClient";
 
 @Component({
   components: {
+    MediaTagModal,
     ChapterDisplay,
     SearchController
   }
 })
 export default class Dashboard extends Vue{
+
+  private tag: MediaTag;
+
+  mounted(){
+    apifiClient.getMediaTagById()
+  }
+
   searchCriteria: SearchCriteria
   public selectedChapter = new Chapter();
   public displayResults = false
@@ -65,8 +76,6 @@ export default class Dashboard extends Vue{
   public stopDisplay(displayChapter: boolean){
     this.displayResults = displayChapter;
   }
-
-
 
 }
 

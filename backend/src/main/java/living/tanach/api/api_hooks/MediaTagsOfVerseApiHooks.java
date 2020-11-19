@@ -4,12 +4,34 @@ import dev.sanda.apifi.service.EntityCollectionApiHooks;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class MediaTagsOfVerseApiHooks implements EntityCollectionApiHooks<MediaTag, Verse> {
+
+    @Override
+    public void preAssociate(Collection<MediaTag> toAssociateInput,
+                             Verse verse,
+                             String fieldName,
+                             DataManager<MediaTag> mediaTagDataManager,
+                             DataManager<Verse> verseDataManager) {
+        val tagsAlreadyPresentKeys = verse.getMediaTags().stream().map(MediaTag::getKey).collect(Collectors.toSet());
+        val illegalOverlappingTags = toAssociateInput
+                .stream()
+                .filter(tag -> tagsAlreadyPresentKeys.contains(tag.getKey()))
+                .collect(Collectors.toSet());
+        if(!illegalOverlappingTags.isEmpty()){
+            val msgBuilder = new StringBuilder("Error adding tags with keys: [");
+            illegalOverlappingTags.forEach(tag -> msgBuilder.append(", \"").append(tag.getKey()).append("\""));
+            msgBuilder.append("]\n Those keys are already present in the database. Did you mean to update?");
+            throw new IllegalArgumentException(msgBuilder.toString());
+        }
+    }
+
     @Override
     public void postAssociate(
             Collection<MediaTag> toAssociateInput,
