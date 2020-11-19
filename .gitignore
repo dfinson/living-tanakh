@@ -17,3 +17,5 @@ target/
 .vscode/
 
 backend/living.tanach.api.model.Verse/
+
+backend/apifiClient.js
