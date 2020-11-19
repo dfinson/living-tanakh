@@ -55,7 +55,7 @@ import {TORAH} from "@/api/TANAKH";
 import apifiClient from "@/api/apifiClient";
 import SearchResultsList from "@/Components/search/SearchResultsList.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-//import VerseSearchResult from "../../../../backend/src/main/java/living/tanach/api/dto";
+//import HighLightedVerseSegments from "../../../../backend/src/main/java/living/tanach/api/model/dto/HighlightedVerseSegments.java";
 
 
 @Component({
@@ -71,10 +71,10 @@ export default class SearchController extends Vue{
 
 
   public searchCriteria = new SearchCriteria();
-  public chaptersList: Chapter[] = [] //will contain the list of chapters in the selected book, to be send down to the form..
-  public searchResults: Verse[] = [] //will contain the results of our path search - I.e a chapter of verses...
-  public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
-  public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
+  public chaptersList: Chapter[] = []; //will contain the list of chapters in the selected book, to be send down to the form..
+  public searchResults: Verse[] = [] ;//will contain the results of our path search - I.e a chapter of verses...
+  public displayOptions = false;//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
+  public displayResults = false; //if we have a final chapter selected, we should only display the chapter and not the options
   public getChapterSearchResults = new Chapter();
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
@@ -109,7 +109,7 @@ export default class SearchController extends Vue{
   }
 
   public freeTextSearchWithPath(searchPath: string){
-    this.searchResults = [] //wipe the searchResults array clean, to get rid of any previous results...
+    this.searchResults = [] ;//wipe the searchResults array clean, to get rid of any previous results...
     console.log("searching with path" + searchPath);
     //the api call:
     apifiClient.verseFreeTextSearch({
@@ -141,7 +141,7 @@ export default class SearchController extends Vue{
           verse.number = res['data'].verseFreeTextSearch.content[i].number;
           verse.path = res['data'].verseFreeTextSearch.content[i].path;
           verse.id = res['data'].verseFreeTextSearch.content[i].id;
-          verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText
+          verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
           verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
           this.searchResults.push(verse);
         }
@@ -176,7 +176,7 @@ export default class SearchController extends Vue{
            path
            }}`).then(res => {
               if (res['data'].verseFreeTextSearch.content.length > 0) {
-                let i
+                let i;
                 for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
                   //console.log(res['data'].verseFreeTextSearch.content[i]);
                   const verse = new Verse();
@@ -198,7 +198,7 @@ export default class SearchController extends Vue{
 
   public freeTextSearchSorter(): void{
 
-    let searchPath = ""
+    let searchPath = "";
     if(this.searchCriteria.category !== ""  && this.searchCriteria.category !== undefined)    //if there is a category selected:
       searchPath = this.searchCriteria.category;
 
@@ -240,7 +240,7 @@ export default class SearchController extends Vue{
     }
             }`).then(res => {
            //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
-               console.log(res)
+               console.log(res);
               const ch = new Chapter();
               ch.id = res['data'].findChapterByUniquePath.id;
               ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
