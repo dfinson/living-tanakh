@@ -19,3 +19,5 @@ target/
 backend/living.tanach.api.model.Verse/
 
 backend/apifiClient.js
+
+backend/living.tanach.api.model.entities.Verse/

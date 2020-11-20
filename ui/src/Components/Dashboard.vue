@@ -9,7 +9,7 @@
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
     ></chapter-display>-->
-    <MediaTagModal/>
+    <MediaTagModal tag-id="345054"/>
   </div>
 </template>
 

@@ -33,7 +33,7 @@ export class Verse {
 
 export class MediaTag {
     id?: number;
-    title?: string;
+    key?: string;
     description?: string;
     verses?: Verse[];
     linkedContent?: MediaContent[];

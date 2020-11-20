@@ -54,20 +54,4 @@ public class LinkedMediaContentOfTagApiHooks implements EntityCollectionApiHooks
         val objectStorageKeys = toRemove.stream().map(MediaContent::getKey).collect(Collectors.toList());
         s3Service.deleteObjects(objectStorageKeys);
     }
-
-    // set signed download urls
-    @Override
-    public void postGetPaginatedBatch(
-            Page<MediaContent> resultPage,
-            MediaTag ownerInstance,
-            PageRequest inputRequest,
-            DataManager<MediaContent> mediaContentDataManager,
-            DataManager<MediaTag> ownerDataManager) {
-
-        resultPage.getContent().forEach(mediaContent -> {
-            val key = mediaContent.getKey();
-            val signedDownloadUrl = s3Service.generateDownloadUrl(key);
-            mediaContent.setSignedDownloadUrl(signedDownloadUrl);
-        });
-    }
 }

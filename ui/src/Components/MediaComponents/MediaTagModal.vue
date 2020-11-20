@@ -12,11 +12,27 @@ import apifiClient from "@/api/apifiClient";
 @Component
 export default class MediaTagModal extends Vue{
 
-  @Prop()//({required: true})
-  private tag: MediaTag;
+  @Prop({required: true})
+  private tagId: number;
+  private tag: MediaTag = new MediaTag();
+  private isCardModalActive = true;
+
+  private readonly tagExpectedReturn = `{
+    description
+    id
+    key
+    linkedContent{
+      key
+      signedDownloadUrl
+    }
+  }`;
 
   mounted(){
-    apifiClient.getMediaTagById(345054, `{linkedContent}`)
+    console.log(this.tagId)
+    apifiClient.getMediaTagById(this.tagId, this.tagExpectedReturn).then(response => {
+      console.log(response);
+      this.tag = response.data.getMediaTagById;
+    })
   }
 
 }
