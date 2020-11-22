@@ -1,11 +1,11 @@
 <template>
-  <div>
-<base-card>
+  <div class="box">
+<b-tabs>
   <strong>
-<button @click="pathSelected">{{result.path}}</button>
+    <b-button type="is-primary is-light" @click="pathSelected">{{result.humanReadablePath}}</b-button>
 <p>{{result.fullHebrewText}}</p>
   </strong>
-</base-card>
+</b-tabs>
   </div>
 </template>
 
@@ -22,7 +22,7 @@ import {Verse} from "@/api/dto";
 })
 export default class SearchResult extends Vue{
   @Prop({default:'Example'})
-  result: Verse
+  result: Verse;
 
   public pathSelected(): void{
     this.$emit('result-selected',this.result.chapter?.path);

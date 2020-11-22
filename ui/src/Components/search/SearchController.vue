@@ -51,11 +51,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
 import SearchInputForm from "@/Components/search/SearchInputForm.vue";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
-import {TORAH} from "@/api/TANAKH";
+import {toHebrewBookName, TORAH} from "@/api/TANAKH";
 import apifiClient from "@/api/apifiClient";
 import SearchResultsList from "@/Components/search/SearchResultsList.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-//import HighLightedVerseSegments from "../../../../backend/src/main/java/living/tanach/api/model/dto/HighlightedVerseSegments.java";
 
 
 @Component({
@@ -70,11 +69,11 @@ import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 export default class SearchController extends Vue{
 
 
-  public searchCriteria = new SearchCriteria();
-  public chaptersList: Chapter[] = []; //will contain the list of chapters in the selected book, to be send down to the form..
-  public searchResults: Verse[] = [] ;//will contain the results of our path search - I.e a chapter of verses...
-  public displayOptions = false;//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
-  public displayResults = false; //if we have a final chapter selected, we should only display the chapter and not the options
+  public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
+  public chaptersList: Chapter[] = [] //will contain the list of chapters in the selected book, to be sent down to the form..
+  public searchResults: Verse[] = [] //will contain the results of our path search - I.e a chapter of verses...
+  public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
+  public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
   public getChapterSearchResults = new Chapter();
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
@@ -101,6 +100,7 @@ export default class SearchController extends Vue{
                   ch.number = res['data'].findBookByUniquePath.chapters[i].number;
                   ch.path = res['data'].findBookByUniquePath.chapters[i].path;
                   this.chaptersList.push(ch);
+                  //console.log(this.chaptersList);
                 }
               });
 
@@ -108,9 +108,10 @@ export default class SearchController extends Vue{
 
   }
 
+  //searching for a word when a search path has been specified
   public freeTextSearchWithPath(searchPath: string){
-    this.searchResults = [] ;//wipe the searchResults array clean, to get rid of any previous results...
-    console.log("searching with path" + searchPath);
+    this.searchResults = [] //wipe the searchResults array clean, to get rid of any previous results...
+    console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
     //the api call:
     apifiClient.verseFreeTextSearch({
       customArgs: {
@@ -122,6 +123,7 @@ export default class SearchController extends Vue{
 
     }, `{
               content{
+              humanReadablePath
               chapter{
               path
               }
@@ -130,6 +132,7 @@ export default class SearchController extends Vue{
            id
            number
            path
+
           } }`).then(res => {
       if (res['data'].verseFreeTextSearch.content.length > 0) {
         let i;
@@ -141,17 +144,27 @@ export default class SearchController extends Vue{
           verse.number = res['data'].verseFreeTextSearch.content[i].number;
           verse.path = res['data'].verseFreeTextSearch.content[i].path;
           verse.id = res['data'].verseFreeTextSearch.content[i].id;
+          verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
           verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
           verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
           this.searchResults.push(verse);
         }
-          console.log(this.searchResults);
+          console.log(this.searchCriteria.searchTerm + "controller");
+        this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
 
       }
-      else alert("No results have been found. Please enter a different search term, or expand the search path...")
+      else{
+        this.$buefy.notification.open({
+        duration: 5000,
+        message: `No results have been found. Please enter a different search term, or expand the search path...`,
+        position: 'is-bottom-right',
+        type: 'is-danger',
+        hasIcon: true
+      });}
     });
   }
 
+  //searching for a word when no search path has been specified
   public freeTextSearchWithoutPath(): void{
     console.log("Searching without path");
     this.searchResults = []; //wipe the searchResults array clean..
@@ -166,8 +179,10 @@ export default class SearchController extends Vue{
 
     }, `{
             content{
+             humanReadablePath
             chapter{
             path
+
             }
            fullHebrewText
            hebrewNumeral
@@ -176,7 +191,7 @@ export default class SearchController extends Vue{
            path
            }}`).then(res => {
               if (res['data'].verseFreeTextSearch.content.length > 0) {
-                let i;
+                let i
                 for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
                   //console.log(res['data'].verseFreeTextSearch.content[i]);
                   const verse = new Verse();
@@ -186,16 +201,26 @@ export default class SearchController extends Vue{
                   verse.id = res['data'].verseFreeTextSearch.content[i].id;
                   verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
                   verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
+                  verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
                   this.searchResults.push(verse);
                 }
-                //console.log(this.searchResults);
+                console.log(this.searchCriteria.searchTerm + "controller");
+                this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
               }
-              else alert("No results have been found. Please enter a different search term");
+              else this.$buefy.notification.open({
+                duration: 5000,
+                message: `No results found. Please enter a different search Term or expand the search parameters....`,
+                position: 'is-bottom-right',
+                type: 'is-danger',
+                hasIcon: true
+              });
+
             }
 
     );
   }
 
+  //decides what kind of free text search is necessary - whether sufficient parameters have been entered
   public freeTextSearchSorter(): void{
 
     let searchPath = "";
@@ -220,8 +245,9 @@ export default class SearchController extends Vue{
 
   }
 
+  //gets a chapter based on a complete path. can be called by the user, and is also called when a searchResult is selected.
   public getChapterFromPathSearch(path: string): void{
-    console.log("getting chapter from path");
+    console.log("getting chapter from path " + path);
     this.searchResults = []; //wipe the searchResults array clean...
     //the api call:
     apifiClient.findChapterByUniquePath(path, `{
@@ -229,7 +255,22 @@ export default class SearchController extends Vue{
     id
     number
     path
+    book{
+    hebrewName
+    }
     verses{
+    highlightedVerseSegments{
+    segments{
+      prefix
+      highlightedKeyword
+      plainHebrewPrefix
+      plainHebrewHighlightedKeyword
+      tag{
+      id
+      }
+    }
+    finalSuffix
+    }
       fullHebrewText
       hebrewNumeral
       number
@@ -240,16 +281,22 @@ export default class SearchController extends Vue{
     }
             }`).then(res => {
            //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
-               console.log(res);
+               console.log(res)
               const ch = new Chapter();
               ch.id = res['data'].findChapterByUniquePath.id;
               ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
               ch.number = res['data'].findChapterByUniquePath.number;
               ch.path = res['data'].findChapterByUniquePath.path;
+              ch.book =  res['data'].findChapterByUniquePath.book;
               ch.verses = [];
                let i;
                for(i = 0; i < res['data'].findChapterByUniquePath.verses.length; i++ ) {
                  ch.verses.push(res['data'].findChapterByUniquePath.verses[i]);
+                /* for(let j = 0; j < ch.verses[i].highlightedVerseSegments.segments.length; j++) {
+                   console.log(ch.verses[i].highlightedVerseSegments.segments[j].prefix);
+                   console.log(ch.verses[i].highlightedVerseSegments.segments[j].highlightedKeyword);
+                 }
+                 console.log(ch.verses[i].highlightedVerseSegments.finalSuffix);*/
                }
                 /* const vr = new Verse();
                  vr.id = res['data'].findChapterByUniquePath.verses[i].id;
@@ -268,12 +315,14 @@ export default class SearchController extends Vue{
                //console.log(ch.verses);
               // console.log(ch);
             // }
+      //console.log(ch.book.hebrewName)
       this.getChapterSearchResults = ch;
       this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
       this.$emit('display-selected-chapter',this.getChapterSearchResults);}
             );
   }
 
+  //decides which kind of search - free text or chapter based on path
   public generalSearchSorter(): void{
     //if there is a search term, we'll call the free text search function - (which will also make use of the search path..)
       if(this.searchCriteria.searchTerm !== "" && this.searchCriteria.searchTerm !== undefined){
@@ -294,7 +343,13 @@ export default class SearchController extends Vue{
 
         }
         else{
-          alert("Please enter valid search path or search term...");
+           this.$buefy.notification.open({
+            duration: 5000,
+            message: `Please enter valid search path or search term...`,
+            position: 'is-bottom-right',
+            type: 'is-danger',
+            hasIcon: true
+          });
         }
       }
   }
@@ -323,12 +378,15 @@ export default class SearchController extends Vue{
     this.generalSearchSorter();
   }
 
+  //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
   public sendResultQuery(path: string): void{
     this.displayResults = true;
     this.displayOptions = false;
     this.getChapterFromPathSearch(path);
 
   }
+
+
 
 
 }

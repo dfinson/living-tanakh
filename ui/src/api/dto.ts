@@ -6,7 +6,7 @@ export class Book {
     id?: number;
     path?: string;
     englishName?: string;
-    hebrewName?: string;
+    hebrewName: string;
     chapters?: Chapter[];
 }
 
@@ -28,19 +28,27 @@ export class Verse {
     fullHebrewText: string;
     fullEnglishText?: string;
     searchableHebrewText: string;
+    highlightedVerseSegments: HighlightedVerseSegments;
+    humanReadablePath: string;
     hebrewNumeral: string;
 }
 
 export class MediaTag {
-    id?: number;
+    id: number;
     title?: string;
     description?: string;
     verses?: Verse[];
     linkedContent?: MediaContent[];
 }
 
+export class HighlightedVerseSegments {
+    segments: PrefixedVerseSegment[];
+    finalSuffix: string;
+    plainHebrewFinalSuffix?: string;
+}
+
 export class MediaContent {
-    id?: number;
+    id: number;
     mediaTag?: MediaTag;
     mediaType?: MediaType;
     name?: string;
@@ -49,12 +57,25 @@ export class MediaContent {
     signedDownloadUrl?: string;
     signedUploadUrl?: string;
 }
+export class PrefixedVerseSegment {
+    prefix: string;
+    highlightedKeyword: string;
+    tag: MediaTag;
+    plainHebrewPrefix?: string;
+    plainHebrewHighlightedKeyword?: string;
+}
 
 export class SearchCriteria{
     searchTerm: string;
     category: string;
     book: string;
     chapter: string;
+}
+
+export enum TanakhSection {
+    TORAH = "TORAH",
+    PROPHETS = "PROPHETS",
+    WRITINGS = "WRITINGS",
 }
 
 export enum MediaType {

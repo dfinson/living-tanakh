@@ -1,30 +1,50 @@
 <template>
-    <div>
-        <h1>Search Options:</h1>
-        <span>Select Category </span>
-        <select v-model="searchCriteria.category" @change="updateCategorySelection">
-            <option  v-for="category in categories" v-bind:value="category" :key="category" > {{category}}</option>
-        </select>
-        <span>Select Book </span>
-        <select v-model="searchCriteria.book" @change="updateBookSelection">
-            <option  v-for="book in bookList" v-bind:value="book" :key="book" > {{book}}</option>
-        </select>
-        <span>Select Chapter </span>
-        <select v-model="searchCriteria.chapter" @change="updateChapterSelection">
-            <option  v-for="chapter in chaptersList" v-bind:value="chapter.number" :key="chapter.number" > {{chapter.hebrewNumeral}}</option>
-        </select>
-        <span> Free Text Search:</span>
-        <input v-model="searchCriteria.searchTerm" placeholder="Example - 'בראשית'" >
-        <button @click="updateSearchTermSelection">Search</button>
 
-
+    <div class="sidebar-page">
+    <b-menu>
+        <h1 class="card-header-title-is-centered" >Search Options:</h1>
+        <b-field label="Select Category" >
+            <b-select placeholder="Select a name"  v-model="searchCriteria.category" @input="updateCategorySelection">
+                <option
+                        v-for="category in categories"
+                        :value="category"
+                        :key="category">
+                    {{ getHebNameOfCategory(category) }}
+                </option>
+            </b-select>
+        </b-field>
+        <b-field label="Select Book">
+            <b-select placeholder="Select a name" v-model="searchCriteria.book" @input="updateBookSelection">
+                <option
+                        v-for="book in bookList"
+                        :value="book"
+                        :key="book">
+                    {{ getHebNameOfBook(book) }}
+                </option>
+            </b-select>
+        </b-field>
+        <b-field label="Select Chapter">
+            <b-select placeholder="Select a name" v-model="searchCriteria.chapter" @input="updateChapterSelection">
+                <option
+                        v-for="chapter in chaptersList"
+                        :value="chapter.number"
+                        :key="chapter.number">
+                    {{ chapter.hebrewNumeral }}
+                </option>
+            </b-select>
+        </b-field>
+        <b-field label="Free Search">
+            <b-input v-model="searchCriteria.searchTerm"></b-input>
+        </b-field>
+        <b-button type="is-primary is-light" @click="updateSearchTermSelection">Search</b-button>
+    </b-menu>
     </div>
 </template>
 
 <script lang = "ts">
     import {Component, Prop, Vue} from 'vue-property-decorator';
     import {Book,Chapter,SearchCriteria} from "@/api/dto";
-import {TORAH,WRITINGS,PROPHETS,hebrewBooksInTorah,
+import {TORAH,WRITINGS,PROPHETS,hebrewBooksInTorah,HEBREW_NAMES_DICT,toHebrewBookName,
     hebrewBooksInProphets,hebrewBooksInWritings,toEnglishBookName,stripPrefix} from "@/api/TANAKH";
 
 @Component
@@ -45,6 +65,7 @@ export default class SearchInputForm extends Vue{
 
     public updateCategorySelection(): void{  // update to the category selected by the user, and send it up to the controller...
         this.$emit('update-category-selection',this.searchCriteria.category);
+        console.log(this.searchCriteria.category);
             this.getBookList();
 
     }
@@ -73,20 +94,47 @@ export default class SearchInputForm extends Vue{
         const tempList: string[] = []
         switch (this.searchCriteria.category) {
             case "TORAH":
-                for(const [key, value] of Object.entries(TORAH))
-                   this.bookList.push(`${value}`.toString());
+                for(const [key, value] of Object.entries(TORAH)) {
+                    this.bookList.push(`${value}`.toString());
+                    console.log(toHebrewBookName(`${value}`.toString()));
+                }
                 break;
             case "PROPHETS":
-                for(const [key, value] of Object.entries(PROPHETS))
-                    this.bookList.push(`${value}`.toString());
+                for(const [key, value] of Object.entries(PROPHETS)) {
+                    this.bookList.push(`${value}`);
+                    console.log(toHebrewBookName(`${value}`));
+                }
                 break;
             case "WRITINGS":
-                for(const [key, value] of Object.entries(WRITINGS))
+                for(const [key, value] of Object.entries(WRITINGS)) {
                     this.bookList.push(`${value}`.toString());
+                    console.log(toHebrewBookName(`${value}`.toString()));
+                }
                 break;
+
         }
+
     }
 
+    public getHebNameOfBook(book: string): string{
+        return toHebrewBookName(book);
+    }
+
+    public getHebNameOfCategory(category: string){
+        let returnString = ""
+        switch (category) {
+            case "TORAH":
+                returnString =  "תורה";
+                break;
+            case "PROPHETS":
+                returnString =  "נביאים";
+                break;
+            case "WRITINGS":
+                returnString =  "כתובים";
+                break;
+        }
+        return returnString;
+    }
 
 
 
@@ -98,5 +146,4 @@ export default class SearchInputForm extends Vue{
 </script>
 
 <style scoped>
-
 </style>

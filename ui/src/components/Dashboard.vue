@@ -1,15 +1,24 @@
 <template>
-  <div>
-    <h1>The Ma'ayan Tanach Project</h1>
-    <search-controller class="split right"
-            @display-selected-chapter="sendChapterToChapterDisplay($event)"
-            @stop-chapter-display="stopDisplay($event)"
-    ></search-controller>
-    <chapter-display class="split left"
+<div>
+  <h1 class="title" style="color: darkcyan">The Ma'ayan Tanach Project</h1>
+  <div class="columns">
+    <div class="column is-two-thirds">
+    <chapter-display
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
+            :search-term="this.searchTerm"
+             @send-tag-to-dashboard="setTagValue($event)"
     ></chapter-display>
+    </div>
+    <div class="column">
+    <search-controller
+            @display-selected-chapter="sendChapterToChapterDisplay($event)"
+            @stop-chapter-display="stopDisplay($event)"
+            @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
+    ></search-controller>
   </div>
+    </div>
+</div>
 </template>
 
 <script lang = "ts">
@@ -55,7 +64,8 @@ import {Chapter, SearchCriteria, Verse} from "@/api/dto";
 export default class Dashboard extends Vue{
   searchCriteria: SearchCriteria
   public selectedChapter = new Chapter();
-  public displayResults = false
+  public displayResults = false;
+  public searchTerm = "";
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
@@ -64,6 +74,15 @@ export default class Dashboard extends Vue{
 
   public stopDisplay(displayChapter: boolean){
     this.displayResults = displayChapter;
+  }
+
+  public sendSearchTermToChapterDisplay(searchTerm: string): void{
+    this.searchTerm = searchTerm;
+    console.log(this.searchTerm + "dashboard");
+  }
+
+  public setTagValue(tag: number){
+    console.log(tag + " from dashboard");
   }
 
 
