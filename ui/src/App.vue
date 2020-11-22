@@ -15,6 +15,7 @@ import BaseCard from "./Components/BaseComponents/BaseCard.vue";
 import FormPage from "@/Components/SearchComponents/FormPage.vue";
 import Dashboard from "@/Components/Dashboard.vue";
 
+
 @Component(
     {
         components:{
@@ -45,7 +46,7 @@ header {
   width: 100%;
   padding: 1rem;
 }
-button,
+/*button,
 a {
   text-decoration: none;
   padding: 0.75rem 1.5rem;
@@ -105,6 +106,6 @@ header a {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   border: 1px solid transparent;
-}
+}*/
 
 </style>

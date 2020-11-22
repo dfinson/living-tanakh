@@ -1,15 +1,24 @@
 <template>
-  <div>
-    <h1>The Ma'ayan Tanach Project</h1>
-    <search-controller class="split right"
-            @display-selected-chapter="sendChapterToChapterDisplay($event)"
-            @stop-chapter-display="stopDisplay($event)"
-    ></search-controller>
-    <chapter-display class="split left"
+<div>
+  <base-card class="title" style="color: darkcyan">The Ma'ayan Tanach Project</base-card>
+  <div class="columns">
+    <div class="column is-two-thirds">
+    <chapter-display
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
+            :search-term="this.searchTerm"
+             @send-tag-to-dashboard="setTagValue($event)"
     ></chapter-display>
+    </div>
+    <div class="column">
+    <search-controller
+            @display-selected-chapter="sendChapterToChapterDisplay($event)"
+            @stop-chapter-display="stopDisplay($event)"
+            @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
+    ></search-controller>
   </div>
+    </div>
+</div>
 </template>
 
 <script lang = "ts">
@@ -45,17 +54,20 @@ import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
 @Component({
   components: {
     ChapterDisplay,
-    SearchController
+    SearchController,
+    BaseCard
   }
 })
 export default class Dashboard extends Vue{
   searchCriteria: SearchCriteria
   public selectedChapter = new Chapter();
-  public displayResults = false
+  public displayResults = false;
+  public searchTerm = "";
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
@@ -64,6 +76,15 @@ export default class Dashboard extends Vue{
 
   public stopDisplay(displayChapter: boolean){
     this.displayResults = displayChapter;
+  }
+
+  public sendSearchTermToChapterDisplay(searchTerm: string): void{
+    this.searchTerm = searchTerm;
+    console.log(this.searchTerm + "dashboard");
+  }
+
+  public setTagValue(tag: number){
+   alert(tag + " from dashboard");
   }
 
 

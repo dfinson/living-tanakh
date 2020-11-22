@@ -46,9 +46,9 @@ export const WRITINGS = {
     ESTHER: 'WRITINGS/Esther'
 }
 
-interface YDictionary {
+/*interface YDictionary {
     [index: string]: string;
-}
+}*/
  export const HEBREW_NAMES_DICT = {
     'TORAH/Genesis': 'בראשית',
     'TORAH/Exodus': 'שמות',
@@ -57,12 +57,11 @@ interface YDictionary {
     'TORAH/Deuteronomy': 'דברים',
 
     'PROPHETS/Joshua': 'יהושוע',
-    'PROPHETS/Judges 1': 'שופטים א',
-    'PROPHETS/Judges 2': 'שופטים ב',
-    'PROPHETS/Samuel 1': 'שמואל א',
-    'PROPHETS/Samuel 2': 'שמואל ב',
-    'PROPHETS/Kings 1': 'מלכים א',
-    'PROPHETS/Kings 2': 'מלכים ב',
+    'PROPHETS/Judges': 'שופטים',
+    'PROPHETS/Samuel I': 'שמואל א',
+    'PROPHETS/Samuel II': 'שמואל ב',
+    'PROPHETS/Kings I': 'מלכים א',
+    'PROPHETS/Kings II': 'מלכים ב',
     'PROPHETS/Isaiah': 'ישעיה',
     'PROPHETS/Jeremiah': 'ירמיהו',
     'PROPHETS/Ezekiel': 'יחזקאל',
@@ -90,24 +89,27 @@ interface YDictionary {
     'WRITINGS/Lamentations': 'איכה',
     'WRITINGS/Ecclesiastes': 'קוהלת',
     'WRITINGS/Esther': 'אסתר'
-}as YDictionary
+}
 
 export function stripPrefix(pathWithPrefix: string): string{
     return pathWithPrefix.split("/")[1];
 }
 
 export function toEnglishBookName(hebrewName: string): string{
-    for (const entry in HEBREW_NAMES_DICT){
-        if(entry[1] === hebrewName){
-            return entry[0];
+    for (const [key, value] of Object.entries(HEBREW_NAMES_DICT)){
+        if(`${value}`.toString() === hebrewName){ //this.bookList.push(`${value}`.toString());
+            return `${key}`.toString();
         }
     }
     return "null";
 }
-
-export function toHebrewBookName(path: string): string{
-   return HEBREW_NAMES_DICT[path];
-
+export function toHebrewBookName(englishName: string): string{
+    for (const [key, value] of Object.entries(HEBREW_NAMES_DICT)){
+        if(`${key}`.toString() === englishName){ //this.bookList.push(`${value}`.toString());
+            return `${value}`.toString();
+        }
+    }
+    return "null";
 }
 
 export function hebrewBooksInTorah(){
