@@ -98,12 +98,12 @@ public class HighlightedVerseSegments {
             segments.addAll(tagSegments);
         });
 
-        mergeSegmentPrefixes(segments, verse.getFullHebrewText());
-        return segments;
+        return mergeSegmentPrefixes(segments, verse.getFullHebrewText());
     }
 
-    private void mergeSegmentPrefixes(List<PrefixedVerseSegment> segments, String fullText){
-        if(segments.size() == 1) return;
+    private List<PrefixedVerseSegment> mergeSegmentPrefixes(List<PrefixedVerseSegment> segments, String fullText){
+        if(segments.size() == 1) return null;
+        val finalSegments = new ArrayList<PrefixedVerseSegment>();
         val prefixToSegmentMap = segments
                 .stream()
                 .collect(Collectors.toMap(PrefixedVerseSegment::getPrefix, Function.identity()));
@@ -120,9 +120,11 @@ public class HighlightedVerseSegments {
                         segment.setPrefix(updatedSegmentPrefix);
                     }
                 });
+                finalSegments.add(prefixToSegmentMap.get(prefixKey));
                 currentPrefix = new StringBuilder();
             }
         }
+        return finalSegments;
     }
 
     private List<PrefixedVerseSegment> segments;
