@@ -117,8 +117,7 @@ export default class SearchController extends Vue{
       customArgs: {
         validPathPrefixes:  [searchPath]
       },
-      pageSize: 20,
-      pageNumber: 0,
+      fetchAll:true,
       searchTerm: this.searchCriteria.searchTerm
 
     }, `{
@@ -173,8 +172,7 @@ export default class SearchController extends Vue{
       customArgs: {
         validPathPrefixes: ["TORAH", "PROPHETS", "WRITINGS"]
       },
-      pageSize: 20,
-      pageNumber: 0,
+      fetchAll:true,
       searchTerm: this.searchCriteria.searchTerm
 
     }, `{

@@ -1,21 +1,24 @@
 <template>
-  <div v-if="displayOptions">
+  <base-card  v-if="displayOptions">
+      <h1 class="title" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
       <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.number"
                       :result="verse"
                       @result-selected="sendControllerSelectedChapter($event)"
 
       ></search-result>
-  </div>
+  </base-card>
 </template>
 
 <script lang = "ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import {Verse} from "@/api/dto";
 import SearchResult from "@/Components/search/SearchResult.vue";
+import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
 @Component({
   components:{
-    SearchResult
+    SearchResult,
+      BaseCard
   }
 })
 export default class SearchResultsList extends Vue{
