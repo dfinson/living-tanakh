@@ -1,14 +1,14 @@
 <template>
   <base-card>
   <div class="sidebar-page">
-    <h1 class="title" style="color: #0f4361">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</h1>
+    <base-card class="title" style="color: #0f4361">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}    </base-card>
+      <b-switch @input="displayTrop = ! displayTrop" style="size: A4"></b-switch>
     <verse-display v-for="verse in selectedChapter.verses" v-bind:value="verse" :key="verse.number"
                     :verse-to-display="verse"
                    :display-trop="displayTrop"
                    :search-term="searchTerm"
                    @send-tag-to-chapter-display="sendTagToDashboard($event)"
     ></verse-display>
-      <b-switch @input="displayTrop = ! displayTrop" placeholder="Toggle To view Plain Text"></b-switch>
   </div>
   </base-card>
 </template>

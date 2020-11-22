@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h1 class="title" style="color: darkcyan">The Ma'ayan Tanach Project</h1>
+  <base-card class="title" style="color: darkcyan">The Ma'ayan Tanach Project</base-card>
   <div class="columns">
     <div class="column is-two-thirds">
     <chapter-display
@@ -54,11 +54,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
 @Component({
   components: {
     ChapterDisplay,
-    SearchController
+    SearchController,
+    BaseCard
   }
 })
 export default class Dashboard extends Vue{
@@ -82,7 +84,7 @@ export default class Dashboard extends Vue{
   }
 
   public setTagValue(tag: number){
-    console.log(tag + " from dashboard");
+   alert(tag + " from dashboard");
   }
 
 

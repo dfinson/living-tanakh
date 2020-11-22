@@ -14,6 +14,7 @@
         :display-options="displayOptions"
         @result-selected="sendResultQuery($event)"
 ></search-results-list>
+    <b-loading v-model="isLoading" can-cancel="true"></b-loading>
   </div>
 </template>
 
@@ -75,6 +76,7 @@ export default class SearchController extends Vue{
   public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
   public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
   public getChapterSearchResults = new Chapter();
+  public isLoading = false;
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
   public getChapterList(): void{
@@ -147,6 +149,7 @@ export default class SearchController extends Vue{
           verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
           verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
           this.searchResults.push(verse);
+          this.isLoading = false;
         }
           console.log(this.searchCriteria.searchTerm + "controller");
         this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
@@ -200,6 +203,7 @@ export default class SearchController extends Vue{
                   verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
                   verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
                   verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+                  this.isLoading = false;
                   this.searchResults.push(verse);
                 }
                 console.log(this.searchCriteria.searchTerm + "controller");
@@ -314,6 +318,7 @@ export default class SearchController extends Vue{
               // console.log(ch);
             // }
       //console.log(ch.book.hebrewName)
+       this.isLoading = false;
       this.getChapterSearchResults = ch;
       this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
       this.$emit('display-selected-chapter',this.getChapterSearchResults);}
@@ -322,6 +327,7 @@ export default class SearchController extends Vue{
 
   //decides which kind of search - free text or chapter based on path
   public generalSearchSorter(): void{
+    this.isLoading = true;
     //if there is a search term, we'll call the free text search function - (which will also make use of the search path..)
       if(this.searchCriteria.searchTerm !== "" && this.searchCriteria.searchTerm !== undefined){
         this.displayResults = false;
