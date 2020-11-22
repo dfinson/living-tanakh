@@ -155,16 +155,23 @@ public class DBInitializer {
         Verse verse = new Verse();
         verse.setPath(path);
         verse.setFullEnglishText(englishText.replaceAll("<i>", "").replaceAll("</i>", ""));
+        //hebrewText = handlePetuchaAndSetuma(hebrewText);
         verse.setFullHebrewText(hebrewText);
         verse.setNumber(verseNumber);
         verse.setSearchableHebrewText(parseSearchableHebrewText(hebrewText));
         return verse;
     }
 
+/*    private String handlePetuchaAndSetuma(String hebrewText) {
+        return hebrewText
+                .replaceAll("(ס)", " (ס) ")
+                .replaceAll("(פ)",  " (פ) " + "\n");
+    }*/
+
     private String parseSearchableHebrewText(String hebrewText) {
         StringBuilder textBuilder = new StringBuilder();
         for (char c : hebrewText.toCharArray())
-            if (isHebrewCharacterOrWhitespace(c) || c == ':')
+            if (isPlainHebrewCharacter(c))
                 textBuilder.append(c);
         return textBuilder.toString();
     }

@@ -5,7 +5,7 @@ import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithApiFreeTextSearchByFields;
 import io.leangen.graphql.annotations.GraphQLQuery;
 import living.tanach.api.api_hooks.MediaTagsOfVerseApiHooks;
-import living.tanach.api.model.dto.HighlightedVerseSegments;
+import living.tanach.api.model.transients.HighlightedVerseSegments;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
