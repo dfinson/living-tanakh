@@ -5,7 +5,7 @@ import apifiClient from "@/api/apifiClient";
 
 Vue.config.productionTip = false
 
-apifiClient.setApiUrl('http://livingtanakhapplicationde-env.eba-i3mkpska.eu-central-1.elasticbeanstalk.com/api')
+apifiClient.setApiUrl('http://localhost:5000/api')
 
 new Vue({
   store,

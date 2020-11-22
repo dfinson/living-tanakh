@@ -17,7 +17,7 @@
     <properties>
         <java.version>11</java.version>
         <graphql-spqr-spring-boot-starter.version>0.0.4</graphql-spqr-spring-boot-starter.version>
-        <apifi.version>0.0.5.4</apifi.version>
+        <apifi.version>0.0.5.4-dev2</apifi.version>
         <unirest-java.version>${re2j.version}.9</unirest-java.version>
         <guava.version>30.0-jre</guava.version>
         <re2j.version>1.4</re2j.version>
