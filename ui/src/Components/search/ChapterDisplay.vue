@@ -2,6 +2,8 @@
   <base-card>
   <div class="sidebar-page" v-if="displayResults">
     <base-card class="title" style="color: #0f4361">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</base-card>
+    <h1 class="tab-item" v-if="displayTrop"><strong>Toggle to view without ta'amim</strong></h1>
+    <h1 class="tab-item" v-if=" !displayTrop"><strong>Toggle to view with ta'amim</strong></h1>
       <b-switch @input="displayTrop = ! displayTrop" style="size: A4"></b-switch>
     <verse-display v-for="verse in selectedChapter.verses" v-bind:value="verse" :key="verse.number"
                     :verse-to-display="verse"
