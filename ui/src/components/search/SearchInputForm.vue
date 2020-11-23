@@ -2,9 +2,9 @@
 
     <div class="sidebar-page">
     <b-menu>
-        <h1 class="card-header-title-is-centered" >Search Options:</h1>
+        <h1 class="title" style="color: #0f4361"><strong>Search Options:</strong></h1>
         <b-field label="Select Category" >
-            <b-select placeholder="Select a name"  v-model="searchCriteria.category" @input="updateCategorySelection">
+            <b-select placeholder="Select a Sefer"  v-model="searchCriteria.category" @input="updateCategorySelection">
                 <option
                         v-for="category in categories"
                         :value="category"
@@ -14,7 +14,7 @@
             </b-select>
         </b-field>
         <b-field label="Select Book">
-            <b-select placeholder="Select a name" v-model="searchCriteria.book" @input="updateBookSelection">
+            <b-select placeholder="Select a Book" v-model="searchCriteria.book" @input="updateBookSelection">
                 <option
                         v-for="book in bookList"
                         :value="book"
@@ -24,7 +24,7 @@
             </b-select>
         </b-field>
         <b-field label="Select Chapter">
-            <b-select placeholder="Select a name" v-model="searchCriteria.chapter" @input="updateChapterSelection">
+            <b-select placeholder="Select a Perek" v-model="searchCriteria.chapter" @input="updateChapterSelection">
                 <option
                         v-for="chapter in chaptersList"
                         :value="chapter.number"
@@ -36,7 +36,8 @@
         <b-field label="Free Search">
             <b-input v-model="searchCriteria.searchTerm"></b-input>
         </b-field>
-        <b-button type="is-primary is-light" @click="updateSearchTermSelection">Search</b-button>
+        <b-button type="is-primary is-light" @click="updateSearchTermSelection" >Search</b-button>
+        <b-button type="is-danger is-light" @click="clearAllResults">Clear</b-button>
     </b-menu>
     </div>
 </template>
@@ -135,6 +136,15 @@ export default class SearchInputForm extends Vue{
                 break;
         }
         return returnString;
+    }
+
+    public clearAllResults(): void{
+        this.searchCriteria.category = "";
+        this.searchCriteria.book = "";
+        this.searchCriteria.chapter = "";
+        this.searchCriteria.searchTerm = "";
+        this.bookList = [];
+        this.$emit('clear-all-results');
     }
 
 

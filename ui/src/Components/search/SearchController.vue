@@ -7,6 +7,7 @@
               @update-chapter-selection="updateChapterSelection($event)"
               @update-search-term-selection="updateSearchTermSelection($event)"
               :chapters-list="chaptersList"
+              @clear-all-results="clearAllResults"
       ></search-input-form>
     </base-card>
     <search-results-list
@@ -255,7 +256,7 @@
     public getChapterFromPathSearch(path: string): void{
       console.log("getting chapter from path " + path);
       this.isLoading = true;
-      this.searchResults = []; //wipe the searchResults array clean...
+    //  this.searchResults = []; //wipe the searchResults array clean...
       //the api call:
       apifiClient.findChapterByUniquePath(path, `{
              hebrewNumeral
@@ -391,9 +392,19 @@
     //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
     public sendResultQuery(path: string): void{
       this.displayResults = true;
-      this.displayOptions = false;
+     // this.displayOptions = false;
       this.getChapterFromPathSearch(path);
 
+    }
+
+    public clearAllResults(): void{
+      this.searchCriteria.searchTerm = "";
+      this.searchCriteria.chapter = "";
+      this.searchCriteria.book = "";
+      this.searchCriteria.category = "";
+      this.chaptersList = [];
+      this.searchResults = [];
+      console.log(this.chaptersList);
     }
 
 

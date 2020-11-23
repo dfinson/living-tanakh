@@ -31,6 +31,7 @@ export default class SearchResultsList extends Vue{
 
   public sendControllerSelectedChapter(selectedChapter: string): void{
     this.$emit('result-selected',selectedChapter);
+    //console.log(this.searchResults);
   }
 
 
