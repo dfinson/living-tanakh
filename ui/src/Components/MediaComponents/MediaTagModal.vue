@@ -32,7 +32,6 @@ export default class MediaTagModal extends Vue{
   }`;
 
   mounted(){
-    console.log(this.tagId)
     apifiClient.getMediaTagById(this.tagId, this.tagExpectedReturn).then(response => {
       console.log(response);
       this.tag = response.data.getMediaTagById;
