@@ -9,7 +9,7 @@
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
     ></chapter-display>-->
-    <MediaTagModal tag-id="345054"/>
+    <MediaTagModal tag-id="48225"/>
   </div>
 </template>
 
@@ -57,6 +57,8 @@ import apifiClient from "@/api/apifiClient";
   }
 })
 export default class Dashboard extends Vue{
+
+  
 
   private tag: MediaTag;
 

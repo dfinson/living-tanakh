@@ -32,7 +32,7 @@ export class Verse {
 }
 
 export class MediaTag {
-    id?: number;
+    id: number;
     key?: string;
     description?: string;
     verses?: Verse[];

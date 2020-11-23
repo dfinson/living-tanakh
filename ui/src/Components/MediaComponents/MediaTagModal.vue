@@ -1,6 +1,6 @@
 <template>
   <div>
-
+    <Gallery :tag="tag"/>
   </div>
 </template>
 
@@ -8,8 +8,10 @@
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MediaTag} from "@/api/dto";
 import apifiClient from "@/api/apifiClient";
-
-@Component
+import Gallery from "@/Components/MediaComponents/Gallery.vue";
+@Component({
+  components: {Gallery}
+})
 export default class MediaTagModal extends Vue{
 
   @Prop({required: true})
