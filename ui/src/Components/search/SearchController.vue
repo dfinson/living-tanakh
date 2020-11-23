@@ -14,6 +14,7 @@
             :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
     ></search-results-list>
+    <b-loading v-model="isLoading" :can-cancel="true"></b-loading>
   </div>
 </template>
 
@@ -75,10 +76,12 @@
     public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
+    public isLoading = false;
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
     public getChapterList(): void{
       this.chaptersList = [];
+      this.isLoading = true;
       apifiClient.findBookByUniquePath(this.searchCriteria.book,
               `{
 
@@ -100,6 +103,7 @@
           ch.number = res['data'].findBookByUniquePath.chapters[i].number;
           ch.path = res['data'].findBookByUniquePath.chapters[i].path;
           this.chaptersList.push(ch);
+          this.isLoading = false;
           //console.log(this.chaptersList);
         }
       });
@@ -110,6 +114,7 @@
 
     //searching for a word when a search path has been specified
     public freeTextSearchWithPath(searchPath: string){
+      this.isLoading = true;
       this.searchResults = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
@@ -161,12 +166,13 @@
             type: 'is-danger',
             hasIcon: true
           });}
-      });
+      this.isLoading = false;});
     }
 
     //searching for a word when no search path has been specified
     public freeTextSearchWithoutPath(): void{
       console.log("Searching without path");
+      this.isLoading = true;
       this.searchResults = []; //wipe the searchResults array clean..
       //the api call:
       apifiClient.verseFreeTextSearch({
@@ -214,7 +220,7 @@
                   type: 'is-danger',
                   hasIcon: true
                 });
-
+              this.isLoading = false;
               }
 
       );
@@ -248,6 +254,7 @@
     //gets a chapter based on a complete path. can be called by the user, and is also called when a searchResult is selected.
     public getChapterFromPathSearch(path: string): void{
       console.log("getting chapter from path " + path);
+      this.isLoading = true;
       this.searchResults = []; //wipe the searchResults array clean...
       //the api call:
       apifiClient.findChapterByUniquePath(path, `{
@@ -284,7 +291,7 @@
         //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
         console.log(res)
         const ch = new Chapter();
-        ch.id = res['data'].findChapterByUniquePathd.id;
+        ch.id = res['data'].findChapterByUniquePath.id;
         ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
         ch.number = res['data'].findChapterByUniquePath.number;
         ch.path = res['data'].findChapterByUniquePath.path;
@@ -319,7 +326,9 @@
         //console.log(ch.book.hebrewName)
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
-        this.$emit('display-selected-chapter',this.getChapterSearchResults);}
+        this.$emit('display-selected-chapter',this.getChapterSearchResults);
+            this.isLoading = false;
+            }
       );
     }
 
