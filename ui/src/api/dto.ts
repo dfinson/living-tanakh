@@ -51,11 +51,12 @@ export class MediaContent {
     id: number;
     mediaTag?: MediaTag;
     mediaType?: MediaType;
-    name?: string;
     description?: string;
-    storageKey?: string;
+    key?: string;
     signedDownloadUrl?: string;
     signedUploadUrl?: string;
+    mimeType?: string;
+    signedThumbnailUrl?: string;
 }
 export class PrefixedVerseSegment {
     prefix: string;
@@ -72,10 +73,23 @@ export class SearchCriteria{
     chapter: string;
 }
 
-export enum TanakhSection {
-    TORAH = "TORAH",
-    PROPHETS = "PROPHETS",
-    WRITINGS = "WRITINGS",
+export class GalleriaItemTemplate{
+
+    constructor(mediaContent: MediaContent) {
+        this.itemImageSrc = GalleriaItemTemplate.getValue(mediaContent.signedDownloadUrl);
+        this.alt = GalleriaItemTemplate.getValue(mediaContent.description);
+        this.thumbnailImageSrc = GalleriaItemTemplate.getValue(mediaContent.signedThumbnailUrl);
+        this.title = GalleriaItemTemplate.getValue(mediaContent.key);
+    }
+
+    private static getValue(rawValue: string | undefined): string{
+        return rawValue ? rawValue : "";
+    }
+
+    itemImageSrc: string;
+    thumbnailImageSrc: string;
+    alt: string;
+    title: string;
 }
 
 export enum MediaType {

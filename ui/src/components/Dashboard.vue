@@ -16,6 +16,10 @@
             @stop-chapter-display="stopDisplay($event)"
             @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
     ></search-controller>
+        @closed-media-tag-modal="displayMediaTagModal = false"/>
+        :tag-id="selectedMediaTagId"
+        v-if="displayMediaTagModal"
+    <MediaTagModal
   </div>
     </div>
 </div>
@@ -53,6 +57,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
+import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
 import {Chapter, SearchCriteria, Verse} from "@/api/dto";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
@@ -64,6 +69,15 @@ import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
   }
 })
 export default class Dashboard extends Vue{
+  private displayMediaTagModal = false;
+  private selectedMediaTagId: number;
+    this.handleMediaTagIdSelected(369131);
+  mounted(){
+  }
+  private handleMediaTagIdSelected(id: number): void{
+    this.selectedMediaTagId = id;
+    this.displayMediaTagModal = true;
+  }
   searchCriteria: SearchCriteria
   public selectedChapter = new Chapter();
   public displayResults = false;

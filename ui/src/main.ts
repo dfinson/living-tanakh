@@ -7,7 +7,7 @@ import 'buefy/dist/buefy.css'
 Vue.use(Buefy);
 
 
-Vue.config.productionTip = false;
+apifiClient.setApiUrl(localhost)
 
 apifiClient.setApiUrl("http://livingtanakhapplicationde-env.eba-i3mkpska.eu-central-1.elasticbeanstalk.com/api");
 
