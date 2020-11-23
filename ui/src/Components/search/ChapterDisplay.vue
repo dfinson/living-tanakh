@@ -1,7 +1,7 @@
 <template>
   <base-card>
-  <div class="sidebar-page">
-    <base-card class="title" style="color: #0f4361">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}    </base-card>
+  <div class="sidebar-page" v-if="displayResults">
+    <base-card class="title" style="color: #0f4361">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</base-card>
       <b-switch @input="displayTrop = ! displayTrop" style="size: A4"></b-switch>
     <verse-display v-for="verse in selectedChapter.verses" v-bind:value="verse" :key="verse.number"
                     :verse-to-display="verse"

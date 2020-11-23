@@ -1,7 +1,7 @@
 <template>
   <base-card>
       <h1 class="title" style="color: darkcyan" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
-      <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.number"
+      <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.id"
                       :result="verse"
                       @result-selected="sendControllerSelectedChapter($event)"
 

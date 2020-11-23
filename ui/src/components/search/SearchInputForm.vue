@@ -28,7 +28,7 @@
                 <option
                         v-for="chapter in chaptersList"
                         :value="chapter.number"
-                        :key="chapter.number">
+                        :key="chapter.id">
                     {{ chapter.hebrewNumeral }}
                 </option>
             </b-select>
@@ -71,7 +71,8 @@ export default class SearchInputForm extends Vue{
     }
 
     public updateBookSelection(): void{ //update to the book selected by the user, and send it up to the controller...
-        this.$emit('update-book-selection',this.searchCriteria.book.toString());
+        console.log("updating book selection to " + this.searchCriteria.book)
+        this.$emit('update-book-selection',this.searchCriteria.book);
     }
 
     public updateChapterSelection(): void{ //update to the chapter selected by the user, and send it up to the controller...
@@ -96,19 +97,19 @@ export default class SearchInputForm extends Vue{
             case "TORAH":
                 for(const [key, value] of Object.entries(TORAH)) {
                     this.bookList.push(`${value}`.toString());
-                    console.log(toHebrewBookName(`${value}`.toString()));
+                    //console.log(toHebrewBookName(`${value}`.toString()));
                 }
                 break;
             case "PROPHETS":
                 for(const [key, value] of Object.entries(PROPHETS)) {
                     this.bookList.push(`${value}`);
-                    console.log(toHebrewBookName(`${value}`));
+                   // console.log(toHebrewBookName(`${value}`));
                 }
                 break;
             case "WRITINGS":
                 for(const [key, value] of Object.entries(WRITINGS)) {
                     this.bookList.push(`${value}`.toString());
-                    console.log(toHebrewBookName(`${value}`.toString()));
+                    //console.log(toHebrewBookName(`${value}`.toString()));
                 }
                 break;
 

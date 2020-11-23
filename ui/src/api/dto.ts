@@ -3,19 +3,19 @@
 // Generated using typescript-generator version 2.24.612 on 2020-11-02 19:35:13.
 
 export class Book {
-    id?: number;
-    path?: string;
+    id: number;
+    path: string;
     englishName?: string;
     hebrewName: string;
-    chapters?: Chapter[];
+    chapters: Chapter[];
 }
 
 export class Chapter {
     id: number;
     path: string;
     number: number;
-    book: Book;
-    verses: Verse[];
+    book?: Book;
+    verses  : Verse[];
     hebrewNumeral: string;
 }
 
@@ -24,7 +24,7 @@ export class Verse {
     path: string;
     number: number;
     chapter?: Chapter;
-    mediaTags?: MediaTag[];
+    mediaTags: MediaTag[];
     fullHebrewText: string;
     fullEnglishText?: string;
     searchableHebrewText: string;
