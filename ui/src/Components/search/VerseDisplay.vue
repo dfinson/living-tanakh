@@ -1,13 +1,14 @@
 <template>
     <div>
 <strong>
-<p  v-for="segment in verseToDisplay.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
+    <span>{{verseToDisplay.hebrewNumeral + ": "}}</span>
+<span  v-for="segment in verseToDisplay.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
 
     <span v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
     <span v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
     <a v-if="hasHighlighted(segment) && displayTrop" @click="sendTagToChapterDisplay(segment)" >{{segment.highlightedKeyword}}</a>
     <a v-else-if="hasHighlighted(segment) && !displayTrop" >{{segment.plainHebrewHighlightedKeyword}}</a>
-        <p/>
+        </span>
         <span v-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && displayTrop">{{ verseToDisplay.highlightedVerseSegments.finalSuffix}}</span>
         <span v-else-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && !displayTrop">{{verseToDisplay.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
 </strong>
@@ -63,8 +64,9 @@
 
 </script>
 
-<style>
+<style scoped>
 span{
-    word-spacing: normal;
+    font-family: 'StamAshkenaz', serif;
+    font-size: 20pt;
 }
 </style>

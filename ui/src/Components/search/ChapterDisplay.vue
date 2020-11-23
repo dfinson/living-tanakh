@@ -5,12 +5,14 @@
     <h1 class="tab-item" v-if="displayTrop"><strong>Toggle to view without ta'amim</strong></h1>
     <h1 class="tab-item" v-if=" !displayTrop"><strong>Toggle to view with ta'amim</strong></h1>
       <b-switch @input="displayTrop = ! displayTrop" style="size: A4"></b-switch>
+    <p>
     <verse-display v-for="verse in selectedChapter.verses" v-bind:value="verse" :key="verse.number"
                     :verse-to-display="verse"
                    :display-trop="displayTrop"
                    :search-term="searchTerm"
                    @send-tag-to-chapter-display="sendTagToDashboard($event)"
     ></verse-display>
+    </p>
   </div>
   </base-card>
 </template>

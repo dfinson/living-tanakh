@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-loading v-model="isLoading" is-full-page="true" ></b-loading>
     <!-- preload all images -->
     <img v-for="(content, index) in tag.linkedContent" :key="index" :src="content.signedDownloadUrl" style="display: none;" alt=""/>
     <div class="p-galleria-mask p-component-overlay" style="z-index: 1018;">
@@ -20,7 +21,7 @@
               <!-- current image display item -->
               <div class="p-galleria-item"><img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
                                                 :alt="tag.linkedContent[activeIndex].key"
-                                                style="width: 100%; display: block;" />
+                                                style="width: 100%; display: block;" v-on:load="isLoading = false"/>
               </div>
               <!-- next image button -->
               <button @click="nextImage()" type="button" class="p-galleria-item-next p-galleria-item-nav p-link">
@@ -42,10 +43,11 @@ import {MediaTag} from "@/api/dto";
 
 @Component
 export default class Gallery extends Vue{
+
+  public isLoading = true;
   @Prop({required: true})
   private tag: MediaTag;
   private activeIndex = 0;
-
 
   private previousImage(): void{
     //alert('previousImage')

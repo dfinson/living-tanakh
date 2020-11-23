@@ -7,7 +7,7 @@
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
             :search-term="this.searchTerm"
-             @send-tag-to-dashboard="setTagValue($event)"
+             @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
     ></chapter-display>
     </div>
     <div class="column">
@@ -16,10 +16,11 @@
             @stop-chapter-display="stopDisplay($event)"
             @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
     ></search-controller>
-        @closed-media-tag-modal="displayMediaTagModal = false"/>
+        <MediaTagModal
         :tag-id="selectedMediaTagId"
         v-if="displayMediaTagModal"
-    <MediaTagModal
+        @closed-media-tag-modal="displayMediaTagModal = false">
+        </MediaTagModal>
   </div>
     </div>
 </div>
@@ -65,15 +66,14 @@ import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
   components: {
     ChapterDisplay,
     SearchController,
-    BaseCard
+    BaseCard,
+      MediaTagModal
   }
 })
 export default class Dashboard extends Vue{
   private displayMediaTagModal = false;
   private selectedMediaTagId: number;
-    this.handleMediaTagIdSelected(369131);
-  mounted(){
-  }
+
   private handleMediaTagIdSelected(id: number): void{
     this.selectedMediaTagId = id;
     this.displayMediaTagModal = true;
@@ -95,10 +95,6 @@ export default class Dashboard extends Vue{
   public sendSearchTermToChapterDisplay(searchTerm: string): void{
     this.searchTerm = searchTerm;
     console.log(this.searchTerm + "dashboard");
-  }
-
-  public setTagValue(tag: number){
-   alert(tag + " from dashboard");
   }
 
 

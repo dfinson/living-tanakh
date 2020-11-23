@@ -10,7 +10,24 @@ export default{
 	setApiUrl(url){
 		apiUrl = url;
 	},
-
+	async getMediaTagById(input, expectedReturn, customHeaders){
+		let requestHeaders = { "Content-Type": "application/json" }
+		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+		if(bearerToken !== undefined) requestHeaders["Authorization"] = bearerToken;
+		const opts = {
+			method: "POST",
+			credentials: "include",
+			headers: requestHeaders,
+			body: JSON.stringify({
+				query: `query getMediaTagById($input: Long) { getMediaTagById(input: $input)${expectedReturn} }`,
+				variables: {
+					"input": input
+				},
+				operationName: "getMediaTagById"
+			})
+		};
+		return await (await fetch(apiUrl, opts)).json();
+	},
 	async associateLinkedContentWithMediaTag(owner, input, expectedReturn, customHeaders){
 		let requestHeaders = { "Content-Type": "application/json" }
 		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
