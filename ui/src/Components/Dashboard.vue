@@ -9,7 +9,10 @@
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
     ></chapter-display>-->
-    <MediaTagModal tag-id="48225"/>
+    <MediaTagModal
+        v-if="displayMediaTagModal"
+        :tag-id="selectedMediaTagId"
+        @closed-media-tag-modal="displayMediaTagModal = false"/>
   </div>
 </template>
 
@@ -45,9 +48,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-import {Chapter, MediaTag, SearchCriteria, Verse} from "@/api/dto";
+import {Chapter} from "@/api/dto";
 import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
-import apifiClient from "@/api/apifiClient";
 
 @Component({
   components: {
@@ -58,17 +60,20 @@ import apifiClient from "@/api/apifiClient";
 })
 export default class Dashboard extends Vue{
 
-  
+  public selectedChapter = new Chapter();
+  public displayResults = false;
 
-  private tag: MediaTag;
+  private displayMediaTagModal = false;
+  private selectedMediaTagId: number;
 
   mounted(){
-    apifiClient.getMediaTagById()
+    this.handleMediaTagIdSelected(369131);
   }
 
-  searchCriteria: SearchCriteria
-  public selectedChapter = new Chapter();
-  public displayResults = false
+  private handleMediaTagIdSelected(id: number): void{
+    this.selectedMediaTagId = id;
+    this.displayMediaTagModal = true;
+  }
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
@@ -78,6 +83,8 @@ export default class Dashboard extends Vue{
   public stopDisplay(displayChapter: boolean){
     this.displayResults = displayChapter;
   }
+
+
 
 }
 

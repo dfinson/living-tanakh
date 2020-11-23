@@ -3,6 +3,7 @@ package living.tanach.api.model.entities;
 import dev.sanda.apifi.annotations.EntityCollectionApi;
 import dev.sanda.apifi.annotations.WithCRUDEndpoints;
 import dev.sanda.apifi.generator.entity.CRUDEndpoints;
+import graphql.GraphQL;
 import living.tanach.api.api_hooks.LinkedMediaContentOfTagApiHooks;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

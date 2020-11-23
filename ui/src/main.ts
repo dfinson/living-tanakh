@@ -6,7 +6,7 @@ import {localhost, aws} from './api-urls'
 
 Vue.config.productionTip = false
 
-apifiClient.setApiUrl(aws)
+apifiClient.setApiUrl(localhost)
 
 new Vue({
   store,
