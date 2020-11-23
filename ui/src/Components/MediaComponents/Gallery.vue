@@ -9,7 +9,9 @@
           <span class="p-galleria-close-icon pi pi-times"></span>
           <span class="p-ink"></span>
         </button>
+
         <div class="p-galleria-content">
+          <h1 style="color: white; margin-bottom: 20%;">Images for {{tag.key}}</h1>
           <div class="p-galleria-item-wrapper">
             <div class="p-galleria-item-container">
               <!-- previous image button -->
@@ -45,7 +47,6 @@ export default class Gallery extends Vue{
   @Prop({required: true})
   private tag: MediaTag;
   private activeIndex = 0;
-
 
   private previousImage(): void{
     //alert('previousImage')
