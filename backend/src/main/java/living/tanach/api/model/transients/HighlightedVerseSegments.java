@@ -3,6 +3,7 @@ package living.tanach.api.model.transients;
 import living.tanach.api.model.entities.Verse;
 import living.tanach.api.utils.StaticUtils;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import static living.tanach.api.utils.StaticUtils.isPlainHebrewCharacter;
 
 @Data
+@Slf4j
 public class HighlightedVerseSegments {
 
     public HighlightedVerseSegments(Verse verse){
@@ -87,24 +89,24 @@ public class HighlightedVerseSegments {
     private List<PrefixedVerseSegment> parsePrefixedSegmentsByTags(Verse verse) {
 
         val tags = verse.getMediaTags();
-        val segments = new ArrayList<PrefixedVerseSegment>();
+        val segmentsTemp = new ArrayList<PrefixedVerseSegment>();
 
         if(tags.isEmpty())
-            segments.add(new PrefixedVerseSegment(verse.getFullHebrewText(), ""));
+            segmentsTemp.add(new PrefixedVerseSegment(verse.getFullHebrewText(), ""));
 
         tags.forEach(tag -> {
             val tagSegments = parsePrefixedSegmentsByKeyword(verse, tag.getKey());
             tagSegments.forEach(segment -> segment.setTag(tag));
-            segments.addAll(tagSegments);
+            segmentsTemp.addAll(tagSegments);
         });
 
-        return mergeSegmentPrefixes(segments, verse.getFullHebrewText());
+        return mergeSegmentPrefixes(segmentsTemp, verse.getFullHebrewText());
     }
 
-    private List<PrefixedVerseSegment> mergeSegmentPrefixes(List<PrefixedVerseSegment> segments, String fullText){
-        if(segments.size() == 1) return null;
+    private List<PrefixedVerseSegment> mergeSegmentPrefixes(List<PrefixedVerseSegment> segmentsTemp, String fullText){
+        if(segmentsTemp.size() == 1) return segmentsTemp;
         val finalSegments = new ArrayList<PrefixedVerseSegment>();
-        val prefixToSegmentMap = segments
+        val prefixToSegmentMap = segmentsTemp
                 .stream()
                 .collect(Collectors.toMap(PrefixedVerseSegment::getPrefix, Function.identity()));
         var currentPrefix = new StringBuilder();
@@ -112,7 +114,7 @@ public class HighlightedVerseSegments {
             currentPrefix.append(c);
             var prefixKey = currentPrefix.toString();
             if(prefixToSegmentMap.containsKey(prefixKey)){
-                segments.forEach(segment -> {
+                segmentsTemp.forEach(segment -> {
                     var segmentPrefix = segment.getPrefix();
                     if(!segmentPrefix.equals(prefixKey)){
                         var keyword = prefixToSegmentMap.get(prefixKey).getHighlightedKeyword();
