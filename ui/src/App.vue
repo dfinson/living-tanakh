@@ -7,10 +7,7 @@
 
 <script lang="ts">
 
-import {Component, Emit, Vue} from 'vue-property-decorator';
-import apifiClient from "./api/apifiClient.js";
-import {Chapter, Book, Verse} from "./api/dto.js";
-import {PROPHETS, TORAH, WRITINGS} from "./api/TANAKH.js";
+import {Component, Vue} from 'vue-property-decorator';
 import BaseCard from "./Components/BaseComponents/BaseCard.vue";
 import FormPage from "@/Components/SearchComponents/FormPage.vue";
 import Dashboard from "@/Components/Dashboard.vue";

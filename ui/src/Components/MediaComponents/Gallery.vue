@@ -11,7 +11,6 @@
         </button>
 
         <div class="p-galleria-content">
-          <h1 style="color: white; margin-bottom: 20%;">Images for {{tag.key}}</h1>
           <div class="p-galleria-item-wrapper">
             <div class="p-galleria-item-container">
               <!-- previous image button -->
