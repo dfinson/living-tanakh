@@ -1,19 +1,29 @@
 <template>
-  <div>
-    <!--<h1>The Ma'ayan Tanach Project</h1>
-    <search-controller class="split right"
-            @display-selected-chapter="sendChapterToChapterDisplay($event)"
-            @stop-chapter-display="stopDisplay($event)"
-    ></search-controller>
-    <chapter-display class="split left"
+<div>
+  <base-card class="title" style="color: #07a9ff ">The Ma'ayan Tanach Project</base-card>
+  <div class="columns">
+    <div class="column is-two-thirds">
+    <chapter-display
             :selected-chapter="this.selectedChapter"
             :display-results="this.displayResults"
-    ></chapter-display>-->
-    <MediaTagModal
-        v-if="displayMediaTagModal"
+            :search-term="this.searchTerm"
+             @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
+    ></chapter-display>
+    </div>
+    <div class="column">
+    <search-controller
+            @display-selected-chapter="sendChapterToChapterDisplay($event)"
+            @stop-chapter-display="stopDisplay($event)"
+            @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
+    ></search-controller>
+        <MediaTagModal
         :tag-id="selectedMediaTagId"
-        @closed-media-tag-modal="displayMediaTagModal = false"/>
+        v-if="displayMediaTagModal"
+        @closed-media-tag-modal="displayMediaTagModal = false">
+        </MediaTagModal>
   </div>
+    </div>
+</div>
 </template>
 
 <script lang = "ts">
@@ -48,32 +58,30 @@
 import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-import {Chapter} from "@/api/dto";
 import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
+import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
 @Component({
   components: {
-    MediaTagModal,
     ChapterDisplay,
-    SearchController
+    SearchController,
+    BaseCard,
+      MediaTagModal
   }
 })
 export default class Dashboard extends Vue{
-
-  public selectedChapter = new Chapter();
-  public displayResults = false;
-
   private displayMediaTagModal = false;
   private selectedMediaTagId: number;
-
-  mounted(){
-    this.handleMediaTagIdSelected(369131);
-  }
 
   private handleMediaTagIdSelected(id: number): void{
     this.selectedMediaTagId = id;
     this.displayMediaTagModal = true;
   }
+  searchCriteria: SearchCriteria
+  public selectedChapter = new Chapter();
+  public displayResults = false;
+  public searchTerm = "";
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
@@ -82,6 +90,11 @@ export default class Dashboard extends Vue{
 
   public stopDisplay(displayChapter: boolean){
     this.displayResults = displayChapter;
+  }
+
+  public sendSearchTermToChapterDisplay(searchTerm: string): void{
+    this.searchTerm = searchTerm;
+    console.log(this.searchTerm + "dashboard");
   }
 
 

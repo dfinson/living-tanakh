@@ -3,19 +3,19 @@
 // Generated using typescript-generator version 2.24.612 on 2020-11-02 19:35:13.
 
 export class Book {
-    id?: number;
-    path?: string;
+    id: number;
+    path: string;
     englishName?: string;
-    hebrewName?: string;
-    chapters?: Chapter[];
+    hebrewName: string;
+    chapters: Chapter[];
 }
 
 export class Chapter {
     id: number;
     path: string;
     number: number;
-    book: Book;
-    verses: Verse[];
+    book?: Book;
+    verses  : Verse[];
     hebrewNumeral: string;
 }
 
@@ -24,10 +24,12 @@ export class Verse {
     path: string;
     number: number;
     chapter?: Chapter;
-    mediaTags?: MediaTag[];
+    mediaTags: MediaTag[];
     fullHebrewText: string;
     fullEnglishText?: string;
     searchableHebrewText: string;
+    highlightedVerseSegments: HighlightedVerseSegments;
+    humanReadablePath: string;
     hebrewNumeral: string;
 }
 
@@ -39,8 +41,14 @@ export class MediaTag {
     linkedContent?: MediaContent[];
 }
 
+export class HighlightedVerseSegments {
+    segments: PrefixedVerseSegment[];
+    finalSuffix: string;
+    plainHebrewFinalSuffix?: string;
+}
+
 export class MediaContent {
-    id?: number;
+    id: number;
     mediaTag?: MediaTag;
     mediaType?: MediaType;
     description?: string;
@@ -49,6 +57,13 @@ export class MediaContent {
     signedUploadUrl?: string;
     mimeType?: string;
     signedThumbnailUrl?: string;
+}
+export class PrefixedVerseSegment {
+    prefix: string;
+    highlightedKeyword: string;
+    tag: MediaTag;
+    plainHebrewPrefix?: string;
+    plainHebrewHighlightedKeyword?: string;
 }
 
 export class SearchCriteria{

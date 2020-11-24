@@ -20,20 +20,23 @@
                 <span class="p-ink"></span>
               </button>
               <!-- current image display item -->
-              <div class="p-galleria-item"><img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
+              <div>
+                <b-loading v-model="isLoading" v-show="isLoading" :can-cancel="true"></b-loading>
+              <div class="p-galleria-item" v-show="!isLoading"> <img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
                                                 :alt="tag.linkedContent[activeIndex].key"
-                                                style="width: 100%; display: block;" />
+                                                style="width: 100%; display: block;" v-on:load="isLoading = false"/>
+              </div>
               </div>
               <!-- next image button -->
               <button @click="nextImage()" type="button" class="p-galleria-item-next p-galleria-item-nav p-link">
                 <span class="p-galleria-item-next-icon pi pi-chevron-right"></span>
                 <span class="p-ink"></span>
               </button>
-            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
@@ -42,8 +45,11 @@
 import {Vue, Component, Prop} from "vue-property-decorator";
 import {MediaTag} from "@/api/dto";
 
+
 @Component
 export default class Gallery extends Vue{
+
+  public isLoading = true;
   @Prop({required: true})
   private tag: MediaTag;
   private activeIndex = 0;
@@ -93,6 +99,7 @@ export default class Gallery extends Vue{
 </script>
 
 <style scoped>
+
 /*! CSS Used from: https://primefaces.org/primevue/showcase/themes/saga-blue/theme.css */
 * {
   box-sizing: border-box;

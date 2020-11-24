@@ -9,10 +9,9 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MediaTag} from "@/api/dto";
 import apifiClient from "@/api/apifiClient";
 import Gallery from "@/Components/MediaComponents/Gallery.vue";
-const VEasyDialog = require('v-easy-dialog');
 
 @Component({
-  components: {Gallery, VEasyDialog}
+  components: {Gallery}
 })
 export default class MediaTagModal extends Vue{
 

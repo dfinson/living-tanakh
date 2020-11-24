@@ -2,13 +2,18 @@ import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
 import apifiClient from "@/api/apifiClient";
-import {localhost, aws} from './api-urls'
+import Buefy from 'buefy'
+import 'buefy/dist/buefy.css'
+Vue.use(Buefy);
+import {localhost, aws} from "./api-urls"
 
-Vue.config.productionTip = false
 
-apifiClient.setApiUrl(localhost)
+apifiClient.setApiUrl(aws)
+
+
 
 new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
