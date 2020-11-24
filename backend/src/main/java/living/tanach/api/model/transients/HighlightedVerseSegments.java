@@ -63,7 +63,7 @@ public class HighlightedVerseSegments {
             val verseChar = verseChars[verseIndex];
             if(isPlainHebrewCharacter(verseChar)){
                 val searchTermChar = highlightedKeywordChars[highlightedKeywordIndex];
-                if(verseChar == searchTermChar){
+                if(isMatchingCharacter(verseChar, searchTermChar)){
                     if(start == -1) start = verseIndex;
                     charsMatched++;
                     highlightedKeywordIndex++;
@@ -72,6 +72,8 @@ public class HighlightedVerseSegments {
                         matched = true;
                     }
                 }else {
+                    if(isRepeatOfMatchingCharacter(highlightedKeywordIndex, verseChar, highlightedKeywordChars))
+                        verseIndex--;
                     highlightedKeywordIndex = 0;
                     start = -1;
                     end = -1;
@@ -85,6 +87,7 @@ public class HighlightedVerseSegments {
         val searchTerm = verseText.substring(start, end + 1);
         return new PrefixedVerseSegment(prefix, searchTerm);
     }
+
 
     private List<PrefixedVerseSegment> parsePrefixedSegmentsByTags(Verse verse) {
 
@@ -138,5 +141,13 @@ public class HighlightedVerseSegments {
                 .filter(StaticUtils::isPlainHebrewCharacter)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
+    }
+
+    private boolean isRepeatOfMatchingCharacter(int highlightedKeywordIndex, char verseChar, char[] highlightedKeywordChars) {
+        return highlightedKeywordIndex > 0 && verseChar == highlightedKeywordChars[highlightedKeywordIndex - 1];
+    }
+
+    private boolean isMatchingCharacter(char verseChar, char searchTermChar) {
+        return verseChar == searchTermChar;
     }
 }
