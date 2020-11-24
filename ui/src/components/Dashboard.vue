@@ -1,6 +1,6 @@
 <template>
 <div>
-  <base-card class="title" style="color: darkcyan">The Ma'ayan Tanach Project</base-card>
+  <base-card class="title" style="color: #07a9ff ">The Ma'ayan Tanach Project</base-card>
   <div class="columns">
     <div class="column is-two-thirds">
     <chapter-display

@@ -368,6 +368,7 @@
     //these functions get the data from the form and update the fields of the searchCriteria object accordingly...
     public updateCategorySelection(selectedCategory: string): void{
       this.searchCriteria.category = selectedCategory;
+      this.chaptersList = [];
       //console.log(this.searchCriteria.category + " from controller");
 
     }

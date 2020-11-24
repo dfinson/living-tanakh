@@ -1,6 +1,5 @@
 <template>
   <div>
-    <b-loading v-model="isLoading" is-full-page="true" ></b-loading>
     <!-- preload all images -->
     <img v-for="(content, index) in tag.linkedContent" :key="index" :src="content.signedDownloadUrl" style="display: none;" alt=""/>
     <div class="p-galleria-mask p-component-overlay" style="z-index: 1018;">
@@ -21,7 +20,7 @@
                 <span class="p-ink"></span>
               </button>
               <!-- current image display item -->
-              <div class="p-galleria-item"><img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
+              <div class="p-galleria-item"> <img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
                                                 :alt="tag.linkedContent[activeIndex].key"
                                                 style="width: 100%; display: block;" v-on:load="isLoading = false"/>
               </div>
@@ -30,11 +29,11 @@
                 <span class="p-galleria-item-next-icon pi pi-chevron-right"></span>
                 <span class="p-ink"></span>
               </button>
-            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
@@ -42,6 +41,7 @@
 
 import {Vue, Component, Prop} from "vue-property-decorator";
 import {MediaTag} from "@/api/dto";
+
 
 @Component
 export default class Gallery extends Vue{
@@ -96,6 +96,7 @@ export default class Gallery extends Vue{
 </script>
 
 <style scoped>
+
 /*! CSS Used from: https://primefaces.org/primevue/showcase/themes/saga-blue/theme.css */
 * {
   box-sizing: border-box;
