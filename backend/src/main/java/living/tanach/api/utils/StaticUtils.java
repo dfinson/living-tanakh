@@ -1,6 +1,7 @@
 package living.tanach.api.utils;
 
 import com.google.re2j.Pattern;
+import lombok.Getter;
 import lombok.val;
 
 import java.util.*;

@@ -8,7 +8,7 @@ Vue.use(Buefy);
 import {localhost, aws} from "./api-urls"
 
 
-apifiClient.setApiUrl(aws)
+apifiClient.setApiUrl(localhost)
 
 
 

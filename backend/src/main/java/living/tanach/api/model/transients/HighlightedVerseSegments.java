@@ -8,6 +8,7 @@ import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ public class HighlightedVerseSegments {
 
         while (verseIndex < verseChars.length && !matched){
             val verseChar = verseChars[verseIndex];
-            if(isPlainHebrewCharacter(verseChar)){
+            if(isPlainHebrewCharacter(verseChar) &&  verseChar != '\u05BE'){
                 val searchTermChar = highlightedKeywordChars[highlightedKeywordIndex];
                 if(isMatchingCharacter(verseChar, searchTermChar)){
                     if(start == -1) start = verseIndex;
@@ -113,21 +114,30 @@ public class HighlightedVerseSegments {
                 .stream()
                 .collect(Collectors.toMap(PrefixedVerseSegment::getPrefix, Function.identity()));
         var currentPrefix = new StringBuilder();
-        for(char c : fullText.toCharArray()){
+        char[] charArray = fullText.toCharArray();
+        for (int i = 0, charArrayLength = charArray.length; i < charArrayLength; i++) {
+            char c = charArray[i];
             currentPrefix.append(c);
             var prefixKey = currentPrefix.toString();
-            if(prefixToSegmentMap.containsKey(prefixKey)){
-                segmentsTemp.forEach(segment -> {
+            var keyword = "";
+            var matchedSegment = false;
+            if (prefixToSegmentMap.containsKey(prefixKey)) {
+                keyword = prefixToSegmentMap.get(prefixKey).getHighlightedKeyword();
+                for (PrefixedVerseSegment segment : segmentsTemp) {
                     var segmentPrefix = segment.getPrefix();
-                    if(!segmentPrefix.equals(prefixKey)){
-                        var keyword = prefixToSegmentMap.get(prefixKey).getHighlightedKeyword();
+                    if (!segmentPrefix.equals(prefixKey)) {
                         var updatedSegmentPrefix = segmentPrefix.replaceFirst(prefixKey + keyword, "");
+                        prefixToSegmentMap.remove(segment.getPrefix());
+                        matchedSegment = !updatedSegmentPrefix.equals(segmentPrefix);
                         segment.setPrefix(updatedSegmentPrefix);
+                        prefixToSegmentMap.put(updatedSegmentPrefix, segment);
                     }
-                });
+                }
                 finalSegments.add(prefixToSegmentMap.get(prefixKey));
                 currentPrefix = new StringBuilder();
             }
+            if(matchedSegment)
+                i += keyword.length();
         }
         return finalSegments;
     }
