@@ -20,9 +20,12 @@
                 <span class="p-ink"></span>
               </button>
               <!-- current image display item -->
-              <div class="p-galleria-item"> <img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
+              <div>
+                <b-loading v-model="isLoading" v-show="isLoading"></b-loading>
+              <div class="p-galleria-item" v-show="!isLoading"> <img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
                                                 :alt="tag.linkedContent[activeIndex].key"
                                                 style="width: 100%; display: block;" v-on:load="isLoading = false"/>
+              </div>
               </div>
               <!-- next image button -->
               <button @click="nextImage()" type="button" class="p-galleria-item-next p-galleria-item-nav p-link">
