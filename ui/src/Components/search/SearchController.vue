@@ -123,23 +123,29 @@
         customArgs: {
           validPathPrefixes:  [searchPath]
         },
-        pageSize: 20,
-        pageNumber: 0,
+       fetchAll:true,
         searchTerm: this.searchCriteria.searchTerm
 
       }, `{
-              content{
-              humanReadablePath
-              chapter{
-              path
-              }
+               content{
+             humanReadablePath
+             highlightedVerseSegments{
+             finalSuffix
+             segments{
+             highlightedKeyword
+             prefix
+             }
+             }
+            chapter{
+            path
+
+            }
            fullHebrewText
            hebrewNumeral
            id
            number
            path
-
-          } }`).then(res => {
+           } }`).then(res => {
         if (res['data'].verseFreeTextSearch.content.length > 0) {
           let i;
 
@@ -153,6 +159,7 @@
             verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
             verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
             verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
+            verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments
             this.searchResults.push(verse);
           }
           console.log(this.searchCriteria.searchTerm + "controller");
@@ -180,13 +187,19 @@
         customArgs: {
           validPathPrefixes: ["TORAH", "PROPHETS", "WRITINGS"]
         },
-        pageSize: 20,
-        pageNumber: 0,
+        fetchAll:true,
         searchTerm: this.searchCriteria.searchTerm
 
       }, `{
             content{
              humanReadablePath
+             highlightedVerseSegments{
+             finalSuffix
+             segments{
+             highlightedKeyword
+             prefix
+             }
+             }
             chapter{
             path
 
@@ -209,6 +222,7 @@
                     verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
                     verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
                     verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+                    verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
                     this.searchResults.push(verse);
                   }
                   console.log(this.searchCriteria.searchTerm + "controller");
@@ -301,30 +315,7 @@
         let i;
         for(i = 0; i < res['data'].findChapterByUniquePath.verses.length; i++ ) {
           ch.verses.push(res['data'].findChapterByUniquePath.verses[i]);
-          /* for(let j = 0; j < ch.verses[i].highlightedVerseSegments.segments.length; j++) {
-             console.log(ch.verses[i].highlightedVerseSegments.segments[j].prefix);
-             console.log(ch.verses[i].highlightedVerseSegments.segments[j].highlightedKeyword);
-           }
-           console.log(ch.verses[i].highlightedVerseSegments.finalSuffix);*/
         }
-        /* const vr = new Verse();
-         vr.id = res['data'].findChapterByUniquePath.verses[i].id;
-         vr.hebrewNumeral = res['data'].findChapterByUniquePath.verses[i].hebrewNumeral;
-         vr.number = res['data'].findChapterByUniquePath.verses[i].number;
-         vr.path = res['data'].findChapterByUniquePath.verses[i].path;
-         vr.fullHebrewText = res['data'].findChapterByUniquePath.verses[i].fullHebrewText;
-         vr.searchableHebrewText = res['data'].findChapterByUniquePath.verses[i].searchableHebrewText;
-       //  console.log(vr);
-         ch.verses.push(vr);
-        // console.log(ch.verses.length);
-         this.getChapterSearchResults = ch; */
-        //  console.log(this.getChapterSearchResults);
-
-        //ch.verses.sort((a, b) => a.number - b.number);
-        //console.log(ch.verses);
-        // console.log(ch);
-        // }
-        //console.log(ch.book.hebrewName)
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
         this.$emit('display-selected-chapter',this.getChapterSearchResults);
