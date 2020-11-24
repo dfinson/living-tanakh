@@ -21,7 +21,7 @@
               </button>
               <!-- current image display item -->
               <div>
-                <b-loading v-model="isLoading" v-show="isLoading"></b-loading>
+                <b-loading v-model="isLoading" v-show="isLoading" :can-cancel="true"></b-loading>
               <div class="p-galleria-item" v-show="!isLoading"> <img :src="tag.linkedContent[activeIndex].signedDownloadUrl"
                                                 :alt="tag.linkedContent[activeIndex].key"
                                                 style="width: 100%; display: block;" v-on:load="isLoading = false"/>
