@@ -32,7 +32,7 @@ export default class SearchResult extends Vue{
   result: Verse;
 
   public pathSelected(): void{
-    this.$emit('result-selected',this.result.chapter?.path);
+    this.$emit('result-selected',this.result.chapter?.path, this.result.number);
   }
   public hasPrefix(segment: PrefixedVerseSegment): boolean{
     if(segment.prefix !== ""){

@@ -5,6 +5,7 @@
     <div class="column is-two-thirds">
     <chapter-display
             :selected-chapter="this.selectedChapter"
+            :highlighted-verse-number="this.highlightedVerseNumber"
             :display-results="this.displayResults"
             :search-term="this.searchTerm"
              @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
@@ -59,7 +60,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
-import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import {Chapter, SearchCriteria} from "@/api/dto";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
 @Component({
@@ -80,6 +81,7 @@ export default class Dashboard extends Vue{
   }
   searchCriteria: SearchCriteria
   public selectedChapter = new Chapter();
+  private highlightedVerseNumber = -1;
   public displayResults = false;
   public searchTerm = "";
 

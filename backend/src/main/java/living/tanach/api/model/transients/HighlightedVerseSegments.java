@@ -29,17 +29,17 @@ public class HighlightedVerseSegments {
     }
 
     public HighlightedVerseSegments(Verse verse, String highlightedKeyword){
-        this.segments = parsePrefixedSegmentsByKeyword(verse, highlightedKeyword);
+        this.segments = parsePrefixedSegmentsByKeyword(verse, highlightedKeyword, false);
     }
 
-    private List<PrefixedVerseSegment> parsePrefixedSegmentsByKeyword(Verse verse, String highlightedKeyword) {
+    private List<PrefixedVerseSegment> parsePrefixedSegmentsByKeyword(Verse verse, String highlightedKeyword, boolean includeRafeh) {
         val fullHebrewText = verse.getFullHebrewText();
         int verseIndex = 0;
         var segmentsList = new ArrayList<PrefixedVerseSegment>();
         PrefixedVerseSegment segment;
 
         do {
-            segment = nextPrefixedSegment(fullHebrewText, highlightedKeyword, verseIndex);
+            segment = nextPrefixedSegment(fullHebrewText, highlightedKeyword, verseIndex, includeRafeh);
             if(segment != null) {
                 verseIndex = segment.nextStartFrom(verseIndex);
                 segmentsList.add(segment);
@@ -49,7 +49,7 @@ public class HighlightedVerseSegments {
         return segmentsList;
     }
 
-    private PrefixedVerseSegment nextPrefixedSegment(String verseText, String rawHighlightedKeyword, int startFrom){
+    private PrefixedVerseSegment nextPrefixedSegment(String verseText, String rawHighlightedKeyword, int startFrom, boolean includeRafeh){
 
         val verseChars = verseText.toCharArray();
         val highlightedKeywordChars = rawHighlightedKeyword.toCharArray();
@@ -62,7 +62,7 @@ public class HighlightedVerseSegments {
 
         while (verseIndex < verseChars.length && !matched){
             val verseChar = verseChars[verseIndex];
-            if(isPlainHebrewCharacter(verseChar) &&  verseChar != '\u05BE'){
+            if(isPlainHebrewCharacter(verseChar) &&  (!includeRafeh || verseChar != '\u05BE')){
                 val searchTermChar = highlightedKeywordChars[highlightedKeywordIndex];
                 if(isMatchingCharacter(verseChar, searchTermChar)){
                     if(start == -1) start = verseIndex;
@@ -99,7 +99,7 @@ public class HighlightedVerseSegments {
             segmentsTemp.add(new PrefixedVerseSegment(verse.getFullHebrewText(), ""));
 
         tags.forEach(tag -> {
-            val tagSegments = parsePrefixedSegmentsByKeyword(verse, tag.getKey());
+            val tagSegments = parsePrefixedSegmentsByKeyword(verse, tag.getKey(), true);
             tagSegments.forEach(segment -> segment.setTag(tag));
             segmentsTemp.addAll(tagSegments);
         });

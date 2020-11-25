@@ -24,6 +24,8 @@
             verseToDisplay: Verse
         @Prop()
         displayTrop: boolean;
+        @Prop({required: true})
+        private isHighlightedVerse: boolean;
 
         @Prop()
         searchTerm: string;

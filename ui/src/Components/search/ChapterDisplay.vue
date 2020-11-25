@@ -10,6 +10,7 @@
                     :verse-to-display="verse"
                    :display-trop="displayTrop"
                    :search-term="searchTerm"
+                   :is-highlighted-verse="highlightedVerseNumber === verse.number"
                    @send-tag-to-chapter-display="sendTagToDashboard($event)"
     ></verse-display>
     </p>
@@ -62,6 +63,8 @@ export default class ChapterDisplay extends Vue{
   @Prop({default:'Example'})
   selectedChapter: Chapter
   @Prop()
+  private highlightedVerseNumber: number;
+  @Prop()
   displayResults: boolean;
   @Prop()
   searchTerm: string;
@@ -78,6 +81,15 @@ export default class ChapterDisplay extends Vue{
 </script>
 
 <style scoped>
+
+.highlight-yellow-background{
+  background-color: yellow;
+}
+
+.no-highlighting{
+
+}
+
 card{
   overflow: scroll;
 }
