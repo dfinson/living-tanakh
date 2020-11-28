@@ -1,6 +1,7 @@
 <template>
   <div>
-    <Gallery :tag="tag" @closed-media-tag-modal="$emit('closed-media-tag-modal')"/>
+<!--    <Gallery :tag="tag" @closed-media-tag-modal="$emit('closed-media-tag-modal')"/>-->
+    <MediaPresenter :tag="tag"/>
   </div>
 </template>
 
@@ -9,9 +10,10 @@ import {Component, Prop, Vue} from 'vue-property-decorator';
 import {MediaTag} from "@/api/dto";
 import apifiClient from "@/api/apifiClient";
 import Gallery from "@/Components/MediaComponents/Gallery.vue";
+import MediaPresenter from "@/Components/MediaComponents/MediaPresenter.vue";
 
 @Component({
-  components: {Gallery}
+  components: {MediaPresenter, Gallery}
 })
 export default class MediaTagModal extends Vue{
 
