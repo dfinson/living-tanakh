@@ -21,4 +21,5 @@ sefaria:
 aws:
   s3:
     bucket-name: maayan-bucket
+    thumbnails-bucket-name: maayan-thumbnails-bucket
 

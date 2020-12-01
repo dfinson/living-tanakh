@@ -20,16 +20,18 @@ public class MediaTagsOfVerseApiHooks implements EntityCollectionApiHooks<MediaT
                              DataManager<MediaTag> mediaTagDataManager,
                              DataManager<Verse> verseDataManager) {
         val tagsAlreadyPresentKeys = verse.getMediaTags().stream().map(MediaTag::getKey).collect(Collectors.toSet());
-        val illegalOverlappingTags = toAssociateInput
+        val illegalOverlappingTagKeys = toAssociateInput
                 .stream()
                 .filter(tag -> tagsAlreadyPresentKeys.contains(tag.getKey()))
+                .map(MediaTag::getKey)
                 .collect(Collectors.toSet());
-        if(!illegalOverlappingTags.isEmpty()){
+        /*if(!illegalOverlappingTags.isEmpty()){
             val msgBuilder = new StringBuilder("Error adding tags with keys: [");
             illegalOverlappingTags.forEach(tag -> msgBuilder.append(", \"").append(tag.getKey()).append("\""));
             msgBuilder.append("]\n Those keys are already present in the database. Did you mean to update?");
             throw new IllegalArgumentException(msgBuilder.toString());
-        }
+        }*/
+        toAssociateInput.removeIf(tag -> illegalOverlappingTagKeys.contains(tag.getKey()));
     }
 
     @Override

@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -29,6 +30,8 @@ public class S3Service {
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+    @Value("${aws.s3.thumbnails-bucket-name}")
+    private String thumbnailsBucketName;
     @Value("#{new Integer('${s3.url-ttl:60}')}")
     private Integer urlTtl;
 
@@ -56,12 +59,13 @@ public class S3Service {
         val url = presignedRequest.url();
         return url.toString();
     }
-    public String generateDownloadUrl(String key){
+
+    public String generatePreviewUrl(String key){
         try {
             val getObjectRequest =
                     GetObjectRequest.builder()
                             .bucket(bucketName)
-                            .key(key)
+                            .key(toPreviewKey(key))
                             .build();
             val getObjectPresignRequest =
                     GetObjectPresignRequest.builder()
@@ -75,9 +79,15 @@ public class S3Service {
             throw new RuntimeException(e);
         }
     }
-    public void deleteObjects(Collection<String> keys){
-        try {
 
+    public void deleteObjects(Collection<String> keys){
+        deleteObjects(keys, bucketName);
+        var previewKeys = keys.stream().map(this::toPreviewKey).collect(Collectors.toSet());
+        deleteObjects(previewKeys, thumbnailsBucketName);
+    }
+
+    private void deleteObjects(Collection<String> keys, String bucketName){
+        try {
             val identifiers = keys
                     .stream()
                     .map(key -> ObjectIdentifier.builder().key(key).build())
@@ -91,6 +101,10 @@ public class S3Service {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String toPreviewKey(String key){
+        return key.replaceAll("[.].+", ".jpg");
     }
 
 

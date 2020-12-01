@@ -2,6 +2,7 @@ package living.tanach.api.api_hooks;
 
 import dev.sanda.apifi.service.ApiHooks;
 import dev.sanda.datafi.service.DataManager;
+import living.tanach.api.model.entities.MediaContent;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.utils.S3Service;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class MediaTagApiHooks implements ApiHooks<MediaTag> {
 
+    private final DataManager<MediaContent> mediaContentDataManager;
     private final S3Service s3Service;
 
     @Override
@@ -20,7 +22,7 @@ public class MediaTagApiHooks implements ApiHooks<MediaTag> {
                 .getLinkedContent()
                 .forEach(mediaContent ->
                          mediaContent.setSignedDownloadUrl(
-                                 s3Service.generateDownloadUrl(mediaContent.getKey())
+                                 s3Service.generatePreviewUrl(mediaContent.getKey())
                          )
                 );
     }
