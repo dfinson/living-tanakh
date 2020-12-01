@@ -14,7 +14,10 @@ import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,7 +54,20 @@ public class LambdaHandler {
         var originalImageObject = getObject(key, bucketName, s3, context);
         var compressedImageObject = compressImageObject(originalImageObject, key);
         uploadCompressedImage(compressedImageObject, key, s3);
+        originalImageObject.delete();
+        compressedImageObject.delete();
+        deleteDirectory(Paths.get("/tmp/new").toFile());
         return String.format("Successfully applied compression transformation to %s", key);
+    }
+
+    private void deleteDirectory(File directory) {
+        if(directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if(files != null)
+                for (File file : files) deleteDirectory(file);
+        }
+        if(directory.delete()) System.out.println(directory + " is deleted");
+        else System.out.println("Directory not deleted");
     }
 
     private void uploadCompressedImage(File imageObject, String key, S3Client s3Client) {
@@ -114,9 +130,21 @@ public class LambdaHandler {
         return (String) bucketName;
     }
     private String getObjectKey(Map<String, Object> input){
-        var object = asMap(getS3(input).get("object"));
-        var key = object.get("key");
-        return (String) key;
+        try {
+            System.out.println("Extracting object key from s3 event...");
+            var object = asMap(getS3(input).get("object"));
+            var key = (String)object.get("key");
+            System.out.println("raw key value is \"" + key + "\"");
+            key = URLDecoder.decode(key, StandardCharsets.UTF_8.name());
+            System.out.println("Decoded key value is \"" + key + "\"");
+            return key;
+        }catch (Exception e){
+            System.out.println("Exception getting object key: " + e.getMessage());
+            System.out.println("start exception stacktrace");
+            e.printStackTrace();
+            System.out.println("end of exception stacktrace");
+            throw new RuntimeException(e);
+        }
     }
     private Map<String, Object> getS3(Map<String, Object> input){
         var records = (List<Object>) input.get("Records");

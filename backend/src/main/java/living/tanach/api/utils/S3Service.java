@@ -104,7 +104,7 @@ public class S3Service {
     }
 
     private String toPreviewKey(String key){
-        return key.replaceAll("[.].+", ".jpg");
+        return key.replaceAll("[.].+", ".jpeg");
     }
 
 
