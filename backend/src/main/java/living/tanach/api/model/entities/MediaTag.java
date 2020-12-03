@@ -14,15 +14,14 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static dev.sanda.apifi.generator.entity.CRUDEndpoints.DELETE;
-import static dev.sanda.apifi.generator.entity.CRUDEndpoints.GET_BY_ID;
+import static dev.sanda.apifi.generator.entity.CRUDEndpoints.*;
 import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static org.hibernate.annotations.FetchMode.JOIN;
 
 @Data
 @Entity
-@WithCRUDEndpoints({GET_BY_ID})
+@WithCRUDEndpoints({GET_BATCH_BY_IDS})
 @ToString(exclude = {"verses", "linkedContent"})
 @EqualsAndHashCode(exclude = {"verses", "linkedContent"})
 public class MediaTag {

@@ -9,21 +9,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor(onConstructor_ = @Autowired)
 public class MediaTagApiHooks implements ApiHooks<MediaTag> {
 
-    private final DataManager<MediaContent> mediaContentDataManager;
     private final S3Service s3Service;
 
     @Override
-    public void postGetById(MediaTag result, DataManager<MediaTag> dataManager) {
-        result
-                .getLinkedContent()
-                .forEach(mediaContent ->
-                         mediaContent.setSignedDownloadUrl(
-                                 s3Service.generatePreviewUrl(mediaContent.getKey())
-                         )
-                );
+    public void postGetBatchByIds(List<MediaTag> result, DataManager<MediaTag> dataManager) {
+        result.forEach(mediaTag -> mediaTag.getLinkedContent()
+                .forEach(mediaContent -> mediaContent.setSignedDownloadUrl(s3Service.generatePreviewUrl(mediaContent.getKey())))
+        );
     }
 }
