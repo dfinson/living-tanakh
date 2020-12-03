@@ -71,6 +71,7 @@ export class SearchCriteria{
     category: string;
     book: string;
     chapter: string;
+    passuk: string;
 }
 
 export class GalleriaItemTemplate{
