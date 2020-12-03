@@ -1,15 +1,23 @@
 <template>
-  <div>
-    <base-card>
-      <search-input-form
-              @update-category-selection="updateCategorySelection($event)"
-              @update-book-selection="updateBookSelection($event)"
-              @update-chapter-selection="updateChapterSelection($event)"
-              @update-search-term-selection="updateSearchTermSelection($event)"
-              :chapters-list="chaptersList"
-              @clear-all-results="clearAllResults"
-      ></search-input-form>
-    </base-card>
+    <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'>
+        <a name="stacks_in_372-"></a>
+        <!-- the actual form - dd's and inputs -->
+        <search-input-form
+                @update-category-selection="updateCategorySelection($event)"
+                @update-book-selection="updateBookSelection($event)"
+                @update-chapter-selection="updateChapterSelection($event)"
+                @update-search-term-selection="updateSearchTermSelection($event)"
+                @update-verse-selection="sendVerseToPassukDisplay($event)"
+                :chapters-list="chaptersList"
+                :get-chapter-search-results="getChapterSearchResults"
+                @clear-all-results="clearAllResults"
+        ></search-input-form>
+        <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2" style="margin-top: 18px;">
+            </div>
+        </div> <!-- will contain searchResults-->
+
+
     <search-results-list
             :search-results="searchResults"
             :display-options="displayOptions"
@@ -318,6 +326,7 @@
         }
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
+        console.log(this.getChapterSearchResults);
         this.$emit('display-selected-chapter',this.getChapterSearchResults);
             this.isLoading = false;
             }
@@ -328,9 +337,6 @@
     public generalSearchSorter(): void{
       //if there is a search term, we'll call the free text search function - (which will also make use of the search path..)
       if(this.searchCriteria.searchTerm !== "" && this.searchCriteria.searchTerm !== undefined){
-        this.displayResults = false;
-        this.displayOptions = true;
-        this.$emit('stop-chapter-display',this.displayResults);
         this.freeTextSearchSorter();
       }
 
@@ -372,20 +378,39 @@
 
     public updateChapterSelection(selectedChapter: string): void{
       this.searchCriteria.chapter = selectedChapter;
-      //console.log(this.searchCriteria.chapter + " from controller");
+      this.searchCriteria.passuk = "";
+      console.log(this.searchCriteria.book + "/" + this.searchCriteria.chapter + " from controller");
+      this.getChapterFromPathSearch(this.searchCriteria.book + "/" + this.searchCriteria.chapter);
     }
+
 
     public updateSearchTermSelection(searchTerm: string): void{
       this.searchCriteria.searchTerm = searchTerm;
-      // console.log(this.searchCriteria.searchTerm + " from controller")
+       console.log(this.searchCriteria.searchTerm + " from controller")
       this.generalSearchSorter();
     }
 
+    public displayVerseAndRelatedChapter(): void{
+      //  this.$emit('')
+    }
+
+    public sendVerseToPassukDisplay(selectedVerseNumber: string): void{
+        //  console.log("looking for passuk " + this.searchCriteria.book + "/" + this.searchCriteria.chapter + "/" + selectedVerseNumber);
+          for(let i = 0; i < this.getChapterSearchResults.verses.length; i++){
+              if(this.getChapterSearchResults.verses[i].number === parseInt(selectedVerseNumber)){
+                  //console.log(this.getChapterSearchResults.verses[i]);
+                  this.$emit('send-selected-verse-to-passuk-display',this.getChapterSearchResults.verses[i] );
+              }
+          }
+      }
+
+
     //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
-    public sendResultQuery(path: string): void{
-      this.displayResults = true;
-     // this.displayOptions = false;
-      this.getChapterFromPathSearch(path);
+    public sendResultQuery(pathArr: string[]): void{
+        //pathArr[0] = chapter path
+     this.getChapterFromPathSearch(pathArr[0]);
+     //pathArr[1] = verse number (in string format)
+     setTimeout(()=>{this.sendVerseToPassukDisplay(pathArr[1])},1000);
 
     }
 
@@ -398,6 +423,18 @@
       this.searchResults = [];
       console.log(this.chaptersList);
     }
+
+
+    //when the page is mounted we will automatically display Genesis/1 for chapter, and the first verse of that chapter as the selected verse
+    mounted(){
+        this.getChapterFromPathSearch('TORAH/Genesis/1');
+
+        //a timeout is necessary because we want to make sure that the chapter is loaded first
+       setTimeout(()=>{this.sendVerseToPassukDisplay('1')},1000);
+    }
+
+
+
 
 
 

@@ -67,6 +67,13 @@ export class PrefixedVerseSegment {
 }
 
 export class GalleriaImageItem{
+export class SearchCriteria{
+    searchTerm: string;
+    category: string;
+    book: string;
+    chapter: string;
+    passuk: string;
+}
 
     constructor(mediaContent: MediaContent) {
         this.itemImageSrc = mediaContent.signedDownloadUrl ? mediaContent.signedDownloadUrl: '';
