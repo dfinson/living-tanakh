@@ -64,7 +64,7 @@ public class S3Service {
         try {
             val getObjectRequest =
                     GetObjectRequest.builder()
-                            .bucket(bucketName)
+                            .bucket(thumbnailsBucketName)
                             .key(toPreviewKey(key))
                             .build();
             val getObjectPresignRequest =
