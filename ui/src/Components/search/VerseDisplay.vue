@@ -1,4 +1,5 @@
 <template>
+
  <p style="text-align:right;" class="par">
    <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;">{{"(" + verseToDisplay.hebrewNumeral  +    ")"}}</span>
      <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-for="segment in verseToDisplay.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
@@ -9,6 +10,7 @@
      <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && displayTrop">{{ verseToDisplay.highlightedVerseSegments.finalSuffix}}</span>
      <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-else-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && !displayTrop">{{verseToDisplay.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
  </p>
+
 </template>
 
 <script lang="ts">
@@ -20,15 +22,12 @@
             verseToDisplay: Verse;
         @Prop()
         displayTrop: boolean;
-        @Prop({required: true})
-        private isHighlightedVerse: boolean;
 
         @Prop()
         searchTerm: string;
 
         public hasPrefix(segment: PrefixedVerseSegment): boolean{
             if(segment.prefix !== ""){
-                console.log(segment.prefix);
                 return true;
             }
             else
@@ -64,20 +63,7 @@
 
 <style scoped>
     /*! CSS Used from: http://www.foundationstone.org/Maayan/page-5/files/stacks_page_page38.css?rwcache=628456071 ; media=all */
-
-    @media all {
-        @media print {
-            *,
-            *::before,
-            *::after {
-                text-shadow: none!important;
-                box-shadow: none!important;
-            }
-        }
-        *,
-        *::before,
-        *::after {
-            box-sizing: inherit;
-        }
-    }
+.stacks_in text_stack{
+overflow-y: scroll;
+}
 </style>

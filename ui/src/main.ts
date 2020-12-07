@@ -9,8 +9,7 @@ import Galleria from 'primevue/galleria';
 
 Vue.use(Buefy);
 Vue.component('Galleria', Galleria);
-
-import {localhost, aws} from "./api-urls"
+import {localhost, aws} from "@/./api-urls";
 
 
 apifiClient.setApiUrl(aws);

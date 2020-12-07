@@ -1,7 +1,7 @@
 <template>
     <div id='stacks_in_95' class='stacks_in text_stack'>
         <p style="text-align:center;">
-            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" >{{ "(" + selectedVerse.hebrewNumeral  +    ")"}}</span>
+            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ")"}}</span>
             <span  style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-for="segment in selectedVerse.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
        <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
       <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
