@@ -8,7 +8,7 @@
         <h5 class="stacks_in_352_hdr text-muted  ">TANACH VISUAL DATABASE</h5>
       </div> <!-- column header-->
       <div class="stacks_in_249-foundry-card card  ">
-        <img src="C:\Users\Shmuel Finson\Desktop\magnets\WhatsApp Image 2020-12-03 at 8.19.47 PM.jpeg" class="img-fluid card-img-top" alt="Image">
+        <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg" class="img-fluid card-img-top" alt="Image">
         <!-- Special Circular image overlapped on top of the top image. -->
         <!-- Only displays if the top image is visible. -->
         <div class="card-block">
@@ -29,6 +29,7 @@
                 @display-selected-chapter="sendChapterToChapterDisplay($event)"
                 @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
                 @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
+                @clear-all-results="clearAllResults()"
         ></search-controller>
 
         <!-- the social media icon badges  -->
@@ -241,6 +242,11 @@ export default class Dashboard extends Vue{
   public sendSearchTermToChapterDisplay(searchTerm: string): void{
     this.searchTerm = searchTerm;
     console.log(this.searchTerm + "dashboard");
+  }
+  public clearAllResults(): void{
+    this.selectedChapter = new Chapter();
+    this.selectedVerse = new Verse();
+    this.searchTerm = "";
   }
 
   //this function will also send the media components the tags in this selected verse.

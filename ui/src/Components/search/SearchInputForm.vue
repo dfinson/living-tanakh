@@ -92,8 +92,8 @@
         <!-- send and clear buttons-->
 
         <div class="search-and-clear-bttns">
-            <b-button type="is-primary is-light" class="search_btn" @click="updateSearchTermSelection" >Search</b-button>
-            <b-button type="is-danger is-light" class="clear_btn" @click="clearAllResults">Clear</b-button>
+            <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" >Search</b-button>
+            <b-button type="is-danger" class="clear_btn" @click="clearAllResults">Clear</b-button>
             </div>
     </div>
                         </div>

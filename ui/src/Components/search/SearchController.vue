@@ -424,6 +424,7 @@
       this.searchCriteria.category = "";
       this.listOfChaptersInSelectedBook = [];
       this.freeTextSearchResultsVerseArray = [];
+      this.$emit('clear-all-results');
 
       console.log(this.listOfChaptersInSelectedBook);
     }

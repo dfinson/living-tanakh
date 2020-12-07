@@ -53,10 +53,13 @@ import {Chapter} from "@/api/dto";
 @Component({
   components:{
     BaseCard,
-    VerseDisplay
-  }
+    VerseDisplay,
+}
 })
 export default class ChapterDisplay extends Vue{
+    public hey(): void{
+        alert('Hey!!!');
+    }
   @Prop({default:'Example'})
   selectedChapter: Chapter;
   @Prop()
@@ -65,6 +68,7 @@ export default class ChapterDisplay extends Vue{
   displayTrop: boolean;
 
     public buttonLab = "";
+    public index = null;
   public sendTagToDashboard(tag: number): void{
     console.log(tag + " from chapter")
     this.$emit('send-tag-to-dashboard',tag);
@@ -81,6 +85,14 @@ export default class ChapterDisplay extends Vue{
 </script>
 
 <style scoped>
+    .image {
+        float: left;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border: 1px solid #ebebeb;
+        margin: 5px;
+    }
 .buttonSw{
     margin-right: 300px;
 }
