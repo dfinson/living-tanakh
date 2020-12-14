@@ -66,8 +66,15 @@ export class PrefixedVerseSegment {
     plainHebrewHighlightedKeyword?: string;
 }
 
-export class GalleriaImageItem{
 
+export class SearchCriteria{
+    searchTerm: string;
+    category: string;
+    book: string;
+    chapter: string;
+    passuk: string;
+}
+export class GalleriaImageItem{
     constructor(mediaContent: MediaContent) {
         this.itemImageSrc = mediaContent.signedDownloadUrl ? mediaContent.signedDownloadUrl: '';
         this.thumbnailImageSrc = this.itemImageSrc;
@@ -94,12 +101,6 @@ export class GalleriaResponsiveOption{
     numVisible: number;
 }
 
-export class SearchCriteria{
-    searchTerm: string;
-    category: string;
-    book: string;
-    chapter: string;
-}
 
 export enum MediaType {
     VIDEO = "VIDEO",

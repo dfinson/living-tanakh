@@ -10,7 +10,7 @@ export default{
 	setApiUrl(url){
 		apiUrl = url;
 	},
-	async getMediaTagById(input, expectedReturn, customHeaders){
+	async getMediaTagsByIds(input, expectedReturn, customHeaders){
 		let requestHeaders = { "Content-Type": "application/json" }
 		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
 		if(bearerToken !== undefined) requestHeaders["Authorization"] = bearerToken;
@@ -19,11 +19,11 @@ export default{
 			credentials: "include",
 			headers: requestHeaders,
 			body: JSON.stringify({
-				query: `query getMediaTagById($input: Long) { getMediaTagById(input: $input)${expectedReturn} }`,
+				query: `query getMediaTagsByIds($input: [Long]) { getMediaTagsByIds(input: $input)${expectedReturn} }`,
 				variables: {
 					"input": input
 				},
-				operationName: "getMediaTagById"
+				operationName: "getMediaTagsByIds"
 			})
 		};
 		return await (await fetch(apiUrl, opts)).json();

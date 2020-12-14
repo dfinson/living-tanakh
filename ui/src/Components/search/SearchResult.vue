@@ -6,7 +6,7 @@
 <p>
   <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.highlightedKeyword">
     <span v-if="hasPrefix(segment)">{{segment.prefix}}</span>
-    <span style="background-color: yellow">{{segment.highlightedKeyword}}</span>
+    <span style="background-color: yellow">{{segment.highlightedKeyword + " "}}</span>
   </span>
   <span v-if="hasSuffix(result.highlightedVerseSegments)">{{ result.highlightedVerseSegments.finalSuffix}}</span>
 </p>
@@ -32,7 +32,7 @@ export default class SearchResult extends Vue{
   result: Verse;
 
   public pathSelected(): void{
-    this.$emit('result-selected',this.result.chapter?.path, this.result.number);
+    this.$emit('result-selected',[this.result.chapter?.path,this.result.number.toString()]);
   }
   public hasPrefix(segment: PrefixedVerseSegment): boolean{
     if(segment.prefix !== ""){
@@ -45,7 +45,7 @@ export default class SearchResult extends Vue{
 
   public hasHighlighted(segment: PrefixedVerseSegment): boolean {
     if(segment.highlightedKeyword !== ""){
-       console.log(segment.highlightedKeyword + this.counter);
+       //console.log(segment.highlightedKeyword + this.counter);
        this.counter ++;
       return true;}
     else
