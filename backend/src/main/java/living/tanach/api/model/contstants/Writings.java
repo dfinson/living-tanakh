@@ -7,7 +7,8 @@ public enum Writings {
     RUTH("Ruth"),
     LAMENTATIONS("Lamentations"),
     ECCLESIASTES("Ecclesiastes"),
-    ESTHER("Esther");
+    ESTHER("Esther"),
+    CHRONICLES("Chronicles");
 
     private final String name;
     Writings(String name) {

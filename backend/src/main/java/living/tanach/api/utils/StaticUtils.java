@@ -84,9 +84,7 @@ public class StaticUtils {
                         "Malachi",
                         "Daniel",
                         "Ezra",
-                        "Nehemiah",
-                        "Chronicles I",
-                        "Chronicles II"
+                        "Nehemiah"
                 )
         );
     }
@@ -99,7 +97,9 @@ public class StaticUtils {
                         "Ruth",
                         "Lamentations",
                         "Ecclesiastes",
-                        "Esther"
+                        "Esther",
+                        "Chronicles I",
+                        "Chronicles II"
                 )
         );
     }
@@ -135,8 +135,6 @@ public class StaticUtils {
         put("Daniel", "דניאל");
         put("Ezra", "עזרא");
         put("Nehemiah", "נחמיה");
-        put("Chronicles I", "דברי הימים א");
-        put("Chronicles II", "דברי הימים ב");
 
         put("Psalms", "תהלים");
         put("Proverbs", "משלי");
@@ -145,6 +143,8 @@ public class StaticUtils {
         put("Lamentations", "איכה");
         put("Ecclesiastes", "קוהלת");
         put("Esther", "אסתר");
+        put("Chronicles I", "דברי הימים א");
+        put("Chronicles II", "דברי הימים ב");
     }};
     public static String toHumanReadableHebrewPath(String path){
         val pathValues = path.split("/");
