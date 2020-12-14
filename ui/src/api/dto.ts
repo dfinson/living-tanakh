@@ -66,31 +66,41 @@ export class PrefixedVerseSegment {
     plainHebrewHighlightedKeyword?: string;
 }
 
+
 export class SearchCriteria{
     searchTerm: string;
     category: string;
     book: string;
     chapter: string;
+    passuk: string;
 }
-
-export class GalleriaItemTemplate{
-
+export class GalleriaImageItem{
     constructor(mediaContent: MediaContent) {
-        this.itemImageSrc = GalleriaItemTemplate.getValue(mediaContent.signedDownloadUrl);
-        this.alt = GalleriaItemTemplate.getValue(mediaContent.description);
-        this.thumbnailImageSrc = GalleriaItemTemplate.getValue(mediaContent.signedThumbnailUrl);
-        this.title = GalleriaItemTemplate.getValue(mediaContent.key);
-    }
-
-    private static getValue(rawValue: string | undefined): string{
-        return rawValue ? rawValue : "";
+        this.itemImageSrc = mediaContent.signedDownloadUrl ? mediaContent.signedDownloadUrl: '';
+        this.thumbnailImageSrc = this.itemImageSrc;
+        this.alt = mediaContent.key ? mediaContent.key : '';
+        this.title = this.alt;
+        this.description = mediaContent.description ? mediaContent.description : '';
     }
 
     itemImageSrc: string;
     thumbnailImageSrc: string;
     alt: string;
     title: string;
+    description: string;
 }
+
+export class GalleriaResponsiveOption{
+
+    constructor(breakpoint: string, numVisible: number) {
+        this.breakpoint = breakpoint;
+        this.numVisible = numVisible;
+    }
+
+    breakpoint: string;
+    numVisible: number;
+}
+
 
 export enum MediaType {
     VIDEO = "VIDEO",

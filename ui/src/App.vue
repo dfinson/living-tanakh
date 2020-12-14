@@ -1,6 +1,23 @@
 <template>
   <div id="app">
+    <div id='stacks_out_1' class='stacks_top'>
+      <div id='stacks_in_1' class=''>
+        <div id='stacks_out_153' class='stacks_out'>
+          <div id='stacks_in_153' class='stacks_in com_elixir_stacks_foundry_stack'>
+            <!-- Foundry -->
+          </div>
+        </div>
+        <div id='stacks_out_374' class='stacks_out'>
+          <div id='stacks_in_374' class='stacks_in com_elixir_stacks_foundryPartitions_stack'>
+            <div id="stacks_in_374-slide-out-sidebar" class="slideout color-picker"></div>
+            <div class="fc-wrapper">
+              <span class="fc-open-button"><i class="fa fa-plus"></i></span>
     <Dashboard/>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
@@ -29,20 +46,8 @@ export default class App extends Vue {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #050a50;
-  margin-top: 60px;
-}
-header {
-  background-color: #3a0061;
-  color: white;
-  width: 100%;
-  padding: 1rem;
-}
+
+
 /*button,
 a {
   text-decoration: none;

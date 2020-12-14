@@ -4,11 +4,16 @@ import store from './store'
 import apifiClient from "@/api/apifiClient";
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
+import Galleria from 'primevue/galleria';
+
+
 Vue.use(Buefy);
-import {localhost, aws} from "./api-urls"
+Vue.component('Galleria', Galleria);
+
+import {localhost, aws} from "@/./api-urls";
 
 
-apifiClient.setApiUrl(localhost)
+apifiClient.setApiUrl(aws);
 
 
 

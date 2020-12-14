@@ -1,17 +1,25 @@
 <template>
-  <div>
-    <base-card>
-      <search-input-form
-              @update-category-selection="updateCategorySelection($event)"
-              @update-book-selection="updateBookSelection($event)"
-              @update-chapter-selection="updateChapterSelection($event)"
-              @update-search-term-selection="updateSearchTermSelection($event)"
-              :chapters-list="chaptersList"
-              @clear-all-results="clearAllResults"
-      ></search-input-form>
-    </base-card>
+    <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'>
+        <a name="stacks_in_372-"></a>
+        <!-- the actual form - dd's and inputs -->
+        <search-input-form
+                @update-category-selection="updateCategorySelection($event)"
+                @update-book-selection="updateBookSelection($event)"
+                @update-chapter-selection="updateChapterSelection($event)"
+                @update-search-term-selection="updateSearchTermSelection($event)"
+                @update-verse-selection="updateVerseSelectionAndSendVerseToPassukDisplay($event)"
+                :chapters-list="listOfChaptersInSelectedBook"
+                :get-chapter-search-results="getChapterSearchResults"
+                @clear-all-results="clearAllResults"
+        ></search-input-form>
+        <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2" style="margin-top: 18px;">
+            </div>
+        </div> <!-- will contain searchResults-->
+
+
     <search-results-list
-            :search-results="searchResults"
+            :search-results="freeTextSearchResultsVerseArray"
             :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
     ></search-results-list>
@@ -72,8 +80,8 @@
 
 
     public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
-    public chaptersList: Chapter[] = [] //will contain the list of chapters in the selected book, to be sent down to the form..
-    public searchResults: Verse[] = [] //will contain the results of our path search - I.e a chapter of verses...
+    public listOfChaptersInSelectedBook: Chapter[] = []; //will contain the list of chapters in the selected book, to be sent down to the form..
+    public freeTextSearchResultsVerseArray: Verse[] = []; //will contain the results of our path search - I.e a chapter of verses...
     public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
@@ -81,7 +89,7 @@
 
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
     public getChapterList(): void{
-      this.chaptersList = [];
+      this.listOfChaptersInSelectedBook = [];
       this.isLoading = true;
       apifiClient.findBookByUniquePath(this.searchCriteria.book,
               `{
@@ -103,7 +111,7 @@
           ch.id = res['data'].findBookByUniquePath.chapters[i].id;
           ch.number = res['data'].findBookByUniquePath.chapters[i].number;
           ch.path = res['data'].findBookByUniquePath.chapters[i].path;
-          this.chaptersList.push(ch);
+          this.listOfChaptersInSelectedBook.push(ch);
           this.isLoading = false;
           //console.log(this.chaptersList);
         }
@@ -116,7 +124,7 @@
     //searching for a word when a search path has been specified
     public freeTextSearchWithPath(searchPath: string){
       this.isLoading = true;
-      this.searchResults = [] //wipe the searchResults array clean, to get rid of any previous results...
+      this.freeTextSearchResultsVerseArray = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
       apifiClient.verseFreeTextSearch({
@@ -160,7 +168,7 @@
             verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
             verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
             verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments
-            this.searchResults.push(verse);
+            this.freeTextSearchResultsVerseArray.push(verse);
           }
           console.log(this.searchCriteria.searchTerm + "controller");
           this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
@@ -181,7 +189,7 @@
     public freeTextSearchWithoutPath(): void{
       console.log("Searching without path");
       this.isLoading = true;
-      this.searchResults = []; //wipe the searchResults array clean..
+      this.freeTextSearchResultsVerseArray = []; //wipe the searchResults array clean..
       //the api call:
       apifiClient.verseFreeTextSearch({
         customArgs: {
@@ -223,7 +231,7 @@
                     verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
                     verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
                     verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
-                    this.searchResults.push(verse);
+                    this.freeTextSearchResultsVerseArray.push(verse);
                   }
                   console.log(this.searchCriteria.searchTerm + "controller");
                   this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
@@ -245,8 +253,6 @@
     public freeTextSearchSorter(): void{
 
       let searchPath = "";
-      if(this.searchCriteria.category !== ""  && this.searchCriteria.category !== undefined)    //if there is a category selected:
-        searchPath = this.searchCriteria.category;
 
       if(this.searchCriteria.book !== "" && this.searchCriteria.book !== undefined) // if there is a book selected
         searchPath = this.searchCriteria.book;
@@ -300,11 +306,14 @@
       path
       id
       searchableHebrewText
+      mediaTags{
+        id
+      }
 
     }
             }`).then(res => {
         //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
-        console.log(res)
+      //  console.log(res)
         const ch = new Chapter();
         ch.id = res['data'].findChapterByUniquePath.id;
         ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
@@ -318,6 +327,7 @@
         }
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
+       // console.log(this.getChapterSearchResults);
         this.$emit('display-selected-chapter',this.getChapterSearchResults);
             this.isLoading = false;
             }
@@ -328,9 +338,6 @@
     public generalSearchSorter(): void{
       //if there is a search term, we'll call the free text search function - (which will also make use of the search path..)
       if(this.searchCriteria.searchTerm !== "" && this.searchCriteria.searchTerm !== undefined){
-        this.displayResults = false;
-        this.displayOptions = true;
-        this.$emit('stop-chapter-display',this.displayResults);
         this.freeTextSearchSorter();
       }
 
@@ -359,33 +366,54 @@
     //these functions get the data from the form and update the fields of the searchCriteria object accordingly...
     public updateCategorySelection(selectedCategory: string): void{
       this.searchCriteria.category = selectedCategory;
-      this.chaptersList = [];
+      this.listOfChaptersInSelectedBook = [];
       //console.log(this.searchCriteria.category + " from controller");
 
     }
 
     public updateBookSelection(selectedBook: string): void{
       this.searchCriteria.book = selectedBook;
+      this.searchCriteria.passuk = "";this.searchCriteria.chapter = "";
+      this.getChapterSearchResults = new Chapter();
       //console.log(this.searchCriteria.book + " from controller");
       this.getChapterList();
     }
 
     public updateChapterSelection(selectedChapter: string): void{
       this.searchCriteria.chapter = selectedChapter;
-      //console.log(this.searchCriteria.chapter + " from controller");
+      this.searchCriteria.passuk = "";
+      console.log(this.searchCriteria.book + "/" + this.searchCriteria.chapter + " from controller");
+      this.getChapterFromPathSearch(this.searchCriteria.book + "/" + this.searchCriteria.chapter);
     }
+
 
     public updateSearchTermSelection(searchTerm: string): void{
       this.searchCriteria.searchTerm = searchTerm;
-      // console.log(this.searchCriteria.searchTerm + " from controller")
+       console.log(this.searchCriteria.searchTerm + " from controller")
       this.generalSearchSorter();
     }
 
+    public displayVerseAndRelatedChapter(): void{
+      //  this.$emit('')
+    }
+
+    public updateVerseSelectionAndSendVerseToPassukDisplay(selectedVerseNumber: string): void{
+        //  console.log("looking for passuk " + this.searchCriteria.book + "/" + this.searchCriteria.chapter + "/" + selectedVerseNumber);
+          for(let i = 0; i < this.getChapterSearchResults.verses.length; i++){
+              if(this.getChapterSearchResults.verses[i].number === parseInt(selectedVerseNumber)){
+                  //console.log(this.getChapterSearchResults.verses[i]);
+                  this.$emit('send-selected-verse-to-passuk-display',this.getChapterSearchResults.verses[i] );
+              }
+          }
+      }
+
+
     //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
-    public sendResultQuery(path: string): void{
-      this.displayResults = true;
-     // this.displayOptions = false;
-      this.getChapterFromPathSearch(path);
+    public sendResultQuery(pathArr: string[]): void{
+        //pathArr[0] = chapter path
+     this.getChapterFromPathSearch(pathArr[0]);
+     //pathArr[1] = verse number (in string format)
+     setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(pathArr[1])},1000);
 
     }
 
@@ -394,10 +422,24 @@
       this.searchCriteria.chapter = "";
       this.searchCriteria.book = "";
       this.searchCriteria.category = "";
-      this.chaptersList = [];
-      this.searchResults = [];
-      console.log(this.chaptersList);
+      this.listOfChaptersInSelectedBook = [];
+      this.freeTextSearchResultsVerseArray = [];
+      this.$emit('clear-all-results');
+
+      console.log(this.listOfChaptersInSelectedBook);
     }
+
+
+    //when the page is mounted we will automatically display Genesis/1 for chapter, and the first verse of that chapter as the selected verse
+    mounted(){
+        this.getChapterFromPathSearch('TORAH/Genesis/1');
+
+        //a timeout is necessary because we want to make sure that the chapter is loaded first
+       setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay('1')},1000);
+    }
+
+
+
 
 
 

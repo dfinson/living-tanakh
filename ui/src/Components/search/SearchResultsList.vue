@@ -1,12 +1,12 @@
 <template>
-  <base-card>
+    <div>
       <h1 class="title" style="color: darkcyan" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
       <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.id"
                       :result="verse"
                       @result-selected="sendControllerSelectedChapter($event)"
 
       ></search-result>
-  </base-card>
+    </div>
 </template>
 
 <script lang = "ts">
@@ -29,9 +29,8 @@ export default class SearchResultsList extends Vue{
   displayOptions: boolean;
 
 
-  public sendControllerSelectedChapter(event: never[]): void{
-    alert(event);
-    this.$emit('result-selected',event[0], event[1]);
+  public sendControllerSelectedChapter(pathArr: string[]): void{
+    this.$emit('result-selected',pathArr);
     //console.log(this.searchResults);
   }
 

@@ -56,7 +56,7 @@ export const WRITINGS = {
     'TORAH/Numbers': 'במדבר',
     'TORAH/Deuteronomy': 'דברים',
 
-    'PROPHETS/Joshua': 'יהושוע',
+    'PROPHETS/Joshua': 'יהושע',
     'PROPHETS/Judges': 'שופטים',
     'PROPHETS/Samuel I': 'שמואל א',
     'PROPHETS/Samuel II': 'שמואל ב',

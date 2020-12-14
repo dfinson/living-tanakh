@@ -26,8 +26,7 @@ public enum Prophets {
     MALACHI("Malachi"),
     DANIEL("Daniel"),
     EZRA("Ezra"),
-    NEHEMIAH("Nehemiah"),
-    CHRONICLES("Chronicles");
+    NEHEMIAH("Nehemiah");
 
     private final String name;
     Prophets(String name) {
