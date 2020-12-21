@@ -1,12 +1,12 @@
 <template>
     <div id='stacks_in_95' class='stacks_in text_stack'>
         <p style="text-align:center;">
-            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ")"}}</span>
+            <span style="font:19px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ") "}}</span>
             <span  style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-for="segment in selectedVerse.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
        <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
       <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
-       <a v-if="hasHighlighted(segment) && displayTrop" style="color: crimson" >{{segment.highlightedKeyword}}</a>
-        <a v-else-if="hasHighlighted(segment) && !displayTrop" style="color: crimson">{{segment.plainHebrewHighlightedKeyword}}</a></span>
+       <a v-if="hasHighlighted(segment) && displayTrop" style="color: crimson"  @click="sendTagToDashBoard(segment)">{{segment.highlightedKeyword}}</a>
+        <a v-else-if="hasHighlighted(segment) && !displayTrop" style="color: crimson" @click="sendTagToDashBoard(segment)">{{segment.plainHebrewHighlightedKeyword}}</a></span>
             <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="hasSuffix(selectedVerse.highlightedVerseSegments) && displayTrop">{{ selectedVerse.highlightedVerseSegments.finalSuffix}}</span>
             <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-else-if="hasSuffix(selectedVerse.highlightedVerseSegments) && !displayTrop">{{selectedVerse.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
         </p>
@@ -52,6 +52,12 @@
         else
             return false;
     }
+
+    public sendTagToDashBoard(segment: PrefixedVerseSegment): void {
+        this.$emit('send-tag-to-dashboard', segment.tag.id);
+    }
+
+
 
 
     }

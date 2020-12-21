@@ -1,7 +1,6 @@
 <template>
-        <div id='stacks_in_72' class='stacks_in text_stack'>
-            <b-button @click="displayTrop = ! displayTrop" class="buttonSw" size="is-small" type="is-info" outlined>Click To View with\out ta'amim and nikud</b-button>
-        <h1 style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;">{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</h1>
+        <div id='stacks_in_72' class='stacks_in text_stack' >
+        <h1 style="font-size:20px; margin-right: 5px; 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1; text-align: right" >{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</h1>
 
 
 
@@ -9,7 +8,7 @@
                                      :verse-to-display="verse"
                                      :display-trop="displayTrop"
                                      :search-term="searchTerm"
-                                     @send-tag-to-chapter-display="sendTagToDashboard($event)"
+                                     @send-passuk-to-passuk-display="sendPassukToDashboard($event)"
                       ></verse-display>
 
         </div>
@@ -47,7 +46,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 import VerseDisplay from "@/Components/search/VerseDisplay.vue";
-import {Chapter} from "@/api/dto";
+import {Chapter, Verse} from "@/api/dto";
 
 
 @Component({
@@ -57,29 +56,21 @@ import {Chapter} from "@/api/dto";
 }
 })
 export default class ChapterDisplay extends Vue{
-    public hey(): void{
-        alert('Hey!!!');
-    }
-  @Prop({default:'Example'})
+
+  @Prop({required:true})
   selectedChapter: Chapter;
   @Prop()
   searchTerm: string;
-  @Prop()
+  @Prop({default:true})
   displayTrop: boolean;
 
     public buttonLab = "";
     public index = null;
-  public sendTagToDashboard(tag: number): void{
-    console.log(tag + " from chapter")
-    this.$emit('send-tag-to-dashboard',tag);
+  public sendPassukToDashboard(verse: Verse): void{
+   // console.log(tag + " from chapter")
+    this.$emit('send-passuk-to-passuk-display',verse);
   }
 
-  public buttonLabel(): void{
-      if(this.displayTrop)
-          this.buttonLab = "Click to view without ta'amim and nikud";
-      else
-          this.buttonLab = "Click to view with ta'amim and nikud";
-  }
 
 }
 </script>
@@ -96,6 +87,5 @@ export default class ChapterDisplay extends Vue{
 .buttonSw{
     margin-right: 300px;
 }
-    /*! CSS Used from: http://www.foundationstone.org/rw_common/plugins/stacks/stacks.css?rwcache=628456071 ; media=all */
 
 </style>

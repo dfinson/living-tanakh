@@ -32,8 +32,7 @@ export const PROPHETS = {
     MALACHI: 'PROPHETS/Malachi',
     DANIEL: 'PROPHETS/Daniel',
     EZRA: 'PROPHETS/Ezra',
-    NEHEMIAH: 'PROPHETS/Nehemiah',
-    CHRONICLES: 'PROPHETS/Chronicles'
+    NEHEMIAH: 'PROPHETS/Nehemiah'
 };
 
 export const WRITINGS = {
@@ -43,7 +42,8 @@ export const WRITINGS = {
     RUTH: 'WRITINGS/Ruth',
     LAMENTATIONS: 'WRITINGS/Lamentations',
     ECCLESIASTES: 'WRITINGS/Ecclesiastes',
-    ESTHER: 'WRITINGS/Esther'
+    ESTHER: 'WRITINGS/Esther',
+    CHRONICLES: 'WRITINGS/Chronicles'
 }
 
 /*interface YDictionary {
@@ -80,7 +80,7 @@ export const WRITINGS = {
     'PROPHETS/Daniel': 'דניאל',
     'PROPHETS/Ezra': 'עזרא',
     'PROPHETS/Nehemiah': 'נחמיה',
-    'PROPHETS/Chronicles': 'דברי הימים',
+
 
     'WRITINGS/Psalms': 'תהלים',
     'WRITINGS/Proverbs': 'משלי',
@@ -88,7 +88,8 @@ export const WRITINGS = {
     'WRITINGS/Ruth': 'רות',
     'WRITINGS/Lamentations': 'איכה',
     'WRITINGS/Ecclesiastes': 'קוהלת',
-    'WRITINGS/Esther': 'אסתר'
+    'WRITINGS/Esther': 'אסתר',
+     'WRITINGS/Chronicles': 'דברי הימים',
 }
 
 export function stripPrefix(pathWithPrefix: string): string{

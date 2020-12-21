@@ -1,10 +1,11 @@
 <template>
     <div>
-      <h1 class="title" style="color: darkcyan" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
+        <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
+        <h1 class="title" style="color: darkcyan" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
       <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.id"
                       :result="verse"
-                      @result-selected="sendControllerSelectedChapter($event)"
-
+                      @result-selected="sendControllerSelectedChapterAndVerse($event)"
+                      :display-trop-to-search-result="displayTropToSearchResult"
       ></search-result>
     </div>
 </template>
@@ -23,13 +24,17 @@ import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 })
 export default class SearchResultsList extends Vue{
   //the two lists of results we receive from the controller..
-  @Prop({default: 'Example'})
-  searchResults: Verse[]
-  @Prop({default: 'Example'})
+  @Prop({default: 'Object'})
+  searchResults: Verse[];
+  @Prop({type: Boolean})
   displayOptions: boolean;
+  @Prop()
+  isLoading: boolean;
+  @Prop()
+  displayTropToSearchResult: boolean;
 
 
-  public sendControllerSelectedChapter(pathArr: string[]): void{
+  public sendControllerSelectedChapterAndVerse(pathArr: string[]): void{
     this.$emit('result-selected',pathArr);
     //console.log(this.searchResults);
   }

@@ -1,19 +1,21 @@
 <template>
-  <div>
-    <b-carousel v-if="images.length > 0" :autoplay="false" indicator-custom :indicator-inside="false" :overlay="gallery" @click="switchGallery(true)">
-      <b-carousel-item v-for="(item, i) in images.length" :key="i">
-        <a class="image">
-          <span>{{getImgTitle(i)}}</span>
-          <img :src="getImgUrl(i)" class="rotate180">
+    <b-carousel :autoplay="false" indicator-custom :indicator-inside="false"  v-if="images.length > 0" :overlay="gallery" @click="switchGallery(true)">
+      <b-carousel-item v-for="(item, i) in images" :key="i">
+        <a class="image ">
+          <b-checkbox class="checkbox" type="is-white" size="is-large" v-model="item.toBeDownloaded" @input="sendImageToPreviewSelector(i)"></b-checkbox>
+          <img :src="getImgUrl(i)">
         </a>
       </b-carousel-item>
       <span v-if="gallery" @click="switchGallery(false)" class="modal-close is-large"/>
       <template slot="indicators" slot-scope="props">
         <figure class="al image" :draggable="false">
-          <img :draggable="false" :src="getThumbnailUrl(props.i)" :title="props.i" class="rotate180">
+
+          <img :draggable="false" :src="getThumbnailUrl(props.i)" :title="props.i">
         </figure>
       </template>
     </b-carousel>
+  <div v-else>
+    <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/Ma'ayan+Logo05B.png">
   </div>
 </template>
 
@@ -39,6 +41,14 @@ export default class MediaPresenter extends Vue{
   private fullScreen = false;
   public gallery = false;
 
+  public sendImageToPreviewSelector(index: number): void{
+    if(this.images[index].toBeDownloaded)
+      this.$emit('send-image-to-preview-selector', this.images[index])
+    else{
+      this.$emit('remove-image-from-preview-selector', this.images[index])
+    }
+
+  }
   public al = {
     hasGrayscale: true,
     itemsToShow: 2,
@@ -70,16 +80,12 @@ export default class MediaPresenter extends Vue{
    if(this.images !== undefined){
      return this.images[index].title;
    }
-   else return "";
+   else return "Welcome to Ma'ayan";
  }
 
   public switchGallery(value: boolean) {
-    this.gallery = value
-    if (value) {
-      document.documentElement.classList.add('is-clipped')
-    } else {
-      document.documentElement.classList.remove('is-clipped')
-    }
+    this.gallery = value;
+
   }
 
 
@@ -112,6 +118,23 @@ export default class MediaPresenter extends Vue{
 }
 </script>
 
-<style>
+<style scoped>
+
+.image{
+  position: relative;
+  text-align: center;
+  color: white;
+}
+.is-active .al img {
+  border: 1px solid #fff;
+}
+.al img {
+  border: 1px solid transparent;
+  margin: 1px;
+}
+
+.checkbox {    position: absolute;
+  top: 20px;
+  right: 45px; }
 
 </style>

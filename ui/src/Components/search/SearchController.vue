@@ -11,6 +11,7 @@
                 :chapters-list="listOfChaptersInSelectedBook"
                 :get-chapter-search-results="getChapterSearchResults"
                 @clear-all-results="clearAllResults"
+                @change-trop = changeTrop($event)
         ></search-input-form>
         <div class="form-group">
             <div class="col-sm-10 col-sm-offset-2" style="margin-top: 18px;">
@@ -22,8 +23,12 @@
             :search-results="freeTextSearchResultsVerseArray"
             :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
+            :is-loading="isLoading"
+            :display-trop-to-search-result="displayTropToSearchResult"
     ></search-results-list>
-    <b-loading v-model="isLoading" :can-cancel="true"></b-loading>
+        <chapter-search-result-item
+                :get-chapter-search-results="getChapterSearchResults"
+        ></chapter-search-result-item>
   </div>
 </template>
 
@@ -65,10 +70,12 @@
   import apifiClient from "@/api/apifiClient";
   import SearchResultsList from "@/Components/search/SearchResultsList.vue";
   import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
+  import ChapterSearchResultItem from "@/Components/search/ChapterSearchResultItem.vue";
 
 
   @Component({
     components:{
+        ChapterSearchResultItem,
       SearchInputForm,
       BaseCard,
       SearchResultsList,
@@ -79,6 +86,7 @@
   export default class SearchController extends Vue{
 
 
+      //region members
     public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
     public listOfChaptersInSelectedBook: Chapter[] = []; //will contain the list of chapters in the selected book, to be sent down to the form..
     public freeTextSearchResultsVerseArray: Verse[] = []; //will contain the results of our path search - I.e a chapter of verses...
@@ -86,11 +94,13 @@
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
+    public displayTropToSearchResult = true;
+    //endregion
 
+      //region methods
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
     public getChapterList(): void{
       this.listOfChaptersInSelectedBook = [];
-      this.isLoading = true;
       apifiClient.findBookByUniquePath(this.searchCriteria.book,
               `{
 
@@ -112,7 +122,6 @@
           ch.number = res['data'].findBookByUniquePath.chapters[i].number;
           ch.path = res['data'].findBookByUniquePath.chapters[i].path;
           this.listOfChaptersInSelectedBook.push(ch);
-          this.isLoading = false;
           //console.log(this.chaptersList);
         }
       });
@@ -139,9 +148,12 @@
              humanReadablePath
              highlightedVerseSegments{
              finalSuffix
+             plainHebrewFinalSuffix
              segments{
              highlightedKeyword
+             plainHebrewHighlightedKeyword
              prefix
+             plainHebrewPrefix
              }
              }
             chapter{
@@ -167,7 +179,9 @@
             verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
             verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
             verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
-            verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments
+            verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
+            for(let i = 0; i < verse.highlightedVerseSegments.segments.length; i++)
+                verse.highlightedVerseSegments.segments[i].id = i;
             this.freeTextSearchResultsVerseArray.push(verse);
           }
           console.log(this.searchCriteria.searchTerm + "controller");
@@ -177,7 +191,7 @@
         else{
           this.$buefy.notification.open({
             duration: 5000,
-            message: `No results have been found. Please enter a different search term, or expand the search path...`,
+            message: `No results have been found. Please enter a different search term, or expand the search path. Note, A category must be selected.`,
             position: 'is-bottom-right',
             type: 'is-danger',
             hasIcon: true
@@ -186,14 +200,14 @@
     }
 
     //searching for a word when no search path has been specified
-    public freeTextSearchWithoutPath(): void{
-      console.log("Searching without path");
-      this.isLoading = true;
+    public freeTextSearchWithMultipleCategories(categories: string[]): void{
+      console.log("Searching from:" + categories);
       this.freeTextSearchResultsVerseArray = []; //wipe the searchResults array clean..
       //the api call:
+        this.isLoading = true;
       apifiClient.verseFreeTextSearch({
         customArgs: {
-          validPathPrefixes: ["TORAH", "PROPHETS", "WRITINGS"]
+          validPathPrefixes: categories
         },
         fetchAll:true,
         searchTerm: this.searchCriteria.searchTerm
@@ -203,9 +217,12 @@
              humanReadablePath
              highlightedVerseSegments{
              finalSuffix
+             plainHebrewFinalSuffix
              segments{
              highlightedKeyword
+             plainHebrewHighlightedKeyword
              prefix
+             plainHebrewPrefix
              }
              }
             chapter{
@@ -243,32 +260,49 @@
                   type: 'is-danger',
                   hasIcon: true
                 });
-              this.isLoading = false;
+                this.isLoading = false;
               }
 
       );
     }
 
-    //decides what kind of free text search is necessary - whether sufficient parameters have been entered
+    //decides what kind of free text search is necessary - whether a path has been entered to narrow down the search, or the search will be throughout the entire Tanach...
     public freeTextSearchSorter(): void{
 
       let searchPath = "";
 
+      //one category has been selected:
+      if(this.searchCriteria.category !== [""] && this.searchCriteria.category !== undefined && this.searchCriteria.category.length === 1){
+          searchPath = this.searchCriteria.category[0];
+      }
+      //a book has also been selected
       if(this.searchCriteria.book !== "" && this.searchCriteria.book !== undefined) // if there is a book selected
-        searchPath = this.searchCriteria.book;
+        searchPath = "/" + this.searchCriteria.book;
 
+      //a chapter has been selected
       if(this.searchCriteria.chapter !== "" && this.searchCriteria.chapter !== undefined) //if there is chapter selected
         searchPath += "/" + this.searchCriteria.chapter;
 
-      //if(this.searchCriteria.category === "ALL")
+        //more than one category has been selected
+        if (this.searchCriteria.category.length > 1){
+            searchPath = "ALL";
+            //immediately a search without a path is initiated
+            this.freeTextSearchWithMultipleCategories(this.searchCriteria.category);
+        }
 
-
-
-      if(searchPath === "") //there is no Path to narrow down the FreeTextSearch
-        this.freeTextSearchWithoutPath();
-
-      if(searchPath !== "") //there is a path to narrow down the freeTextSearch
+        //there is a path to narrow down the freeTextSearch
+      if(searchPath !== "" && searchPath !== "ALL")
         this.freeTextSearchWithPath(searchPath);
+
+      if(searchPath === ""){
+          this.$buefy.notification.open({
+              duration: 5000,
+              message: `Please enter valid search path or search term...`,
+              position: 'is-bottom-right',
+              type: 'is-danger',
+              hasIcon: true
+          });
+      }
 
     }
 
@@ -327,9 +361,9 @@
         }
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number -b.number);
-       // console.log(this.getChapterSearchResults);
+        console.log("chapter aquired!!");
         this.$emit('display-selected-chapter',this.getChapterSearchResults);
-            this.isLoading = false;
+        this.isLoading = false;
             }
       );
     }
@@ -345,7 +379,7 @@
       else{
         if(this.searchCriteria.chapter !== "" && this.searchCriteria.chapter !== undefined
                 && this.searchCriteria.book !== "" && this.searchCriteria.book !== undefined
-                && this.searchCriteria.category !== undefined && this.searchCriteria.category !== "") {
+                && this.searchCriteria.category !== undefined && this.searchCriteria.category !== [""] && this.searchCriteria.category.length === 1) {
           this.displayOptions = false;
           this.displayResults = true;
           this.getChapterFromPathSearch(this.searchCriteria.book + "/" + this.searchCriteria.chapter.toString());
@@ -354,7 +388,7 @@
         else{
           this.$buefy.notification.open({
             duration: 5000,
-            message: `Please enter valid search path or search term...`,
+            message: `Please enter valid search path or search term. Note, A category must be selected.`,
             position: 'is-bottom-right',
             type: 'is-danger',
             hasIcon: true
@@ -364,37 +398,35 @@
     }
 
     //these functions get the data from the form and update the fields of the searchCriteria object accordingly...
-    public updateCategorySelection(selectedCategory: string): void{
+    public updateCategorySelection(selectedCategory: string[]): void{
       this.searchCriteria.category = selectedCategory;
       this.listOfChaptersInSelectedBook = [];
-      //console.log(this.searchCriteria.category + " from controller");
-
+      this.searchCriteria.book = "";
+      this.searchCriteria.passuk = "";
+      this.searchCriteria.chapter = "";
     }
 
     public updateBookSelection(selectedBook: string): void{
       this.searchCriteria.book = selectedBook;
-      this.searchCriteria.passuk = "";this.searchCriteria.chapter = "";
-      this.getChapterSearchResults = new Chapter();
+      this.searchCriteria.passuk = "";
+        this.searchCriteria.chapter = "";
+
       //console.log(this.searchCriteria.book + " from controller");
       this.getChapterList();
     }
 
     public updateChapterSelection(selectedChapter: string): void{
       this.searchCriteria.chapter = selectedChapter;
-      this.searchCriteria.passuk = "";
-      console.log(this.searchCriteria.book + "/" + this.searchCriteria.chapter + " from controller");
-      this.getChapterFromPathSearch(this.searchCriteria.book + "/" + this.searchCriteria.chapter);
+     // console.log(this.searchCriteria.book + "/" + this.searchCriteria.chapter + " from controller");
+      //this.getChapterFromPathSearch(this.searchCriteria.book + "/" + this.searchCriteria.chapter);
     }
 
 
     public updateSearchTermSelection(searchTerm: string): void{
       this.searchCriteria.searchTerm = searchTerm;
-       console.log(this.searchCriteria.searchTerm + " from controller")
+        this.getChapterSearchResults = new Chapter();
+       console.log(this.searchCriteria.searchTerm + " from controller, path: " + this.searchCriteria.book + "/ " + this.searchCriteria.chapter);
       this.generalSearchSorter();
-    }
-
-    public displayVerseAndRelatedChapter(): void{
-      //  this.$emit('')
     }
 
     public updateVerseSelectionAndSendVerseToPassukDisplay(selectedVerseNumber: string): void{
@@ -421,22 +453,26 @@
       this.searchCriteria.searchTerm = "";
       this.searchCriteria.chapter = "";
       this.searchCriteria.book = "";
-      this.searchCriteria.category = "";
+      this.searchCriteria.category = [];
+      this.searchCriteria.passuk = "";
       this.listOfChaptersInSelectedBook = [];
       this.freeTextSearchResultsVerseArray = [];
-      this.$emit('clear-all-results');
-
-      console.log(this.listOfChaptersInSelectedBook);
     }
 
 
-    //when the page is mounted we will automatically display Genesis/1 for chapter, and the first verse of that chapter as the selected verse
-    mounted(){
+  public changeTrop(trop: boolean): void{
+        this.displayTropToSearchResult = trop;
+        this.$emit('change-trop',trop);
+  }
+    //when the page is created we will automatically display Genesis/1 for chapter, and the first verse of that chapter as the selected verse
+    created(){
         this.getChapterFromPathSearch('TORAH/Genesis/1');
 
         //a timeout is necessary because we want to make sure that the chapter is loaded first
-       setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay('1')},1000);
+       setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay('1')},2000);
     }
+
+    //endregion
 
 
 

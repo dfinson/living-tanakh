@@ -4,11 +4,15 @@
   <strong>
     <b-button type="is-primary is-light" @click="pathSelected">{{result.humanReadablePath}}</b-button>
 <p>
-  <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.highlightedKeyword">
-    <span v-if="hasPrefix(segment)">{{segment.prefix}}</span>
-    <span style="background-color: yellow">{{segment.highlightedKeyword + " "}}</span>
+  <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.id">
+    <span v-if="hasPrefix(segment) && !displayTropToSearchResult">{{segment.plainHebrewPrefix}}</span>
+        <span v-else-if="hasPrefix(segment) && displayTropToSearchResult">{{segment.prefix}}</span>
+    <span v-if="!displayTropToSearchResult" style="background-color: yellow">{{segment.plainHebrewHighlightedKeyword + " "}}</span>
+     <span v-else-if="displayTropToSearchResult" style="background-color: yellow">{{segment.highlightedKeyword + " "}}</span>
   </span>
-  <span v-if="hasSuffix(result.highlightedVerseSegments)">{{ result.highlightedVerseSegments.finalSuffix}}</span>
+  <span v-if="hasSuffix(result.highlightedVerseSegments)&& !displayTropToSearchResult">{{ result.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
+  <span v-else-if="hasSuffix(result.highlightedVerseSegments)&& displayTropToSearchResult">{{ result.highlightedVerseSegments.finalSuffix}}</span>
+
 </p>
   </strong>
 </base-card>
@@ -30,6 +34,8 @@ export default class SearchResult extends Vue{
   public counter = 0;
   @Prop({default:'Example'})
   result: Verse;
+  @Prop()
+  displayTropToSearchResult: boolean;
 
   public pathSelected(): void{
     this.$emit('result-selected',[this.result.chapter?.path,this.result.number.toString()]);

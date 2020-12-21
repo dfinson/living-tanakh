@@ -25,12 +25,24 @@
 
       <!-- search form-->
       <div id='stacks_out_372' class='stacks_out'>
-        <search-controller
-                @display-selected-chapter="sendChapterToChapterDisplay($event)"
-                @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
-                @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
-                @clear-all-results="clearAllResults()"
-        ></search-controller>
+        <b-tabs type="is-toggle" expanded v-model="activeTab">
+          <b-tab-item label="Search Tab"  animated="true">
+            <search-controller
+                    @display-selected-chapter="sendChapterToChapterDisplay($event)"
+                    @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
+                    @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
+                    @change-trop = changeTrop($event)
+            ></search-controller>
+          </b-tab-item>
+          <b-tab-item label="Selected Images" animated="true" :disabled="disableSelectedImagesTab">
+            <preview-selector
+                    :selected-image="this.selectedImage"
+                    :image-to-be-deleted="imageToBeDeleted"
+            ></preview-selector>
+          </b-tab-item>
+        </b-tabs>
+
+
 
         <!-- the social media icon badges  -->
 
@@ -55,17 +67,18 @@
           <div id="fontStackstacks_in_68" class="fontStack ">
             <div id='stacks_out_70' class='stacks_out'>
               <div id='stacks_in_70' class='stacks_in com_cosculture_stack_scrollbar_1_stack'>
-                <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto;" >
+                <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr; " >
                   <div class="mCustomScrollBox mCS-light-2" id="style-1" style="position:relative; height:100%; max-width:100%;">
-                    <div class="mCSB_container" >
-                      <div id='stacks_out_72' class='stacks_out'>
+                    <div class="mCSB_container" style="line-height: 5px" >
+                      <div id='stacks_out_72' class='stacks_out' >
 
                     <!-- chapter display-->
                     <chapter-display class="chapterD"
                             :displayTrop="displayTrop"
                             :selected-chapter="this.selectedChapter"
                             :search-term="this.searchTerm"
-                            @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
+                            @send-passuk-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
+                             @trop-changed="displayTrop = !displayTrop"
                      ></chapter-display>
               </div>
                     </div>
@@ -84,24 +97,27 @@
           <div id="fontStackstacks_in_91" class="fontStack ">
 
             <!-- verse display component-->
-            <div id='stacks_out_95' class='stacks_out'>
+            <div id='stacks_out_95' class='stacks_out' >
               <passuk-display
                       :displayTrop="displayTrop"
                       :selected-verse="selectedVerse"
+                      @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
               ></passuk-display>
             </div>
             <!-- large media display component-->
-            <div id='stacks_out_193' class='stacks_out'>
+            <div id='stacks_out_193' class='stacks_out' >
               <div id='stacks_in_193' class='stacks_in com_elixir_stacks_foundryImage_stack'>
-                <div class="text-xs-center foundry-image-wrapper">
+                <div class="text-xs-center foundry-image-wrapper" >
                 <media-tag-modal
                  :tag-ids="tagIds"
+                 @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
+                 @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
                 ></media-tag-modal>
                 </div>
               </div>
             </div>
             <!-- small media display components-->
-            <div id='stacks_out_162' class='stacks_out'>
+           <!-- <div id='stacks_out_162' class='stacks_out'>
               <div id='stacks_in_162' class='stacks_in com_elixir_stacks_foundryGallery_stack'>
                 <div style="display: block" class="gallery-wrapper">
                   <div class="gallery_wrapper">
@@ -158,7 +174,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
 
         </div>
@@ -200,14 +216,16 @@ import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
-import {Chapter, SearchCriteria, Verse} from "@/api/dto";
+import {Chapter, GalleriaImageItem, SearchCriteria, Verse} from "@/api/dto";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 import PassukDisplay from "@/Components/search/PassukDisplay.vue";
 import apifiClient from "@/api/apifiClient";
 import {PROPHETS, TORAH} from "@/api/TANAKH";
+import PreviewSelector from "@/Components/search/PreviewSelector.vue";
 
 @Component({
   components: {
+    PreviewSelector,
     ChapterDisplay,
     SearchController,
     BaseCard,
@@ -215,27 +233,83 @@ import {PROPHETS, TORAH} from "@/api/TANAKH";
     PassukDisplay
   }
 })
+
+/* id: number;
+    mediaTag?: MediaTag;
+    mediaType?: MediaType;
+    description?: string;
+    key?: string;
+    signedDownloadUrl?: string;
+    signedUploadUrl?: string;
+    mimeType?: string;
+    signedThumbnailUrl?: string;
+
+       this.itemImageSrc = mediaContent.signedDownloadUrl ? mediaContent.signedDownloadUrl: '';
+        this.thumbnailImageSrc = this.itemImageSrc;
+        this.alt = mediaContent.key ? mediaContent.key : '';
+        this.title = this.alt;
+        this.description = mediaContent.description ? mediaContent.description : '';
+    */
 export default class Dashboard extends Vue{
+
+  //region Members
   private displayMediaTagModal = false;
   private selectedMediaTagId: number;
   public displayTrop = true;
   public tagIds: number[] = [];
+  public selectedImage = new GalleriaImageItem({
+    id:0,
+    signedDownloadUrl: "",
+    key:"",
+    description:""
 
-  private handleMediaTagIdSelected(id: number): void{
-    this.selectedMediaTagId = id;
-    this.displayMediaTagModal = true;
-  }
+  });
+  public activeTab = 0;
+  public disableSelectedImagesTab = true;
+
+  public imageToBeDeleted = new GalleriaImageItem({
+    id:0,
+    signedDownloadUrl: "",
+    key:"",
+    description:""
+
+  });
   public searchCriteria: SearchCriteria;
   public selectedChapter = new Chapter();
   public searchTerm = "";
   public selectedVerse = new Verse();
+  //endregion
+
+  //region Methods
+  private handleMediaTagIdSelected(id: number): void{
+    this.selectedMediaTagId = id;
+  }
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
+    const temp = [];
     this.selectedVerse.hebrewNumeral = "";
     this.selectedVerse.highlightedVerseSegments.segments = [];
     this.selectedVerse.highlightedVerseSegments.plainHebrewFinalSuffix = "";
     this.selectedVerse.highlightedVerseSegments.finalSuffix = "";
+    this.tagIds = [];
+    if(this.selectedChapter !== undefined) {
+      for (let i = 0; i < this.selectedChapter.verses.length; i++) {
+        for (let j = 0; j < this.selectedChapter.verses[i].mediaTags.length; j++) {
+          temp.push(this.selectedChapter.verses[i].mediaTags[j].id)
+          //this.tagIds.push(this.selectedChapter.verses[i].mediaTags[j].id);
+         // console.log(this.selectedChapter.verses[i].mediaTags[j].id);
+        }
+      }
+      const unique = temp.filter(function(elem, index, self) {
+        return index === self.indexOf(elem);
+      })
+     for(let i = 0; i < unique.length; i++)
+       this.tagIds.push(unique[i]);
+     //console.log(this.tagIds);
+    }
+
+
   }
 
 
@@ -243,11 +317,7 @@ export default class Dashboard extends Vue{
     this.searchTerm = searchTerm;
     console.log(this.searchTerm + "dashboard");
   }
-  public clearAllResults(): void{
-    this.selectedChapter = new Chapter();
-    this.selectedVerse = new Verse();
-    this.searchTerm = "";
-  }
+
 
   //this function will also send the media components the tags in this selected verse.
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponent(selectedVerse: Verse): void{
@@ -260,19 +330,128 @@ export default class Dashboard extends Vue{
     }
       }
 
+  public sendImageToPreviewSelector(image: GalleriaImageItem): void{
+     this.selectedImage  = new GalleriaImageItem( {
+       id:Math.floor(Math.random() * 100) ,
+       signedDownloadUrl: image.itemImageSrc,
+       key:image.alt,
+       description:image.description
+     });
+      console.log("dashboard recieved image:" + this.selectedImage);
+      this.disableSelectedImagesTab = false;
+    setTimeout(()=>{
+      this.activeTab = 1;
+    }, 1000);
+    }
+
+    public removeImageFromPreviewSelector(image: GalleriaImageItem): void{
+      this.imageToBeDeleted  = new GalleriaImageItem( {
+        id:Math.floor(Math.random() * 100) ,
+        signedDownloadUrl: image.itemImageSrc,
+        key:image.alt,
+        description:image.description
+      });
+    }
+
+    public changeTrop(trop: boolean): void{
+    this.displayTrop = trop;
+    }
+
+      //give the selectedChapter and Verse a default value so that they will not be undefined
+      created(){
+    this.selectedChapter = {
+        id: 0,
+                path: "",
+                number: 0,
+                book: {
+          hebrewName:"שלום",
+                  id: 0,
+                  path:"",
+        },
+        verses  : [
+          {
+            id: 0,
+            path: "",
+            number: 0,
+            mediaTags:[{id:0}],
+            fullHebrewText: "",
+            searchableHebrewText: "",
+            highlightedVerseSegments: {
+              segments:[{
+                prefix:"",
+                highlightedKeyword:"",
+                plainHebrewPrefix:"",
+                plainHebrewHighlightedKeyword:"",
+                tag:{
+                  id:0
+                }
+              }],
+              finalSuffix:"",
+              plainHebrewFinalSuffix:"",
+            },
+            humanReadablePath: "",
+            hebrewNumeral: ""
+          }
+        ],
+                hebrewNumeral: ""
+      }
+      this.selectedVerse = {
+        humanReadablePath:"",
+          highlightedVerseSegments:{
+            segments:[{
+              prefix:"",
+              highlightedKeyword:"",
+              plainHebrewPrefix:'',
+              plainHebrewHighlightedKeyword:"",
+              tag:{
+                id:0
+              }
+            }],
+            finalSuffix:"",
+            plainHebrewFinalSuffix:""
+          },
+          fullHebrewText:"",
+          hebrewNumeral:"",
+          number:0,
+          path:"",
+          id:0,
+          searchableHebrewText:"",
+          mediaTags:[{
+            id:0,
+          }]
+      }
+
+      }
+
+
+      //endregion
 
 }
 
 </script>
 
 <style scoped>
-  /*! CSS Used from: http://www.foundationstone.org/rw_common/themes/Foundry/consolidated-38.css?rwcache=628456071 ; media=all */
+  ::-webkit-scrollbar {
+    width: 6px;
 
-  .mCustomScrollBox mCS-light-2 {
-    width: auto;
-    margin-right: 30px;
-    overflow-y: scroll;
+
   }
 
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: black;
+    border-radius: 5px;
 
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: darkslategray;
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 </style>

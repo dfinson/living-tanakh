@@ -1,54 +1,69 @@
 <template>
 <!-- the search Input form-->
-    <div id='stacks_out_339' class='stacks_out'>
-        <div id='stacks_in_339' class='stacks_in com_elixir_stacks_foundryJumbotron_stack'>
-            <div class="nav_pairing">
-                <div class="jumbotron theme_style jumbotron-fluid">
-                    <div class="container-fluid jumbotron_container_padding">
-                        <h1 class="jumbotron_title  display-4 text-xs-left">1. Begin Search Here...</h1>
-                        <p class="jumbotron_sub_title lead text-xs-left">Select the text for your search and select the items you'd like to download.</p>
+    <div id='stacks_out_339' class='stacks_out' >
+        <div id='stacks_in_339' class='stacks_in com_elixir_stacks_foundryJumbotron_stack' >
+            <div class="nav_pairing" style="background-color:#4f4f4f; text-align: center;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  ">
+
+                        <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: 'Trebuchet MS'">{{maayanSearch}}</h1>
+                            <div class="field" style="display: inline-block">
+
+
+                                <b-switch  :value="true" @input="changeLanguage" style="margin-right: 70px; max-width: 70px">
+                                    <strong style="color: white; font-family: 'Trebuchet MS';font-size: 15px">English</strong>
+                                </b-switch>
+                                <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong style="color: white;font-size: 12px;">Display nikud and Ta'amim</strong></b-switch>
+                            </div>
+                <p style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
                         <div id='stacks_out_209' class='stacks_out'>
-    <div class="form-horizontal" role="form"  action="#stacks_in_372">
+    <div class="form-horizontal" role="form"   action="#stacks_in_372">
 
         <div class="form-group ">
             <div id='stacks_in_209' class='stacks_in com_elixir_stacks_foundryButtonGroup_stack'>
                 <div class="button-group-wrapper  text-xs-center">
                     <div class="button_group_wrapper btn-group " role="group">
-                        <div class="btn-group-stacks_in_213_dropdown" role="group" >
-                            <b-field label="כתובים">
-                                <b-select placeholder="Select a Writing" v-model="selectedWritingSefer" @input="updateBookSelection('WRITINGS')">
-                                    <option
-                                            v-for="writing in writingList"
-                                            :value="writing"
-                                            :key="writing">
-                                        {{ getHebNameOfBook(writing)}}
-                                    </option>
-                                </b-select>
-                            </b-field>
+                        <div class="free-search-input">
+                                <b-field style="margin-left: 20px; display: inline-block">
+                                    <b-input   v-bind:placeholder="searchLabel" dir="rtl" v-model="searchCriteria.searchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
+                                </b-field>
+                            <b-collapse :open="false" aria-id="contentIdForA11y1">
+                                <b-switch
+                                        slot="trigger"
+                                        aria-controls="contentIdForA11y1"></b-switch>
+                                <div class="notification">
+                                    <div class="content">
+                                      <hebrew-keypad></hebrew-keypad>
+                                    </div>
+                                </div>
+                            </b-collapse>
+
+
+                        </div>
+                        <div class="btn-group-stacks_in_213_dropdown" style="margin-top: 10px" role="group" >
+                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                                {{torahLabel}}
+                            </strong>
+                            <b-checkbox v-model="torahSelected"
+                                        type="is-white" @input="updateCategorySelection('TORAH')" >
+
+                            </b-checkbox>
                         </div> <!-- writings dd-->
                         <div class="btn-group-stacks_in_221_dropdown" role="group">
-                            <b-field label="נביאים">
-                                <b-select placeholder="Select a Navi" v-model="selectedNaviSefer" @input="updateBookSelection('PROPHETS')">
-                                    <option
-                                            v-for="navi in naviList"
-                                            :value="navi"
-                                            :key="navi">
-                                        {{ getHebNameOfBook(navi) }}
-                                    </option>
-                                </b-select>
-                            </b-field>
+                           <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                                {{prophetsLabel}}
+                            </strong>
+                            <b-checkbox v-model="prophetsSelected"
+                                        type="is-white" @input="updateCategorySelection('PROPHETS')">
+
+                            </b-checkbox>
                         </div><!-- prophets dd-->
                         <div class="btn-group-stacks_in_224_dropdown" role="group">
-                            <b-field label="תורה">
-                                <b-select placeholder='Select a Chumash' type="is-info" v-model="selectedChumashSefer" @input="updateBookSelection('TORAH')">
-                                    <option style="background-color: white"
-                                            v-for="chumash in chumashList"
-                                            :value="chumash"
-                                            :key="chumash">
-                                        {{ getHebNameOfBook(chumash) }}
-                                    </option>
-                                </b-select>
-                            </b-field>
+                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                                {{writingsLabel}}
+                            </strong>
+                            <b-checkbox v-model="writingsSelected"
+                                        type="is-white" @input="updateCategorySelection('WRITINGS')">
+
+                            </b-checkbox>
                         </div><!-- torah dd-->
                     </div> <!-- dropdown buttons-->
                 </div>
@@ -57,64 +72,57 @@
         </div> <!-- dd's for t/n/k-->
 
         <div class="second-dd-list">
-            <div class="passuk-dd">
-            <b-field label="פסוק">
-                <b-select placeholder="Select a Passuk" v-model="searchCriteria.passuk" @input="updateVerseSelection">
-                    <option
-                            v-for="passuk in getChapterSearchResults.verses"
-                            :value="passuk.number"
-                            :key="passuk.id">
-                        {{ passuk.hebrewNumeral }}
-                    </option>
-                </b-select>
-            </b-field>
-        </div><!-- passuk dd-->
+            <div class="sefer-dd">
+                <div class="custom-select">
+                        <b-select :placeholder="bookLabel" :expanded="true" style="max-width: 120px; margin-left: 115px"  v-model="searchCriteria.book"   :disabled="!bookAndChapterEnabled" @input="updateBookSelection" size="is-small">
+                            <option
+                                    style="font-family: Arial; font-size: 15px"
+                                    v-for="book in bookList"
+                                    :value="book"
+                                    :key="book">
+                                {{ getHebNameOfBook(book) }}
+                            </option>
+                        </b-select>
+                </div>
+            </div> <!-- sefer dd-->
+
             <div class="perek-dd ">
-                <b-field label="פרק">
-                    <b-select placeholder="Select a Perek" v-model="searchCriteria.chapter" @input="updateChapterSelection">
-                        <option
-                                v-for="chapter in chaptersList"
-                                :value="chapter.number"
-                                :key="chapter.id">
-                            {{ chapter.hebrewNumeral }}
-                        </option>
-                    </b-select>
-                </b-field>
+
+                   <b-input :loading="chapLoading && !(searchCriteria.book === '' && !bookAndChapterEnabled)" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="(searchCriteria.book === '' && !bookAndChapterEnabled) || chapLoading" type="text" style="width: 120px; margin-top: 10px" ></b-input>
             </div> <!-- perek dd-->
 
-        </div><!-- perek and passuk dd's-->
 
-        <div class="free-search-input">
-            <b-field label="Free Search">
-                <b-input v-model="searchCriteria.searchTerm"></b-input> <!--free text search-->
-            </b-field>
-        </div> <!-- Free text search-->
+
+        </div> <!--sefer, perek and passuk dd's-->
+
+      <!-- Free text search-->
         <!-- send and clear buttons-->
 
         <div class="search-and-clear-bttns">
-            <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" >Search</b-button>
-            <b-button type="is-danger" class="clear_btn" @click="clearAllResults">Clear</b-button>
+            <b-button type="is-danger" class="clear_btn" @click="clearAllResults" >{{clearLabel}}</b-button>
+            <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" :disabled=" searchCriteria.searchTerm === ''&&(searchCriteria.category === '' || searchCriteria.chapter === '')"  >{{searchLabel}}</b-button>
             </div>
     </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </template>
 
 <script lang = "ts">
-    import {Component, Prop, Vue} from 'vue-property-decorator';
+    import {Component, Prop, Vue,Watch} from 'vue-property-decorator';
     import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
 import {TORAH,WRITINGS,PROPHETS,hebrewBooksInTorah,HEBREW_NAMES_DICT,toHebrewBookName,
     hebrewBooksInProphets,hebrewBooksInWritings,toEnglishBookName,stripPrefix} from "@/api/TANAKH";
-
-@Component
+import HebrewKeypad from "@/Components/BaseComponents/HebrewKeypad.vue";
+    @Component({
+        components: {HebrewKeypad}
+    })
+    //:disabled="!(searchCriteria.searchTerm === '') ||!((searchCriteria.category === '')&& searchCriteria.book === '')"
 export default class SearchInputForm extends Vue{
-
+//region members
     //this object is shared via emits to the controller
-    public searchCriteria = new SearchCriteria()
+    public searchCriteria = new SearchCriteria();
 
     //the list of chapters depends on the chosen category/book path, and is populated by an api call in the controller
     @Prop({default: 'Example'})
@@ -122,51 +130,177 @@ export default class SearchInputForm extends Vue{
     @Prop({default: 'Example'})
     getChapterSearchResults: Chapter;
 
-    public selectedChumashSefer = "";
-    public selectedNaviSefer = "";
-    public selectedWritingSefer = "";
+    public torahSelected = true;
+    public prophetsSelected = true;
+    public writingsSelected = true;
+    public bookList: string[] = [];
+    public chapterSelected = false;
+    public bookAndChapterEnabled = false;
+    public searchEnabled = true;
+    public chapterInput = '';
+    public chapLoading = false;
 
-    public chumashList: string[] = [];
-    public naviList: string[] = [];
-    public writingList: string[] = [];
+    public displayTrop = true;
+    //endregion
 
-    mounted(){
-        this.getBookList("TORAH");
-        this.getBookList("PROPHETS");
-        this.getBookList("WRITINGS");
+    //region language Labels
 
-    }
+    public explantion = "Enter text to search all of Tanach or chose only one checkbox to search by book / chapter";
+    public maayanSearch = "MA'AYAN SEARCH";
+    public allLabel = "ALL";
+    public writingsLabel = "KETUVIM";
+    public prophetsLabel = "NEVI’IM";
+   public torahLabel = "TORAH";
+    public freeSearchLabel = "WORD SEARCH";
+    public bookLabel = "Choose Book";
+    public chapterLabel = "Chapter";
+    public verseLabel = "VERSE";
+    public searchLabel = "Search";
+    public clearLabel = "Clear";
 
+    public englishSearch = true;
 
-    public updateBookSelection(category: string): void{ //update to the book selected by the user, and send it up to the controller...
-        switch(category){
-            case "TORAH":
-                this.selectedWritingSefer = "";
-                this.selectedNaviSefer = "";
-                this.searchCriteria.book = this.selectedChumashSefer;
-                break;
-            case "PROPHETS":
-                this.selectedWritingSefer = "";
-                this.selectedChumashSefer = "";
-                this.searchCriteria.book = this.selectedNaviSefer;
-                break;
-            case "WRITINGS":
-                this.selectedNaviSefer = "";
-                this.selectedChumashSefer = "";
-                this.searchCriteria.book = this.selectedWritingSefer;
-                break;
+    public changeLanguage(): void{
+        this.englishSearch = ! this.englishSearch;
+        if(!this.englishSearch){
+            this.explantion = "הקלד טקסט לחיפוש בכל התנך, או סמן אופציה אחת לחיפוש ספר/פרק "
+            this.maayanSearch = "חיפוש מעיין"
+            this.allLabel = "הכל";
+            this.writingsLabel = "כתובים";
+            this.prophetsLabel = "נביאים";
+            this.torahLabel = "תורה";
+            this.freeSearchLabel = "חופשי";
+            this.searchLabel = "חיפוש טקסט חופשי";
+            this.clearLabel = "נקה";
+            this.bookLabel = "ספר" ;
+            this.chapterLabel = "פרק";
+            this.verseLabel = "פסוק";
+
         }
-        console.log(this.searchCriteria.book);
-        this.$emit('update-book-selection',this.searchCriteria.book);
+        else{
+            this. explantion = "Enter text to search all of Tanach or chose only one checkbox to search by book / chapter";
+            this.maayanSearch = "MA'AYAN SEARCH";
+            this.allLabel = "ALL";
+            this.writingsLabel = "KETUVIM";
+            this.prophetsLabel = "NEVI’IM";
+            this.torahLabel = "TORAH";
+            this.freeSearchLabel = "WORD SEARCH";
+            this.searchLabel = "Search";
+            this.clearLabel = "Clear";
+            this.bookLabel = "Choose Book" ;
+            this.chapterLabel = "Chapter";
+            this.verseLabel = "VERSE";
+        }
+}
+
+//endregion
+
+ //region methods
+
+
+     public updateCategorySelection(category: string): void{
+        this.searchCriteria.chapter = "";
+        this.chapterInput = this.searchCriteria.chapter;
+        this.bookList = [];
+        //put the newly chosen category in the array, while making sure to avoid duplicate values
+        let repeat = false;
+        for(const cat in this.searchCriteria.category){
+            if(cat === category)
+                repeat = true;
+        }
+        if(!repeat){
+            this.searchCriteria.category.push(category);
+        }
+        //remove all unselected items
+        if(!this.torahSelected){
+            for (let i =  this.searchCriteria.category.length - 1; i >= 0; i--) {
+                if ( this.searchCriteria.category[i] === 'TORAH') {
+                    this.searchCriteria.category.splice(i, 1);
+                }
+            }
+        }
+         if(!this.prophetsSelected){
+             for (let i =  this.searchCriteria.category.length - 1; i >= 0; i--) {
+                 if ( this.searchCriteria.category[i] === 'PROPHETS') {
+                     this.searchCriteria.category.splice(i, 1);
+                 }
+             }
+         }
+         if(!this.writingsSelected){
+             for (let i =  this.searchCriteria.category.length - 1; i >= 0; i--) {
+                 if ( this.searchCriteria.category[i] === 'WRITINGS') {
+                     this.searchCriteria.category.splice(i, 1);
+                 }
+             }
+         }
+
+         //the book and chapter controls are disabled if there is more than 1 category or less than 1
+         if(this.searchCriteria.category.length !== 1){
+             this.bookAndChapterEnabled = false;
+             this.searchCriteria.book = '';
+         }
+         else{
+             //the book and chapter controls are enabled if there is only one selected category.Also, we load the booklist.
+             this.bookAndChapterEnabled = true;
+             this.getBookList(this.searchCriteria.category[0]);
+         }
+         this.$emit('update-category-selection', this.searchCriteria.category);
+         this.chapLoading = true;
+     }
+
+
+
+
+    public updateBookSelection(): void{ //update to the book selected by the user, and send it up to the controller...
+           this.searchCriteria.chapter = "";
+           console.log(this.chapterInput)
+        this.chapterInput = this.searchCriteria.chapter;
+            this.$emit('update-book-selection',this.searchCriteria.book);
+
+
     }
 
     public updateChapterSelection(): void{ //update to the chapter selected by the user, and send it up to the controller...
-        this.$emit('update-chapter-selection',this.searchCriteria.chapter);
-    }
+        this.searchCriteria.chapter = this.chapterInput;
+        console.log(this.searchCriteria.chapter)
+        let chap = false;
+       for(let i = 0; i < this.chaptersList.length; i++){
+           if(parseInt(this.searchCriteria.chapter) === this.chaptersList[i].number)
+               chap = true;
+       }
+       if(chap) {
+           this.$emit('update-chapter-selection', this.searchCriteria.chapter);
+           this.chapterSelected = true;
+       }
+       else{
+           this.$buefy.notification.open({
+               duration: 1000,
+               message: `Invalid Chapter Number.`,
+               position: 'is-bottom-right',
+               type: 'is-danger',
+               hasIcon: true
+           });}
+       }
 
-    public updateVerseSelection(): void{
-        this.$emit('update-verse-selection', this.searchCriteria.passuk);
-    }
+
+    /*public updateVerseSelection(): void{
+        let verse = false;
+        for(let i = 0; i < this.getChapterSearchResults.verses.length; i++){
+            if(parseInt(this.searchCriteria.passuk) === this.getChapterSearchResults.verses[i].number)
+                verse = true;
+        }
+        if(verse)
+            this.$emit('update-verse-selection', this.searchCriteria.passuk);
+        else{
+            this.$buefy.notification.open({
+                duration: 1000,
+                message: `Invalid Verse Number.`,
+                position: 'is-bottom-right',
+                type: 'is-danger',
+                hasIcon: true
+            });}
+
+    }*/
 
     public updateSearchTermSelection(): void{ //update to the searchTerm selected by the user, and send it up to the controller...
         this.$emit('update-search-term-selection',this.searchCriteria.searchTerm);
@@ -174,23 +308,22 @@ export default class SearchInputForm extends Vue{
 
 
     public getBookList(category: string): void{
-       // this.searchCriteria.chapter = "";
         switch (category) {
             case "TORAH":
                 for(const [key, value] of Object.entries(TORAH)) {
-                    this.chumashList.push(`${value}`.toString());
-                  //  console.log(toHebrewBookName(`${value}`.toString()));
+                    this.bookList.push(`${value}`.toString());
+                    //  console.log(toHebrewBookName(`${value}`.toString()));
                 }
                 break;
             case "PROPHETS":
                 for(const [key, value] of Object.entries(PROPHETS)) {
-                    this.naviList.push(`${value}`);
-                   // console.log(toHebrewBookName(`${value}`));
+                    this.bookList.push(`${value}`);
+                    // console.log(toHebrewBookName(`${value}`));
                 }
                 break;
             case "WRITINGS":
                 for(const [key, value] of Object.entries(WRITINGS)) {
-                    this.writingList.push(`${value}`.toString());
+                    this.bookList.push(`${value}`.toString());
                     //console.log(toHebrewBookName(`${value}`.toString()));
                 }
                 break;
@@ -204,27 +337,66 @@ export default class SearchInputForm extends Vue{
     }
 
     public clearAllResults(): void{
-        this.searchCriteria.category = "";
+        this.searchCriteria.category = [];
         this.searchCriteria.book = "";
         this.searchCriteria.chapter = "";
         this.searchCriteria.searchTerm = "";
+        this.chapterSelected = false;
+        this.bookList = [];
+        this.torahSelected = false;
+        this.writingsSelected = false;
+        this.prophetsSelected = false;
+        this.chapterInput = this.searchCriteria.chapter;
         this.$emit('clear-all-results');
+    }
+
+    public addChar(letter: string): void{
+        if(this.searchCriteria.searchTerm === undefined || this.searchCriteria.searchTerm === ''){
+            this.searchCriteria.searchTerm = letter;
+        }
+        else{
+            this.searchCriteria.searchTerm += letter;
+        }
+    }
+
+    public changeTrop(): void{
+        this.displayTrop = !this.displayTrop;
+        this.$emit('change-trop', this.displayTrop);
+    }
+
+    mounted(){
+        this.searchCriteria.category = [];
+        this.updateCategorySelection('TORAH');
+        this.updateCategorySelection('PROPHETS');
+        this.updateCategorySelection('WRITINGS');
+        this.searchCriteria.book = null;
+
+    }
+
+
+    @Watch('chaptersList')
+        onchanged(){
+        if(this.chaptersList.length > 0){
+            this.chapLoading = false;
+        }
     }
 
 
 
-
-
+//endregion
 
 
 }
 </script>
 
-<style scoped>
+<style scoped   >
+.form-horizontal{
 
+}
 .btn-group stacks_in_213_dropdown{
     white-space: nowrap;
-    overflow-x: auto;
+    display: inline-block;
+
 }
 .btn-group-stacks_in_221_dropdown{
     display: inline-block;
@@ -240,15 +412,35 @@ export default class SearchInputForm extends Vue{
     }
 .second-dd-list{
     white-space: nowrap;
-    overflow-x: auto;
+    margin-left: 10px;
+
 }
+
+
 .perek-dd{
     display: inline-block;
-
 }
 .passuk-dd{
-display: inline-block;
-
+    display: inline-block;
 }
+    .search-and-clear-bttns{
+        margin-top: 15px;
+        margin-left: 50px;
+        margin-bottom: 80px;
+    }
+
+    .clear_btn{
+        margin-left:20px;
+    }
+    .search_btn{
+        margin-left: 5px;
+        margin-right: 20px;
+    }
+    .nav_pairing{
+
+        transition-delay: 2s;
+    }
+
+
 
 </style>
