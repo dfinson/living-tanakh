@@ -4,13 +4,16 @@ import dev.sanda.apifi.service.EntityCollectionApiHooks;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
+import lombok.AllArgsConstructor;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class MediaTagsOfVerseApiHooks implements EntityCollectionApiHooks<MediaTag, Verse> {
 
     @Override
@@ -22,8 +25,8 @@ public class MediaTagsOfVerseApiHooks implements EntityCollectionApiHooks<MediaT
         val tagsAlreadyPresentKeys = verse.getMediaTags().stream().map(MediaTag::getKey).collect(Collectors.toSet());
         val illegalOverlappingTagKeys = toAssociateInput
                 .stream()
-                .filter(tag -> tagsAlreadyPresentKeys.contains(tag.getKey()))
                 .map(MediaTag::getKey)
+                .filter(tagsAlreadyPresentKeys::contains)
                 .collect(Collectors.toSet());
         /*if(!illegalOverlappingTags.isEmpty()){
             val msgBuilder = new StringBuilder("Error adding tags with keys: [");
@@ -32,18 +35,6 @@ public class MediaTagsOfVerseApiHooks implements EntityCollectionApiHooks<MediaT
             throw new IllegalArgumentException(msgBuilder.toString());
         }*/
         toAssociateInput.removeIf(tag -> illegalOverlappingTagKeys.contains(tag.getKey()));
-    }
-
-    @Override
-    public void postAssociate(
-            Collection<MediaTag> toAssociateInput,
-            Collection<MediaTag> newlyAssociated,
-            Verse ownerInstance,
-            String fieldName,
-            DataManager<MediaTag> mediaTagDataManager,
-            DataManager<Verse> ownerDataManager) {
-        newlyAssociated.forEach(mediaTag -> mediaTag.getVerses().add(ownerInstance));
-        mediaTagDataManager.saveAll(newlyAssociated);
     }
 
     @Override
