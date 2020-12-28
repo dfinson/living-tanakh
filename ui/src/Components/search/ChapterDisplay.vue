@@ -1,9 +1,5 @@
 <template>
         <div id='stacks_in_72' class='stacks_in text_stack' >
-        <h1 style="font-size:20px; margin-right: 5px; 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1; text-align: right" >{{selectedChapter.book.hebrewName + "/" + selectedChapter.hebrewNumeral}}</h1>
-
-
-
                       <verse-display v-for="verse in selectedChapter.verses" v-bind:value="verse" :key="verse.number" class="verse-display"
                                      :verse-to-display="verse"
                                      :display-trop="displayTrop"
@@ -76,16 +72,4 @@ export default class ChapterDisplay extends Vue{
 </script>
 
 <style scoped>
-    .image {
-        float: left;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-        border: 1px solid #ebebeb;
-        margin: 5px;
-    }
-.buttonSw{
-    margin-right: 300px;
-}
-
 </style>

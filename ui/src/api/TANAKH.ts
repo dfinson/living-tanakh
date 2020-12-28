@@ -30,9 +30,7 @@ export const PROPHETS = {
     HAGGAI: 'PROPHETS/Haggai',
     ZECHARIAH: 'PROPHETS/Zechariah',
     MALACHI: 'PROPHETS/Malachi',
-    DANIEL: 'PROPHETS/Daniel',
-    EZRA: 'PROPHETS/Ezra',
-    NEHEMIAH: 'PROPHETS/Nehemiah'
+
 };
 
 export const WRITINGS = {
@@ -43,6 +41,9 @@ export const WRITINGS = {
     LAMENTATIONS: 'WRITINGS/Lamentations',
     ECCLESIASTES: 'WRITINGS/Ecclesiastes',
     ESTHER: 'WRITINGS/Esther',
+    DANIEL: 'WRITINGS/Daniel',
+    EZRA: 'WRITINGS/Ezra',
+    NEHEMIAH: 'WRITINGS/Nehemiah',
     CHRONICLES: 'WRITINGS/Chronicles'
 }
 
@@ -77,9 +78,6 @@ export const WRITINGS = {
     'PROPHETS/Haggai': 'חגי',
     'PROPHETS/Zechariah': 'זכריה',
     'PROPHETS/Malachi': 'מלכי',
-    'PROPHETS/Daniel': 'דניאל',
-    'PROPHETS/Ezra': 'עזרא',
-    'PROPHETS/Nehemiah': 'נחמיה',
 
 
     'WRITINGS/Psalms': 'תהלים',
@@ -87,8 +85,11 @@ export const WRITINGS = {
     'WRITINGS/Job': 'איוב',
     'WRITINGS/Ruth': 'רות',
     'WRITINGS/Lamentations': 'איכה',
-    'WRITINGS/Ecclesiastes': 'קוהלת',
+    'WRITINGS/Ecclesiastes': 'קהלת',
     'WRITINGS/Esther': 'אסתר',
+     'WRITINGS/Daniel': 'דניאל',
+     'WRITINGS/Ezra': 'עזרא',
+     'WRITINGS/Nehemiah': 'נחמיה',
      'WRITINGS/Chronicles': 'דברי הימים',
 }
 

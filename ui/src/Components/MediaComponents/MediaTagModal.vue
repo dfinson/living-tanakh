@@ -4,6 +4,7 @@
     <MediaPresenter :tags="tags"
     @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
     @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
+    :selected-media-tag-id="selectedMediaTagId"
     ></MediaPresenter>
   </div>
 </template>
@@ -23,6 +24,9 @@ export default class MediaTagModal extends Vue {
 
     @Prop({required: true})
     private tagIds: number[];
+
+    @Prop()
+    public selectedMediaTagId: number;
 
 
     public tags: MediaTag[] = [];
@@ -85,4 +89,5 @@ export default class MediaTagModal extends Vue {
 </script>
 
 <style scoped>
+
 </style>

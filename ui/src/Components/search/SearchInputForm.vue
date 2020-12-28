@@ -4,16 +4,21 @@
         <div id='stacks_in_339' class='stacks_in com_elixir_stacks_foundryJumbotron_stack' >
             <div class="nav_pairing" style="background-color:#4f4f4f; text-align: center;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  ">
 
-                        <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: 'Trebuchet MS'">{{maayanSearch}}</h1>
-                            <div class="field" style="display: inline-block">
+                        <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: 'Trebuchet MS'" v-if="englishSearch">{{maayanSearch}}</h1>
+                <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: Arial" v-else>חיפוש מעיין</h1>
+
+                <div class="field" style="display: inline-block">
 
 
                                 <b-switch  :value="true" @input="changeLanguage" style="margin-right: 70px; max-width: 70px">
-                                    <strong style="color: white; font-family: 'Trebuchet MS';font-size: 15px">English</strong>
+                                    <strong style="color: white; font-family: 'Trebuchet MS';font-size: 12px">E</strong><strong style="color: white; font-family: Arial ;font-size: 14px">/ע</strong>
                                 </b-switch>
-                                <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong style="color: white;font-size: 12px;">Display nikud and Ta'amim</strong></b-switch>
+                                <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
+                                    <strong v-else style="color: white;font-size: 14px; font-family: Arial">עם\בלי ניקוד</strong>
+                                </b-switch>
                             </div>
-                <p style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
+                <p v-if="englishSearch" style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
+                <p v-else style="color: white; font-family: Arial" >הקלד טקסט לחיפוש בכל התנך, או סמן אופצייה אחת לחיפוש לפי ספר\פרק</p>
                         <div id='stacks_out_209' class='stacks_out'>
     <div class="form-horizontal" role="form"   action="#stacks_in_372">
 
@@ -22,10 +27,11 @@
                 <div class="button-group-wrapper  text-xs-center">
                     <div class="button_group_wrapper btn-group " role="group">
                         <div class="free-search-input">
-                                <b-field style="margin-left: 20px; display: inline-block">
-                                    <b-input   v-bind:placeholder="searchLabel" dir="rtl" v-model="searchCriteria.searchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
+                                <b-field style="margin-left: 15px; display: inline-block">
+                                    <b-button  style="width:50px; height: 39px;" type="is-info">עברית</b-button>
+                                    <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="searchCriteria.searchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
                                 </b-field>
-                            <b-collapse :open="false" aria-id="contentIdForA11y1">
+                            <!--<b-collapse :open="false" aria-id="contentIdForA11y1">
                                 <b-switch
                                         slot="trigger"
                                         aria-controls="contentIdForA11y1"></b-switch>
@@ -34,13 +40,17 @@
                                       <hebrew-keypad></hebrew-keypad>
                                     </div>
                                 </div>
-                            </b-collapse>
+                                src="https://maayan-assets.s3.eu-central-1.amazonaws.com/hebkeyb.JPG"
+                            </b-collapse>-->
 
 
                         </div>
                         <div class="btn-group-stacks_in_213_dropdown" style="margin-top: 10px" role="group" >
-                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'" v-if="englishSearch">
                                 {{torahLabel}}
+                            </strong>
+                            <strong style="color:ghostwhite; font-family: Arial;" v-else>
+                                תורה
                             </strong>
                             <b-checkbox v-model="torahSelected"
                                         type="is-white" @input="updateCategorySelection('TORAH')" >
@@ -48,8 +58,11 @@
                             </b-checkbox>
                         </div> <!-- writings dd-->
                         <div class="btn-group-stacks_in_221_dropdown" role="group">
-                           <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                           <strong style="color:ghostwhite; font-family: 'Trebuchet MS'" v-if="englishSearch">
                                 {{prophetsLabel}}
+                            </strong>
+                            <strong style="color:ghostwhite; font-family: Arial ;" v-else>
+                               נביאים
                             </strong>
                             <b-checkbox v-model="prophetsSelected"
                                         type="is-white" @input="updateCategorySelection('PROPHETS')">
@@ -57,13 +70,17 @@
                             </b-checkbox>
                         </div><!-- prophets dd-->
                         <div class="btn-group-stacks_in_224_dropdown" role="group">
-                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'">
+                            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'" v-if="englishSearch">
                                 {{writingsLabel}}
+                            </strong>
+                            <strong style="color:ghostwhite; font-family: Arial;" v-else>
+                                כתובים
                             </strong>
                             <b-checkbox v-model="writingsSelected"
                                         type="is-white" @input="updateCategorySelection('WRITINGS')">
 
                             </b-checkbox>
+
                         </div><!-- torah dd-->
                     </div> <!-- dropdown buttons-->
                 </div>
@@ -74,7 +91,7 @@
         <div class="second-dd-list">
             <div class="sefer-dd">
                 <div class="custom-select">
-                        <b-select :placeholder="bookLabel" :expanded="true" style="max-width: 120px; margin-left: 115px"  v-model="searchCriteria.book"   :disabled="!bookAndChapterEnabled" @input="updateBookSelection" size="is-small">
+                        <b-select :placeholder="bookLabel" :expanded="true" style="max-width: 120px; margin-left: 115px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
                             <option
                                     style="font-family: Arial; font-size: 15px"
                                     v-for="book in bookList"
@@ -88,7 +105,7 @@
 
             <div class="perek-dd ">
 
-                   <b-input :loading="chapLoading && !(searchCriteria.book === '' && !bookAndChapterEnabled)" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="(searchCriteria.book === '' && !bookAndChapterEnabled) || chapLoading" type="text" style="width: 120px; margin-top: 10px" ></b-input>
+                   <b-input :loading="chapLoading" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 122px; margin-top: 10px" ></b-input>
             </div> <!-- perek dd-->
 
 
@@ -98,9 +115,9 @@
       <!-- Free text search-->
         <!-- send and clear buttons-->
 
-        <div class="search-and-clear-bttns">
-            <b-button type="is-danger" class="clear_btn" @click="clearAllResults" >{{clearLabel}}</b-button>
-            <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" :disabled=" searchCriteria.searchTerm === ''&&(searchCriteria.category === '' || searchCriteria.chapter === '')"  >{{searchLabel}}</b-button>
+        <div class="search-and-clear-bttns" style="margin-right: 45px">
+            <b-button type="is-danger" class="clear_btn" @click="clearAllResults" style="width: 85px" >{{clearLabel}}</b-button>
+            <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" v-on:keydown.native.enter="updateSearchTermSelection"  >{{searchLabel}}</b-button>
             </div>
     </div>
                         </div>
@@ -135,7 +152,7 @@ export default class SearchInputForm extends Vue{
     public writingsSelected = true;
     public bookList: string[] = [];
     public chapterSelected = false;
-    public bookAndChapterEnabled = false;
+    public bookEnabled = false;
     public searchEnabled = true;
     public chapterInput = '';
     public chapLoading = false;
@@ -152,7 +169,7 @@ export default class SearchInputForm extends Vue{
     public prophetsLabel = "NEVI’IM";
    public torahLabel = "TORAH";
     public freeSearchLabel = "WORD SEARCH";
-    public bookLabel = "Choose Book";
+    public bookLabel = "Book";
     public chapterLabel = "Chapter";
     public verseLabel = "VERSE";
     public searchLabel = "Search";
@@ -160,38 +177,25 @@ export default class SearchInputForm extends Vue{
 
     public englishSearch = true;
 
-    public changeLanguage(): void{
-        this.englishSearch = ! this.englishSearch;
-        if(!this.englishSearch){
-            this.explantion = "הקלד טקסט לחיפוש בכל התנך, או סמן אופציה אחת לחיפוש ספר/פרק "
-            this.maayanSearch = "חיפוש מעיין"
-            this.allLabel = "הכל";
-            this.writingsLabel = "כתובים";
-            this.prophetsLabel = "נביאים";
-            this.torahLabel = "תורה";
-            this.freeSearchLabel = "חופשי";
-            this.searchLabel = "חיפוש טקסט חופשי";
+    public changeLanguage(): void {
+        this.englishSearch = !this.englishSearch;
+        if(!this.englishSearch) {
+            this.bookLabel = "ספר";
+            this.searchLabel = "חיפוש";
             this.clearLabel = "נקה";
-            this.bookLabel = "ספר" ;
-            this.chapterLabel = "פרק";
-            this.verseLabel = "פסוק";
+            this.chapterLabel = "פרק"
 
         }
-        else{
-            this. explantion = "Enter text to search all of Tanach or chose only one checkbox to search by book / chapter";
-            this.maayanSearch = "MA'AYAN SEARCH";
-            this.allLabel = "ALL";
-            this.writingsLabel = "KETUVIM";
-            this.prophetsLabel = "NEVI’IM";
-            this.torahLabel = "TORAH";
-            this.freeSearchLabel = "WORD SEARCH";
+        if(this.englishSearch) {
+            this.bookLabel = "Book";
             this.searchLabel = "Search";
             this.clearLabel = "Clear";
-            this.bookLabel = "Choose Book" ;
-            this.chapterLabel = "Chapter";
-            this.verseLabel = "VERSE";
+            this.chapterLabel = "Chapter"
+
         }
-}
+    }
+
+
 
 //endregion
 
@@ -236,25 +240,28 @@ export default class SearchInputForm extends Vue{
 
          //the book and chapter controls are disabled if there is more than 1 category or less than 1
          if(this.searchCriteria.category.length !== 1){
-             this.bookAndChapterEnabled = false;
-             this.searchCriteria.book = '';
+             this.bookEnabled = false;
+             this.searchCriteria.book = null;
          }
          else{
              //the book and chapter controls are enabled if there is only one selected category.Also, we load the booklist.
-             this.bookAndChapterEnabled = true;
+             this.bookEnabled = true;
              this.getBookList(this.searchCriteria.category[0]);
          }
          this.$emit('update-category-selection', this.searchCriteria.category);
-         this.chapLoading = true;
      }
 
 
 
 
     public updateBookSelection(): void{ //update to the book selected by the user, and send it up to the controller...
+        //wipe any previously selected chapter
            this.searchCriteria.chapter = "";
-           console.log(this.chapterInput)
+           console.log(this.chapterInput);
+           this.chapLoading = true;
         this.chapterInput = this.searchCriteria.chapter;
+
+
             this.$emit('update-book-selection',this.searchCriteria.book);
 
 
@@ -276,7 +283,7 @@ export default class SearchInputForm extends Vue{
            this.$buefy.notification.open({
                duration: 1000,
                message: `Invalid Chapter Number.`,
-               position: 'is-bottom-right',
+               position: 'is-top-left',
                type: 'is-danger',
                hasIcon: true
            });}

@@ -56,21 +56,23 @@
       <!-- just a header for left column-->
       <div id='stacks_out_347' class='stacks_out'>
         <div id='stacks_in_347' class='stacks_in com_elixir_stacks_foundryParagraph_stack'>
-          <p class='foundry-paragraph-override theme_style  theme_style  text-xs-left '>
-            <span style="color:#FEFEFE;">2. Click on a pasuk to select. Your choice will appear in its own window below:</span>
+          <p class='foundry-paragraph-override theme_style  theme_style  text-xs-center '>
+            <span style="color:#FEFEFE;">Click on a passuk to select. Your choice will appear in its own window below:</span>
+
           </p>
         </div>
       </div>
       <!-- chapter display component-->
       <div id='stacks_out_68' class='stacks_out'>
+        <h1 v-if="selectedChapter !== undefined" style="font-size:20px; margin-right: 5px;
+         'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:lightseagreen; text-align: center; margin-bottom:1px;" >{{selectedChapter.book.hebrewName + " " + selectedChapter.hebrewNumeral + colon}}<span>{{selectedVerse.hebrewNumeral}}</span></h1>
+
         <div id='stacks_in_68' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
-          <div id="fontStackstacks_in_68" class="fontStack ">
-            <div id='stacks_out_70' class='stacks_out'>
+          <div id="fontStackstacks_in_68" class="fontStack" >
+            <div id='stacks_out_70' class='stacks_out'  >
               <div id='stacks_in_70' class='stacks_in com_cosculture_stack_scrollbar_1_stack'>
-                <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr; " >
-                  <div class="mCustomScrollBox mCS-light-2" id="style-1" style="position:relative; height:100%; max-width:100%;">
-                    <div class="mCSB_container" style="line-height: 5px" >
-                      <div id='stacks_out_72' class='stacks_out' >
+                <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr;" >
+                      <div id='stacks_out_72' class='stacks_out'  >
 
                     <!-- chapter display-->
                     <chapter-display class="chapterD"
@@ -88,8 +90,7 @@
               </div>
         </div>
        </div>
-        </div>
-      </div>
+
       <!-- verse and media display components-->
       <div id='stacks_out_91' class='stacks_out'>
 
@@ -101,7 +102,7 @@
               <passuk-display
                       :displayTrop="displayTrop"
                       :selected-verse="selectedVerse"
-                      @send-tag-to-dashboard="handleMediaTagIdSelected($event)"
+                      @send-tag-to-dashboard="sendTagToMediaPresenter($event)"
               ></passuk-display>
             </div>
             <!-- large media display component-->
@@ -110,6 +111,7 @@
                 <div class="text-xs-center foundry-image-wrapper" >
                 <media-tag-modal
                  :tag-ids="tagIds"
+                 :selected-media-tag-id="selectedMediaTagId"
                  @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
                  @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
                 ></media-tag-modal>
@@ -254,9 +256,10 @@ export default class Dashboard extends Vue{
 
   //region Members
   private displayMediaTagModal = false;
-  private selectedMediaTagId: number;
+  public selectedMediaTagId = 0;
   public displayTrop = true;
   public tagIds: number[] = [];
+  public colon = "";
   public selectedImage = new GalleriaImageItem({
     id:0,
     signedDownloadUrl: "",
@@ -278,15 +281,17 @@ export default class Dashboard extends Vue{
   public selectedChapter = new Chapter();
   public searchTerm = "";
   public selectedVerse = new Verse();
+
   //endregion
 
   //region Methods
-  private handleMediaTagIdSelected(id: number): void{
+  private sendTagToMediaPresenter(id: number): void{
     this.selectedMediaTagId = id;
   }
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
+    this.colon = "";
     const temp = [];
     this.selectedVerse.hebrewNumeral = "";
     this.selectedVerse.highlightedVerseSegments.segments = [];
@@ -322,6 +327,8 @@ export default class Dashboard extends Vue{
   //this function will also send the media components the tags in this selected verse.
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponent(selectedVerse: Verse): void{
     this.tagIds = [];
+    this.colon = ":"
+    this.selectedMediaTagId = 0;
    // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
     if(this.selectedVerse.mediaTags !== undefined) {
@@ -430,28 +437,28 @@ export default class Dashboard extends Vue{
 
 </script>
 
-<style scoped>
+<style >
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 9px;
 
 
   }
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: black;
+    background: #171717;
     border-radius: 5px;
 
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: darkslategray;
+    background: #044f4d;
     border-radius: 5px;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #184f4d;
   }
 </style>

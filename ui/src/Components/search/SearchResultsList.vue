@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
-        <h1 class="title" style="color: darkcyan" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</h1>
+    <div class="searchResCon" style="text-align: center;">
+
+        <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 5px" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</span>
       <search-result  v-for="verse in searchResults" v-bind:value="verse" :key="verse.id"
                       :result="verse"
                       @result-selected="sendControllerSelectedChapterAndVerse($event)"
@@ -12,7 +12,7 @@
 
 <script lang = "ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import {Verse} from "@/api/dto";
+import {Chapter, Verse} from "@/api/dto";
 import SearchResult from "@/Components/search/SearchResult.vue";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 
@@ -28,8 +28,7 @@ export default class SearchResultsList extends Vue{
   searchResults: Verse[];
   @Prop({type: Boolean})
   displayOptions: boolean;
-  @Prop()
-  isLoading: boolean;
+
   @Prop()
   displayTropToSearchResult: boolean;
 

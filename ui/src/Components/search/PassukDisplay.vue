@@ -1,14 +1,14 @@
 <template>
     <div id='stacks_in_95' class='stacks_in text_stack'>
         <p style="text-align:center;">
-            <span style="font:19px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ") "}}</span>
-            <span  style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-for="segment in selectedVerse.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
-       <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
-      <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
-       <a v-if="hasHighlighted(segment) && displayTrop" style="color: crimson"  @click="sendTagToDashBoard(segment)">{{segment.highlightedKeyword}}</a>
-        <a v-else-if="hasHighlighted(segment) && !displayTrop" style="color: crimson" @click="sendTagToDashBoard(segment)">{{segment.plainHebrewHighlightedKeyword}}</a></span>
-            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-if="hasSuffix(selectedVerse.highlightedVerseSegments) && displayTrop">{{ selectedVerse.highlightedVerseSegments.finalSuffix}}</span>
-            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:saddlebrown;" v-else-if="hasSuffix(selectedVerse.highlightedVerseSegments) && !displayTrop">{{selectedVerse.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
+            <span style="font:19px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ") "}}</span>
+            <span  style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-for="segment in selectedVerse.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
+       <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
+      <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
+       <a v-if="hasHighlighted(segment) && displayTrop" style="color: crimson; text-decoration: none"  @click="sendTagToDashBoard(segment)">{{segment.highlightedKeyword}}</a>
+        <a v-else-if="hasHighlighted(segment) && !displayTrop" style="color: crimson; text-decoration: none" @click="sendTagToDashBoard(segment)">{{segment.plainHebrewHighlightedKeyword}}</a></span>
+            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasSuffix(selectedVerse.highlightedVerseSegments) && displayTrop">{{ selectedVerse.highlightedVerseSegments.finalSuffix}}</span>
+            <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-else-if="hasSuffix(selectedVerse.highlightedVerseSegments) && !displayTrop">{{selectedVerse.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
         </p>
     </div>
 </template>
@@ -54,7 +54,9 @@
     }
 
     public sendTagToDashBoard(segment: PrefixedVerseSegment): void {
+        console.log(segment.tag.id)
         this.$emit('send-tag-to-dashboard', segment.tag.id);
+
     }
 
 
@@ -64,5 +66,8 @@
 </script>
 
 <style scoped>
-
+a:hover{
+    background-color: #ffdf5e;
+    border-radius: 4px;
+}
 </style>

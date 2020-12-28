@@ -1,11 +1,9 @@
 <template>
-    <div v-if="getChapterSearchResults.book !== undefined">
-        <h1 class="title" style="color: darkcyan">{{"Search Result:"}}</h1>
-    <base-card class="baseCard">
+    <div v-if="getChapterSearchResults.book !== undefined" style="display: inline">
+        <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 10px">{{"Chapter Selected:"}}</span>
         <strong>
-       <b-button type="is-primary is-light" style="float: right">{{getPath()}}</b-button>
-        </strong>
-    </base-card></div>
+       <b-button :type="categoryColorCode" style="height: 22px; margin-left: 10px;">{{getPath()}}</b-button>
+        </strong></div>
 </template>
 <script lang="ts">
  import {Vue,Component, Prop,Watch} from "vue-property-decorator";
@@ -28,6 +26,20 @@
         public getPath(): string{
            return  this.getChapterSearchResults.book?.hebrewName + "/" + this.getChapterSearchResults.hebrewNumeral;
         }
+
+
+     public get categoryColorCode(): string{
+         if(this.getChapterSearchResults.path.includes('TORAH')){
+             return 'is-primary is-light'
+         }
+         if(this.getChapterSearchResults.path.includes('PROPHETS')){
+             return 'is-info is-light'
+
+         }
+         else{
+             return 'is-success is-light';
+         }
+     }
 
  }
 

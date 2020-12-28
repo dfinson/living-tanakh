@@ -1,18 +1,17 @@
 <template>
-  <div>
+  <div >
 <base-card>
   <strong>
-    <b-button type="is-primary is-light" @click="pathSelected">{{result.humanReadablePath}}</b-button>
-<p>
+    <b-button  :type="categoryColorCode" @click="pathSelected">{{result.humanReadablePath}}</b-button>
+<p style="direction: rtl; font-size: 15px">
   <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.id">
-    <span v-if="hasPrefix(segment) && !displayTropToSearchResult">{{segment.plainHebrewPrefix}}</span>
-        <span v-else-if="hasPrefix(segment) && displayTropToSearchResult">{{segment.prefix}}</span>
-    <span v-if="!displayTropToSearchResult" style="background-color: yellow">{{segment.plainHebrewHighlightedKeyword + " "}}</span>
-     <span v-else-if="displayTropToSearchResult" style="background-color: yellow">{{segment.highlightedKeyword + " "}}</span>
+    <span v-if="hasPrefix(segment) && !displayTropToSearchResult" style="font-family: Arial">{{segment.plainHebrewPrefix}}</span>
+        <span v-else-if="hasPrefix(segment) && displayTropToSearchResult" style="font-family: Arial">{{segment.prefix}}</span>
+    <span v-if="!displayTropToSearchResult" style="background-color: yellow;font-family: Arial">{{segment.plainHebrewHighlightedKeyword + " "}}</span>
+     <span v-else-if="displayTropToSearchResult" style="background-color: yellow; font-family: Arial">{{segment.highlightedKeyword + " "}}</span>
   </span>
-  <span v-if="hasSuffix(result.highlightedVerseSegments)&& !displayTropToSearchResult">{{ result.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
-  <span v-else-if="hasSuffix(result.highlightedVerseSegments)&& displayTropToSearchResult">{{ result.highlightedVerseSegments.finalSuffix}}</span>
-
+  <span v-if="hasSuffix(result.highlightedVerseSegments)&& !displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
+  <span v-else-if="hasSuffix(result.highlightedVerseSegments)&& displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.finalSuffix}}</span>
 </p>
   </strong>
 </base-card>
@@ -36,6 +35,19 @@ export default class SearchResult extends Vue{
   result: Verse;
   @Prop()
   displayTropToSearchResult: boolean;
+
+  public get categoryColorCode(): string{
+    if(this.result.path.includes('TORAH')){
+      return 'is-primary is-light'
+    }
+    if(this.result.path.includes('PROPHETS')){
+      return 'is-info is-light'
+
+    }
+    else{
+      return 'is-success is-light';
+    }
+  }
 
   public pathSelected(): void{
     this.$emit('result-selected',[this.result.chapter?.path,this.result.number.toString()]);
