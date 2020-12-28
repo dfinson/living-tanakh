@@ -8,6 +8,9 @@ public enum Writings {
     LAMENTATIONS("Lamentations"),
     ECCLESIASTES("Ecclesiastes"),
     ESTHER("Esther"),
+    DANIEL("Daniel"),
+    EZRA("Ezra"),
+    NEHEMIAH("Nehemiah"),
     CHRONICLES("Chronicles");
 
     private final String name;

@@ -30,10 +30,7 @@ export const PROPHETS = {
     HAGGAI: 'PROPHETS/Haggai',
     ZECHARIAH: 'PROPHETS/Zechariah',
     MALACHI: 'PROPHETS/Malachi',
-    DANIEL: 'PROPHETS/Daniel',
-    EZRA: 'PROPHETS/Ezra',
-    NEHEMIAH: 'PROPHETS/Nehemiah',
-    CHRONICLES: 'PROPHETS/Chronicles'
+
 };
 
 export const WRITINGS = {
@@ -43,7 +40,11 @@ export const WRITINGS = {
     RUTH: 'WRITINGS/Ruth',
     LAMENTATIONS: 'WRITINGS/Lamentations',
     ECCLESIASTES: 'WRITINGS/Ecclesiastes',
-    ESTHER: 'WRITINGS/Esther'
+    ESTHER: 'WRITINGS/Esther',
+    DANIEL: 'WRITINGS/Daniel',
+    EZRA: 'WRITINGS/Ezra',
+    NEHEMIAH: 'WRITINGS/Nehemiah',
+    CHRONICLES: 'WRITINGS/Chronicles'
 }
 
 /*interface YDictionary {
@@ -77,18 +78,19 @@ export const WRITINGS = {
     'PROPHETS/Haggai': 'חגי',
     'PROPHETS/Zechariah': 'זכריה',
     'PROPHETS/Malachi': 'מלכי',
-    'PROPHETS/Daniel': 'דניאל',
-    'PROPHETS/Ezra': 'עזרא',
-    'PROPHETS/Nehemiah': 'נחמיה',
-    'PROPHETS/Chronicles': 'דברי הימים',
+
 
     'WRITINGS/Psalms': 'תהלים',
     'WRITINGS/Proverbs': 'משלי',
     'WRITINGS/Job': 'איוב',
     'WRITINGS/Ruth': 'רות',
     'WRITINGS/Lamentations': 'איכה',
-    'WRITINGS/Ecclesiastes': 'קוהלת',
-    'WRITINGS/Esther': 'אסתר'
+    'WRITINGS/Ecclesiastes': 'קהלת',
+    'WRITINGS/Esther': 'אסתר',
+     'WRITINGS/Daniel': 'דניאל',
+     'WRITINGS/Ezra': 'עזרא',
+     'WRITINGS/Nehemiah': 'נחמיה',
+     'WRITINGS/Chronicles': 'דברי הימים',
 }
 
 export function stripPrefix(pathWithPrefix: string): string{
