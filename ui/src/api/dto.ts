@@ -7,7 +7,7 @@ export class Book {
     path: string;
     englishName?: string;
     hebrewName: string;
-    chapters: Chapter[];
+    chapters?: Chapter[];
 }
 
 export class Chapter {
@@ -64,13 +64,14 @@ export class PrefixedVerseSegment {
     tag: MediaTag;
     plainHebrewPrefix?: string;
     plainHebrewHighlightedKeyword?: string;
+    id?:number;
 }
 
 
 export class SearchCriteria{
     searchTerm: string;
-    category: string;
-    book: string;
+    category: string[];
+    book: string|null;
     chapter: string;
     passuk: string;
 }
@@ -81,6 +82,7 @@ export class GalleriaImageItem{
         this.alt = mediaContent.key ? mediaContent.key : '';
         this.title = this.alt;
         this.description = mediaContent.description ? mediaContent.description : '';
+        this.toBeDownloaded = false;
     }
 
     itemImageSrc: string;
@@ -88,6 +90,7 @@ export class GalleriaImageItem{
     alt: string;
     title: string;
     description: string;
+    toBeDownloaded?:boolean
 }
 
 export class GalleriaResponsiveOption{
@@ -109,3 +112,4 @@ export enum MediaType {
     DOCUMENT = "DOCUMENT",
     OTHER = "OTHER",
 }
+

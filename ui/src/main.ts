@@ -6,7 +6,6 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 import Galleria from 'primevue/galleria';
 
-
 Vue.use(Buefy);
 Vue.component('Galleria', Galleria);
 

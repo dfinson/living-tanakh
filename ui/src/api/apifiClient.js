@@ -48,6 +48,19 @@ export default{
 		return await (await fetch(apiUrl, opts)).json();
 	},
 
+	async getZipFileWithMediaKeys(input,customHeaders){
+		let requestHeaders = { "Content-Type": "application/json" }
+		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+		if(bearerToken !== undefined) requestHeaders["Authorization"] = bearerToken;
+		const opts = {
+			method: "POST",
+			credentials: "include",
+			headers: { "Content-Type": "application/json" },
+			body:input
+		};
+		return await (await fetch(apiUrl, opts)).json();
+	},
+
 	async updateLinkedContentOfMediaTag(owner, input, expectedReturn, customHeaders){
 		let requestHeaders = { "Content-Type": "application/json" }
 		if(customHeaders !== undefined) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
