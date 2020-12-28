@@ -1,14 +1,12 @@
 <template>
   <section type="is-large">
     <!-- this displays the images of a verse/Chapter, all the images associated with all the tags in the verse/chapter-->
-
     <b-carousel :autoplay="false" indicator-custom :indicator-inside="false" :overlay="gallery" @click="switchGallery(true)" v-if="images.length > 0 && !oneTagSelected" style="background-color: black;">
-      <b-carousel-item v-for="(item, i) in images" :key="i">
+      <b-carousel-item v-for="(item, i) in images" :key="i" >
         <a class="image ">
-
           <input type="checkbox" size="is-small" v-model="images[i].toBeDownloaded" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px;right: 20px; border-radius: 4px; background-color: transparent; " @change="sendImageToPreviewSelector(i)" />
 
-          <img :src="getImgUrl(i)" style="margin-bottom: 10px"   @load="loading = false">
+          <img :src="getImgUrl(i)" style="margin-bottom: 10px" >
           <b-switch type="is-success"  style="font-family: 'Trebuchet MS'; direction: ltr; position: absolute; bottom: 20px; right: 20px; color: black " v-model="showCarousel"><strong>Carousel</strong></b-switch>
           <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
             <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/info.png"  @mouseover="displayTooltip = true"/>
@@ -102,12 +100,12 @@ export default class MediaPresenter extends Vue{
   public gallery = false;
   public displayTooltip = false;
   public oneTagSelected = false;
-  public loading = false;
   public showCarousel = true;
+
 
   public sendImageToPreviewSelector(index: number): void{
     if(this.images[index].toBeDownloaded){
-      console.log(this.images[index].toBeDownloaded)
+      console.log(this.images[index].itemImageSrc)
       this.$emit('send-image-to-preview-selector', this.images[index])
     }
 
@@ -129,7 +127,6 @@ export default class MediaPresenter extends Vue{
 
  public getImgUrl(index: number): string{
     if(this.images[index] !== undefined){
-      this.loading = true;
     return this.images[index].itemImageSrc;}
     else return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
  }
@@ -164,7 +161,7 @@ export default class MediaPresenter extends Vue{
   }
 
   @Watch('selectedMediaTagId')
-    onPropertyChanged(){
+  onPropertyChanged(){
     if(this.selectedMediaTagId !== 0){
       this.oneTagSelected = true;
       console.log(this.oneTagsImages + "from one tag")
@@ -173,6 +170,7 @@ export default class MediaPresenter extends Vue{
       this.oneTagSelected = false;
     }
   }
+
 
 
 

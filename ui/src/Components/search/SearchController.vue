@@ -21,6 +21,7 @@
         <div style="height: 400px; overflow-y: auto; width: 359px">
             <chapter-search-result-item
                     :get-chapter-search-results="getChapterSearchResults"
+                    :selected-verse-numeral="selectedVerseNumeral"
             ></chapter-search-result-item>
     <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0"
             :search-results="freeTextSearchResultsVerseArray"
@@ -65,7 +66,7 @@
 
   */
 
-  import { Component, Vue } from 'vue-property-decorator';
+  import {Component, Prop, Vue} from 'vue-property-decorator';
   import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
   import SearchInputForm from "@/Components/search/SearchInputForm.vue";
   import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
@@ -89,6 +90,8 @@
   export default class SearchController extends Vue{
 
 
+      @Prop()
+      selectedVerseNumeral: string;
       //region members
     public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
     public listOfChaptersInSelectedBook: Chapter[] = []; //will contain the list of chapters in the selected book, to be sent down to the form..

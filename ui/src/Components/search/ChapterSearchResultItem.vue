@@ -1,6 +1,6 @@
 <template>
     <div v-if="getChapterSearchResults.book !== undefined" style="display: inline">
-        <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 10px">{{"Chapter Selected:"}}</span>
+        <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 10px;">{{"Chapter Selected:"}}</span>
         <strong>
        <b-button :type="categoryColorCode" style="height: 22px; margin-left: 10px;">{{getPath()}}</b-button>
         </strong></div>
@@ -19,16 +19,15 @@
     export default class ChapterSearchResultItem extends Vue{
         @Prop({required:true})
         getChapterSearchResults: Chapter;
-      /*@Prop()
-        displayTrop: boolean;*/
+      @Prop()
+        selectedVerseNumeral: string;
 
 
         public getPath(): string{
-           return  this.getChapterSearchResults.book?.hebrewName + "/" + this.getChapterSearchResults.hebrewNumeral;
+           return  this.getChapterSearchResults.book?.hebrewName +" " +  this.getChapterSearchResults.hebrewNumeral + " " + this.selectedVerseNumeral;
         }
 
-
-     public get categoryColorCode(): string{
+            public get categoryColorCode(): string{
          if(this.getChapterSearchResults.path.includes('TORAH')){
              return 'is-primary is-light'
          }

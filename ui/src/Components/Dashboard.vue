@@ -35,6 +35,7 @@
                     @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
                     @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
                     @change-trop = changeTrop($event)
+                    :selected-verse-numeral="selectedVerse.hebrewNumeral"
             ></search-controller>
           </b-tab-item>
           <b-tab-item label="Selected Images" animated="true" :disabled="disableSelectedImagesTab">
