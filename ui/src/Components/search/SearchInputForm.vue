@@ -20,16 +20,23 @@
                 <p v-if="englishSearch" style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
                 <p v-else style="color: white; font-family: Arial" >הקלד טקסט לחיפוש בכל התנך, או סמן אופצייה אחת לחיפוש לפי ספר\פרק</p>
                         <div id='stacks_out_209' class='stacks_out'>
-    <div class="form-horizontal" role="form"   action="#stacks_in_372">
+    <div class="form-horizontal" role="form"   action="#stacks_in_372"  style="position: relative">
 
-        <div class="form-group ">
-            <div id='stacks_in_209' class='stacks_in com_elixir_stacks_foundryButtonGroup_stack'>
+        <div class="form-group " >
+            <div id='stacks_in_209' class='stacks_in com_elixir_stacks_foundryButtonGroup_stack' >
                 <div class="button-group-wrapper  text-xs-center">
-                    <div class="button_group_wrapper btn-group " role="group">
-                        <div class="free-search-input">
-                                <b-field style="margin-left: 15px; display: inline-block">
-                                    <b-button  style="width:50px; height: 39px;" type="is-info">עברית</b-button>
-                                    <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="searchCriteria.searchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
+                    <div class="button_group_wrapper btn-group " role="group" >
+                        <div class="free-search-input" >
+                                <b-field style="margin-left: 15px; display: inline-block;">
+                                    <b-button  style="width:50px; height: 39px;" type="is-info" @click="displayKeypad = !displayKeypad" >עברית</b-button>
+                                    <div class="notification" v-if="displayKeypad">
+                                        <button class="delete" @click="displayKeypad = !displayKeypad"></button>
+                                        <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+                                        <hebrew-keypad
+                                                @add-character="addChar($event)"
+                                        ></hebrew-keypad>
+                                    </div>
+                                    <b-input v-if="!displayKeypad" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
                                 </b-field>
                             <!--<b-collapse :open="false" aria-id="contentIdForA11y1">
                                 <b-switch
@@ -69,7 +76,7 @@
 
                             </b-checkbox>
                         </div><!-- prophets dd-->
-                        <div class="btn-group-stacks_in_224_dropdown" role="group">
+                        <div  class="btn-group-stacks_in_224_dropdown" role="group">
                             <strong style="color:ghostwhite; font-family: 'Trebuchet MS'" v-if="englishSearch">
                                 {{writingsLabel}}
                             </strong>
@@ -88,7 +95,7 @@
             </div>
         </div> <!-- dd's for t/n/k-->
 
-        <div class="second-dd-list">
+        <div class="second-dd-list" >
             <div class="sefer-dd">
                 <div class="custom-select">
                         <b-select :placeholder="bookLabel" :expanded="true" style="max-width: 120px; margin-left: 115px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
@@ -115,7 +122,7 @@
       <!-- Free text search-->
         <!-- send and clear buttons-->
 
-        <div class="search-and-clear-bttns" style="margin-right: 45px">
+        <div  class="search-and-clear-bttns" style="margin-right: 45px">
             <b-button type="is-danger" class="clear_btn" @click="clearAllResults" style="width: 85px" >{{clearLabel}}</b-button>
             <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" v-on:keydown.native.enter="updateSearchTermSelection"  >{{searchLabel}}</b-button>
             </div>
@@ -156,8 +163,9 @@ export default class SearchInputForm extends Vue{
     public searchEnabled = true;
     public chapterInput = '';
     public chapLoading = false;
-
+    public displayKeypad = false;
     public displayTrop = true;
+    public tempSearchTerm = "";
     //endregion
 
     //region language Labels
@@ -200,6 +208,7 @@ export default class SearchInputForm extends Vue{
 //endregion
 
  //region methods
+
 
 
      public updateCategorySelection(category: string): void{
@@ -358,12 +367,14 @@ export default class SearchInputForm extends Vue{
     }
 
     public addChar(letter: string): void{
-        if(this.searchCriteria.searchTerm === undefined || this.searchCriteria.searchTerm === ''){
-            this.searchCriteria.searchTerm = letter;
+        if(letter === 'D'){
+           this.tempSearchTerm =  this.tempSearchTerm.slice(0,-1);
         }
         else{
-            this.searchCriteria.searchTerm += letter;
+            this.tempSearchTerm += letter;
         }
+
+
     }
 
     public changeTrop(): void{
@@ -387,6 +398,11 @@ export default class SearchInputForm extends Vue{
             this.chapLoading = false;
         }
     }
+
+        @Watch('tempSearchTerm')
+        atChange(){
+            this.searchCriteria.searchTerm = this.tempSearchTerm;
+        }
 
 
 

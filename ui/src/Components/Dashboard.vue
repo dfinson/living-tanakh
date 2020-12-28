@@ -8,7 +8,9 @@
         <h5 class="stacks_in_352_hdr text-muted  ">TANACH VISUAL DATABASE</h5>
       </div> <!-- column header-->
       <div class="stacks_in_249-foundry-card card  ">
+        <a href="http://www.foundationstone.org/page-5/">
         <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg" class="img-fluid card-img-top" alt="Image">
+        </a>
         <!-- Special Circular image overlapped on top of the top image. -->
         <!-- Only displays if the top image is visible. -->
         <div class="card-block">
@@ -20,6 +22,7 @@
           </p>
           <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  ">Sefaria</a>
           <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link  ">Foundation Stone</a>
+          <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  ">Ma'ayan</a>
         </div>
       </div><!-- column header-->
 
@@ -104,6 +107,7 @@
                       :selected-verse="selectedVerse"
                       @send-tag-to-dashboard="sendTagToMediaPresenter($event)"
               ></passuk-display>
+
             </div>
             <!-- large media display component-->
             <div id='stacks_out_193' class='stacks_out' >
