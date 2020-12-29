@@ -11,7 +11,7 @@
 
 
                                 <b-switch  :value="true" @input="changeLanguage" style="margin-right: 70px; max-width: 70px">
-                                    <strong style="color: white; font-family: 'Trebuchet MS';font-size: 12px">E</strong><strong style="color: white; font-family: Arial ;font-size: 14px">/ע</strong>
+                                    <strong style="color: white; font-family: 'Trebuchet MS';font-size: 12px">E</strong><strong style="color: white; font-family: Arial ;font-size: 16px">/ע</strong>
                                 </b-switch>
                                 <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
                                     <strong v-else style="color: white;font-size: 14px; font-family: Arial">עם\בלי ניקוד</strong>
@@ -27,11 +27,11 @@
                 <div class="button-group-wrapper  text-xs-center">
                     <div class="button_group_wrapper btn-group " role="group" >
                         <div class="free-search-input" >
-                                <b-field style="margin-left: 15px; display: inline-block;">
-                                    <b-button  style="width:50px; height: 39px;" type="is-info" @click="displayKeypad = !displayKeypad" >עברית</b-button>
-                                    <div class="notification" v-if="displayKeypad">
+                                <b-field style=" display: inline-block;">
+                                    <b-button  style="width:50px; height: 39px;" type="is-info" @click="displayKeypad = !displayKeypad" v-if="!displayKeypad" >עברית</b-button>
+                                    <div class="notification"  v-if="displayKeypad" style="max-width: 340px">
                                         <button class="delete" @click="displayKeypad = !displayKeypad"></button>
-                                        <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+                                        <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected"  />
                                         <hebrew-keypad
                                                 @add-character="addChar($event)"
                                         ></hebrew-keypad>
@@ -112,7 +112,7 @@
 
             <div class="perek-dd ">
 
-                   <b-input :loading="chapLoading" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 122px; margin-top: 10px" ></b-input>
+                   <b-input :loading="chapLoading" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 120px; margin-top: 10px" ></b-input>
             </div> <!-- perek dd-->
 
 
@@ -170,7 +170,7 @@ export default class SearchInputForm extends Vue{
 
     //region language Labels
 
-    public explantion = "Enter text to search all of Tanach or chose only one checkbox to search by book / chapter";
+    public explantion = "Enter text to search all of Tanach or choose only one checkbox to search by book/chapter";
     public maayanSearch = "MA'AYAN SEARCH";
     public allLabel = "ALL";
     public writingsLabel = "KETUVIM";
