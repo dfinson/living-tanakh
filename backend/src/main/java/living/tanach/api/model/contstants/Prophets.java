@@ -23,7 +23,7 @@ public enum Prophets {
     ZEPHANIAH("Zephania"),
     HAGGAI("Haggai"),
     ZECHARIAH("Zechariah"),
-    MALACHI("Malachi"),
+    MALACHI("Malachi");
 
 
     private final String name;
