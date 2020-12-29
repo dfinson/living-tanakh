@@ -20,9 +20,6 @@
           <p class='stacks_in_250 card-text   text-xs-left ' >
             Welcome to the Ma'ayan demo page. Ma'ayan is being developed as the premier visual companion for the learning, teaching and development of TANACH. Click the link below to add your comments - we value your input!
           </p>
-          <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  ">Sefaria</a>
-          <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link  ">Foundation Stone</a>
-          <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  ">Ma'ayan</a>
         </div>
       </div><!-- column header-->
 
@@ -299,6 +296,18 @@ export default class Dashboard extends Vue{
     this.selectedMediaTagId = id;
   }
 
+  public get path(): string{
+    let a: string;
+    //
+    //if(this.selectedChapter.path.includes("Samuel I") ||this.selectedChapter.path.includes("Samuel II")|| this.selectedChapter.path.includes("Kings II") ||  this.selectedChapter.path.includes("Kings I"))
+
+    const b = this.selectedChapter.hebrewNumeral.replace("''","") + this.colon;
+    console.log(b)
+    const c = this.selectedVerse.hebrewNumeral.replace("''","");
+    console.log(c)
+    return " " + b + c;
+  }
+
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
     this.colon = "";
@@ -337,7 +346,7 @@ export default class Dashboard extends Vue{
   //this function will also send the media components the tags in this selected verse.
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponent(selectedVerse: Verse): void{
     this.tagIds = [];
-    this.colon = ":"
+    this.colon = ":";
     this.selectedMediaTagId = 0;
    // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
@@ -376,6 +385,7 @@ export default class Dashboard extends Vue{
 
       //give the selectedChapter and Verse a default value so that they will not be undefined
       created(){
+
     this.selectedChapter = {
         id: 0,
                 path: "",

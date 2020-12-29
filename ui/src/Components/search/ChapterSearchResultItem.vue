@@ -22,9 +22,9 @@
       @Prop()
         selectedVerseNumeral: string;
 
-
+        public colon = "";
         public getPath(): string{
-           return  this.getChapterSearchResults.book?.hebrewName +" " +  this.getChapterSearchResults.hebrewNumeral + " " + this.selectedVerseNumeral;
+            return  this.getChapterSearchResults.book?.hebrewName + " " +  this.getChapterSearchResults.hebrewNumeral + this.colon +  this.selectedVerseNumeral;
         }
 
             public get categoryColorCode(): string{
@@ -38,6 +38,15 @@
          else{
              return 'is-success is-light';
          }
+     }
+
+     @Watch('selectedVerseNumeral')
+     onChanged(){
+            if(this.selectedVerseNumeral !== "" && this.selectedVerseNumeral !== undefined)
+                this.colon = ":";
+            else{
+                this.colon = "";
+            }
      }
 
  }

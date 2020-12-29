@@ -1,21 +1,46 @@
 <template>
 <!-- the search Input form-->
+    <div class="container">
     <div id='stacks_out_339' class='stacks_out' >
         <div id='stacks_in_339' class='stacks_in com_elixir_stacks_foundryJumbotron_stack' >
             <div class="nav_pairing" style="background-color:#4f4f4f; text-align: center;   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  ">
 
                         <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: 'Trebuchet MS'" v-if="englishSearch">{{maayanSearch}}</h1>
-                <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: Arial" v-else>חיפוש מעיין</h1>
+                         <h1 class="h1" style="color: white; background-color: #0d68ce; text-align: center; font-size: 2.2em; font-family: Arial" v-else>חיפוש מעיין</h1>
 
                 <div class="field" style="display: inline-block">
 
-
-                                <b-switch  :value="true" @input="changeLanguage" style="margin-right: 70px; max-width: 70px">
+                            <nav class="level">
+                                <div class = "level-left">
+                                    <div class = "level-item has-text-centered">
+                                <b-switch  :value="true" @input="changeLanguage" style="max-width: 70px; ">
                                     <strong style="color: white; font-family: 'Trebuchet MS';font-size: 12px">E</strong><strong style="color: white; font-family: Arial ;font-size: 16px">/ע</strong>
                                 </b-switch>
+                                    </div>
+                                    <p class="level-item has-text-centered">
+
+                                    </p>
+
+                                </div>
+                                <div class="level-right">
+                                    <p class="level-item has-text-centered">
+
+                                    </p>
+                                    <p class="level-item has-text-centered">
+
+                                    </p>
+                                    <p class="level-item has-text-centered">
+
+                                    </p>
+
+                                    <div class = "level-item has-text-centered">
                                 <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
                                     <strong v-else style="color: white;font-size: 14px; font-family: Arial">עם\בלי ניקוד</strong>
                                 </b-switch>
+                                    </div>
+
+                                </div>
+                            </nav>
                             </div>
                 <p v-if="englishSearch" style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
                 <p v-else style="color: white; font-family: Arial" >הקלד טקסט לחיפוש בכל התנך, או סמן אופצייה אחת לחיפוש לפי ספר\פרק</p>
@@ -30,9 +55,12 @@
                                 <b-field style=" display: inline-block;">
                                     <b-button  style="width:50px; height: 39px;" type="is-info" @click="displayKeypad = !displayKeypad" v-if="!displayKeypad" >עברית</b-button>
                                     <div class="notification"  v-if="displayKeypad" style="max-width: 340px">
-                                        <button class="delete" @click="displayKeypad = !displayKeypad"></button>
-                                        <b-input v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected"  />
-                                        <hebrew-keypad
+                                        <div style="display: inline">
+                                        <b-button style="top: 1px; width: 20px; height:20px; font-size: 15px;"  @click="addChar('CLR')">CLR</b-button>
+                                            <button class="delete" @click="displayKeypad = !displayKeypad" style="top: 1px; z-index:3 ;float: right; margin-right: -20px; margin-top: -5px"></button>
+                                        </div>
+                                        <b-input  style="width: 300px" size="is-small" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected"  />
+                                        <hebrew-keypad style="top:0px"
                                                 @add-character="addChar($event)"
                                         ></hebrew-keypad>
                                     </div>
@@ -98,7 +126,7 @@
         <div class="second-dd-list" >
             <div class="sefer-dd">
                 <div class="custom-select">
-                        <b-select :placeholder="bookLabel" :expanded="true" style="max-width: 120px; margin-left: 115px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
+                        <b-select :placeholder="bookLabel" :expanded="true" style="width: 120px;  display: block; margin-left: auto;margin-right: auto" v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
                             <option
                                     style="font-family: Arial; font-size: 15px"
                                     v-for="book in bookList"
@@ -131,6 +159,7 @@
                     </div>
                 </div>
             </div>
+    </div>
 </template>
 
 <script lang = "ts">
@@ -367,10 +396,13 @@ export default class SearchInputForm extends Vue{
     }
 
     public addChar(letter: string): void{
-        if(letter === 'D'){
+        if(letter === 'Del'){
            this.tempSearchTerm =  this.tempSearchTerm.slice(0,-1);
         }
-        else{
+        if(letter === 'CLR'){
+            this.tempSearchTerm = "";
+        }
+        if(letter !== 'Del' && letter !== 'CLR'){
             this.tempSearchTerm += letter;
         }
 
@@ -433,11 +465,7 @@ export default class SearchInputForm extends Vue{
     display: inline-block;
 
     }
-.second-dd-list{
-    white-space: nowrap;
-    margin-left: 10px;
 
-}
 
 
 .perek-dd{

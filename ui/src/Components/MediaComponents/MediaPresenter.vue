@@ -4,34 +4,36 @@
     <b-carousel :autoplay="false" indicator-custom :indicator-inside="false" :overlay="gallery" @click="switchGallery(true)" v-if="images.length > 0 && !oneTagSelected" style="background-color: black;">
       <b-carousel-item v-for="(item, i) in images" :key="i" >
         <a class="image ">
-          <input type="checkbox" size="is-small" v-model="images[i].toBeDownloaded" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px;right: 20px; border-radius: 4px; background-color: transparent; " @change="sendImageToPreviewSelector(i)" />
+          <input type="checkbox"  v-model="images[i].toBeDownloaded" style=" width: 21px; border:1px; padding: 1px; height: 21px;position: absolute;top: 20px;right: 20px; border-radius: 4px; background-color: transparent; " @change="sendImageToPreviewSelector(i)" />
 
           <img :src="getImgUrl(i)" style="margin-bottom: 10px" >
-          <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
+          <div class="tooltip" style=" width: 21px; border:1px; padding: 1px; height: 21px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
             <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/info.png"  @mouseover="displayTooltip = true"/>
-            <span class="tooltiptext" v-if="displayTooltip"><a class="toolClose" @click="displayTooltip = false" style="text-decoration: none; margin-right: 5px; font-size: 20px;" >x</a>
+            <span class="tooltiptext" v-if="displayTooltip" ><a class="toolClose" @click="displayTooltip = false" style="text-decoration: none; margin-right: 5px; font-size: 20px;" >x</a>
               This will contain a description for {{images[i].title}}
                </span>
           </div>
         </a>
+        <a v-if="images.length > 0 || oneTagsImages.length > 0" @click="showCarousel = !showCarousel"   class="CarouselLink" style="font-family: 'Trebuchet MS'; color: darkcyan"><strong>Carousel</strong></a>
 
       </b-carousel-item>
+      <span v-if="gallery" @click="switchGallery(false)" class="modal-close is-large" />
 
-      <span v-if="gallery" @click="switchGallery(false)" class="modal-close is-large"/>
+      <template slot="indicators" slot-scope="props" style="overflow-x: scroll" >
 
-      <template slot="indicators" slot-scope="props" style="overflow-x: scroll" v-if="showCarousel" >
         <figure class="al image" :draggable="false"  >
-          <img :draggable="false" :src="getThumbnailUrl(props.i)" :title="props.i" style="margin-bottom: 10px">
+
+
+          <img :draggable="false" :src="getThumbnailUrl(props.i)" :title="props.i" style="margin-bottom: 10px" v-if="showCarousel" >
         </figure>
       </template>
 
     </b-carousel>
 
-
     <!-- this will display the Ma'ayan Logo in the event there is no content associated with the chapter/verse selected-->
   <div v-else-if="!oneTagSelected">
     <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/Ma'ayan+Logo05B.png">
-    <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
+    <div class="tooltip" style=" width: 21px; border:1px; padding: 1px; height: 21px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
       <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/info.png"  @mouseover="displayTooltip = true"/>
       <span class="tooltiptext" v-if="displayTooltip"><a class="toolClose" @click="displayTooltip = false" style="text-decoration: none; margin-right: 5px; font-size: 20px" >x</a>
              No content associated with this Chapter/Verse
@@ -45,17 +47,19 @@
         <b-carousel-item v-for="(item, i) in oneTagsImages" :key="i">
           <a class="image ">
 
-            <input type="checkbox" size="is-small" v-model="oneTagsImages[i].toBeDownloaded" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px;right: 20px; border-radius: 4px; background-color: transparent; " @change="sendImageOfOneTagToPreviewSelector(i)"/>
+            <input type="checkbox" size="is-small" v-model="oneTagsImages[i].toBeDownloaded" style=" width: 21px; border:1px; padding: 1px; height: 21px;position: absolute;top: 20px;right: 20px; border-radius: 4px; background-color: transparent; " @change="sendImageOfOneTagToPreviewSelector(i)"/>
 
             <img :src="item.itemImageSrc"  style="margin-bottom: 10px">
             <b-switch type="is-success"  style="font-family: 'Trebuchet MS'; direction: ltr; position: absolute; bottom: 20px; right: 20px; color: black " v-model="showCarousel"><strong>Carousel</strong></b-switch>
-            <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
+            <div class="tooltip" style=" width: 21px; border:1px; padding: 1px; height: 21px;position: absolute;top: 20px; left: 20px; background-color: #d8fffc; border-radius: 4px;">
               <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/info.png"  @mouseover="displayTooltip = true"/>
               <span class="tooltiptext" v-if="displayTooltip"><a class="toolClose" @click="displayTooltip = false" style="text-decoration: none; margin-right: 5px; font-size: 20px" >x</a>
               This will contain a description for {{oneTagsImages[i].title}}
                </span>
             </div>
           </a>
+          <a v-if="images.length > 0 || oneTagsImages.length > 0" @click="showCarousel = !showCarousel"   class="CarouselLink" style="font-family: 'Trebuchet MS'; color: darkcyan;"><strong>Carousel</strong></a>
+
         </b-carousel-item>
         <span v-if="gallery" @click="switchGallery(false)" class="modal-close is-large"/>
         <template slot="indicators" slot-scope="props" style="overflow-x: scroll" v-if="showCarousel">
@@ -65,7 +69,6 @@
         </template>
       </b-carousel>
     </div>
-    <b-switch v-if="images.length > 0 || oneTagsImages.length > 0" v-model="showCarousel" type="is-success"  style="font-family: 'Trebuchet MS'; direction: ltr; position: absolute;bottom: 5px;right: 20px; color: black;"><strong>Carousel</strong></b-switch>
 
   </section>
 </template>
@@ -222,7 +225,11 @@ export default class MediaPresenter extends Vue{
 </script>
 
 <style scoped>
-
+.CarouselLink:hover{
+  text-decoration: none;
+  background-color: #014c8c;
+  border-radius: 4px;
+}
   .tooltip {
     position: relative;
     display: inline-block;
@@ -245,8 +252,9 @@ export default class MediaPresenter extends Vue{
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
-    top: 35px;
-    right: -350%;
+    top: 30px;
+
+    right: -500%;
 
   }
 

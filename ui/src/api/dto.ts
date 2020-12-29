@@ -112,4 +112,14 @@ export enum MediaType {
     DOCUMENT = "DOCUMENT",
     OTHER = "OTHER",
 }
+export enum Category{
+    TORAH,
+    PROPHETS,
+    WRITINGS,
+}
+
+export class SortingObject{
+    verse: Verse;
+    categoryNumber:number;
+}
 

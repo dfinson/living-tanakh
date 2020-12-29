@@ -26,6 +26,9 @@
             <td>
             <b-button class="btn" @click="emitLetter('פ')">פ</b-button>
             </td>
+            <td>
+                <b-button class="btn" @click="emitLetter('Del')"><i class="arrow left"></i></b-button>
+            </td>
         </tr>
       <tr>
           <td>
@@ -86,8 +89,12 @@
           </td>
         </tr>
       <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
           <td>
-          <b-button  style="width: 25px; height: 25px" @click="emitLetter('D')">DEL</b-button>
+              <b-button  style="width: 25px; height: 25px" @click="emitLetter(' ')"><i class="arrow right"></i><i class="arrow lefty"></i></b-button>
           </td>
 
       </tr>
@@ -119,4 +126,18 @@ export default class HebrewKeypad extends Vue{
     width: 30px;
     height: 30px;
 }
+ .arrow {
+     border: solid black;
+     border-width: 0 3px 3px 0;
+     display: inline-block;
+     padding: 3px;
+ }
+ .left {
+     transform: rotate(135deg);
+     -webkit-transform: rotate(135deg);
+ }
+    .right{
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+    }
 </style>

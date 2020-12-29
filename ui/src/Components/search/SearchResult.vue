@@ -2,7 +2,7 @@
   <div >
 <base-card>
   <strong>
-    <b-button  :type="categoryColorCode" @click="pathSelected">{{result.humanReadablePath}}</b-button>
+    <b-button  :type="categoryColorCode" @click="pathSelected">{{path}}</b-button>
 <p style="direction: rtl; font-size: 15px">
   <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.id">
     <span v-if="hasPrefix(segment) && !displayTropToSearchResult" style="font-family: Arial">{{segment.plainHebrewPrefix}}</span>
@@ -76,6 +76,17 @@ export default class SearchResult extends Vue{
       return true;}
     else
       return false;
+  }
+
+  public get path(): string{
+      this.result.humanReadablePath = this.result.humanReadablePath.replace("יהושוע","יהושע");
+      this.result.humanReadablePath = this.result.humanReadablePath.replace("שמואל א","שמואל א'");
+      this.result.humanReadablePath = this.result.humanReadablePath.replace("שמואל ב","שמואל ב'");
+      this.result.humanReadablePath = this.result.humanReadablePath.replace("מלכים א","מלכים א'");
+      this.result.humanReadablePath = this.result.humanReadablePath.replace("מלכים ב","מלכים ב'");
+    const a = this.result.humanReadablePath.replace("''","");
+    const b = a.replace("''","");
+    return b;
   }
 }
 </script>

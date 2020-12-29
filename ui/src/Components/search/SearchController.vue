@@ -1,3 +1,4 @@
+import {Category} from "@/api/dto";
 <template>
     <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'  >
         <a name="stacks_in_372-"></a>
@@ -38,46 +39,46 @@
 
 <script lang = "ts">
 
-  /*
-    Overview:
+    /*
+      Overview:
 
-      Encapsulates the search & navigation functionality of the app by
-      offering the user a search / navigation form, fetching the resulting data from
-      the backend API and then displaying a list of the search results.
+        Encapsulates the search & navigation functionality of the app by
+        offering the user a search / navigation form, fetching the resulting data from
+        the backend API and then displaying a list of the search results.
 
-    Complexity:
-      - Handle the emitted data from SearchInputForm (make api call, then pass result as prop to SearchResultsList)
+      Complexity:
+        - Handle the emitted data from SearchInputForm (make api call, then pass result as prop to SearchResultsList)
 
-    Parents:
-      - Dashboard
-  // @update-category-selection = "updateCategorySelection($event)"
-    Children:
-      - SearchInputForm
-      - SearchResultsList
+      Parents:
+        - Dashboard
+    // @update-category-selection = "updateCategorySelection($event)"
+      Children:
+        - SearchInputForm
+        - SearchResultsList
 
-    props:
-      None
+      props:
+        None
 
-    emits:
-      - searchResultSelected(selectedVerse)
+      emits:
+        - searchResultSelected(selectedVerse)
 
-    data:
-      None
+      data:
+        None
 
-  */
+    */
 
-  import {Component, Prop, Vue} from 'vue-property-decorator';
-  import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
-  import SearchInputForm from "@/Components/search/SearchInputForm.vue";
-  import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
-  import {toHebrewBookName, TORAH} from "@/api/TANAKH";
-  import apifiClient from "@/api/apifiClient";
-  import SearchResultsList from "@/Components/search/SearchResultsList.vue";
-  import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
-  import ChapterSearchResultItem from "@/Components/search/ChapterSearchResultItem.vue";
+    import {Component, Prop, Vue} from 'vue-property-decorator';
+    import {Category, Chapter, SearchCriteria, SortingObject, Verse} from "@/api/dto";
+    import SearchInputForm from "@/Components/search/SearchInputForm.vue";
+    import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
+    import {TORAH} from "@/api/TANAKH";
+    import apifiClient from "@/api/apifiClient";
+    import SearchResultsList from "@/Components/search/SearchResultsList.vue";
+    import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
+    import ChapterSearchResultItem from "@/Components/search/ChapterSearchResultItem.vue";
 
 
-  @Component({
+    @Component({
     components:{
         ChapterSearchResultItem,
       SearchInputForm,
@@ -123,7 +124,7 @@
         let i;
         for (i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++) {
           const ch = new Chapter();
-          ch.hebrewNumeral = res['data'].findBookByUniquePath.chapters[i].hebrewNumeral;
+          ch.hebrewNumeral = res['data'].findBookByUniquePath.chapters[i].hebrewNumeral.replace("''","");
           ch.id = res['data'].findBookByUniquePath.chapters[i].id;
           ch.number = res['data'].findBookByUniquePath.chapters[i].number;
           ch.path = res['data'].findBookByUniquePath.chapters[i].path;
@@ -179,11 +180,11 @@
           for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
             //console.log(res['data'].verseFreeTextSearch.content[i]);
             const verse = new Verse();
-            verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+            verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral.replace("''","");
             verse.number = res['data'].verseFreeTextSearch.content[i].number;
             verse.path = res['data'].verseFreeTextSearch.content[i].path;
             verse.id = res['data'].verseFreeTextSearch.content[i].id;
-            verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+            verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath.replace("''","");
             verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
             verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
             verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
@@ -191,17 +192,6 @@
                 verse.highlightedVerseSegments.segments[i].id = i;
             this.freeTextSearchResultsVerseArray.push(verse);
           }
-          console.log(this.searchCriteria.searchTerm + "controller");
-            this.freeTextSearchResultsVerseArray.sort((a,b) => {
-                if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-                    return -1;
-                else{
-                    if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-                        return 1;
-                    else return 0;
-                }
-            })
-
           this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
 
         }
@@ -261,27 +251,19 @@
                   for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
                     //console.log(res['data'].verseFreeTextSearch.content[i]);
                     const verse = new Verse();
-                    verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+                    verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral.replace("''","");
                     verse.number = res['data'].verseFreeTextSearch.content[i].number;
                     verse.path = res['data'].verseFreeTextSearch.content[i].path;
                     verse.id = res['data'].verseFreeTextSearch.content[i].id;
                     verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
                     verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
-                    verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+                    verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath.replace("''","");
                     verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
                     this.freeTextSearchResultsVerseArray.push(verse);
                   }
-                    this.freeTextSearchResultsVerseArray.sort((a,b) => {
-                        if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-                            return -1;
-                        else{
-                            if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-                                return 1;
-                            else return 0;
-                        }
-                    });
                   this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
                 }
+
                 else{
                     if(this.freeTextSearchResultsVerseArray.length === 0)
                         this.$buefy.notification.open({
@@ -350,18 +332,26 @@
       //  console.log(res)
         const ch = new Chapter();
         ch.id = res['data'].findChapterByUniquePath.id;
-        ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
+        ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral.replace("''","");
         ch.number = res['data'].findChapterByUniquePath.number;
         ch.path = res['data'].findChapterByUniquePath.path;
+        //a temporary string fix for apostrophes and such...
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("שמואל א","שמואל א'");
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("שמואל ב","שמואל ב'");
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("מלכים א","מלכים א'");
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("מלכים ב","מלכים ב'");
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("דברי הימים ב","דברי הימים ב'");
+        res['data'].findChapterByUniquePath.book.hebrewName = res['data'].findChapterByUniquePath.book.hebrewName.replace("דברי הימים א","דברי הימים א'");
         ch.book =  res['data'].findChapterByUniquePath.book;
         ch.verses = [];
         let i;
         for(i = 0; i < res['data'].findChapterByUniquePath.verses.length; i++ ) {
+            res['data'].findChapterByUniquePath.verses[i].hebrewNumeral =  res['data'].findChapterByUniquePath.verses[i].hebrewNumeral.replace("''","");
           ch.verses.push(res['data'].findChapterByUniquePath.verses[i]);
         }
         this.getChapterSearchResults = ch;
         this.getChapterSearchResults.verses.sort((a, b) => a.number - b.number);
-        console.log("chapter aquired!!");
+       // console.log("chapter aquired!!");
         this.$emit('display-selected-chapter',this.getChapterSearchResults);
         this.isLoading = false;
             }
@@ -549,7 +539,6 @@
     }
 
     //endregion
-
 
 
 
