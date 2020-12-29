@@ -70,7 +70,9 @@ export default class MediaTagModal extends Vue {
                         newTag.key = response['data'].getMediaTagsByIds[i].key;
                         newTag.linkedContent = [];
                         for (let j = 0; j < response['data'].getMediaTagsByIds[i].linkedContent.length; j++) {
-                            newTag.linkedContent.push(response['data'].getMediaTagsByIds[i].linkedContent[j]);
+                            //temporary
+                            if(response['data'].getMediaTagsByIds[i].linkedContent[j].key !== 'SamA-c17-Socho07.jpeg' )
+                                newTag.linkedContent.push(response['data'].getMediaTagsByIds[i].linkedContent[j]);
                         }
                         this.updateMediaTagList(newTag);
                     }
