@@ -121,7 +121,9 @@
                  @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
                 ></media-tag-modal>
                 </div>
+
               </div>
+
             </div>
             <!-- small media display components-->
            <!-- <div id='stacks_out_162' class='stacks_out'>
@@ -185,9 +187,12 @@
           </div>
 
         </div>
+
       </div>
+
     </section>
-</div>
+
+  </div>
 </template>
 
 <script lang = "ts">
