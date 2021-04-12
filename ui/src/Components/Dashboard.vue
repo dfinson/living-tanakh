@@ -20,7 +20,7 @@
 
 
             <div class="stacks_in_249-foundry-card card  ">
-              <a href="http://www.foundationstone.org/page-5/">
+              <a href="http://www.foundationstone.org/page-5/" style="text-decoration: none">
                 <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg" class="img-fluid card-img-top" alt="Image">
               </a>
               <!-- Special Circular image overlapped on top of the top image. -->
@@ -32,16 +32,16 @@
                 <p class='stacks_in_250 card-text   text-xs-left ' >
                   Welcome to the Ma'ayan demo page. Ma'ayan is being developed as the premier visual companion for the learning, teaching and development of TANACH. Click the link below to add your comments - we value your input!
                 </p>
-                <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  ">Sefaria</a>
-                <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link  ">Foundation Stone</a>
-                <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  ">Ma'ayan</a>
+                <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Sefaria</a>
+                <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link " style="text-decoration: none">Foundation Stone</a>
+                <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Ma'ayan</a>
               </div>
             </div><!-- column header-->
             <!-- search form-->
             <div id='stacks_out_372' class='stacks_out' style="overflow-y: scroll; max-height: 600px">
 
               <b-tabs type="is-toggle" expanded v-model="activeTab">
-                <b-tab-item label="Search Tab"  animated="true">
+                <b-tab-item  icon="magnify"   animated="true">
                   <search-controller
                       @display-selected-chapter="sendChapterToChapterDisplay($event)"
                       @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
@@ -50,7 +50,7 @@
                       :selected-verse-numeral="selectedVerse.hebrewNumeral"
                   ></search-controller>
                 </b-tab-item>
-                <b-tab-item label="Selected Images" animated="true" :disabled="disableSelectedImagesTab">
+                <b-tab-item  icon="google-photos" style="text-decoration: none" animated="true" :disabled="disableSelectedImagesTab">
                   <preview-selector
                       :selected-image="this.selectedImage"
                       :image-to-be-deleted="imageToBeDeleted"
@@ -120,7 +120,7 @@
                       ></passuk-display>
 
                     </div>
-                    <!-- large media display component-->
+                    <!-- media display component-->
                     <div id='stacks_out_193' class='stacks_out' >
                       <div id='stacks_in_193' class='stacks_in com_elixir_stacks_foundryImage_stack'>
                         <div class="text-xs-center foundry-image-wrapper" >
@@ -135,65 +135,7 @@
                       </div>
 
                     </div>
-                    <!-- small media display components-->
-                    <!-- <div id='stacks_out_162' class='stacks_out'>
-                       <div id='stacks_in_162' class='stacks_in com_elixir_stacks_foundryGallery_stack'>
-                         <div style="display: block" class="gallery-wrapper">
-                           <div class="gallery_wrapper">
-                             <div class="row ">
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-167.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-166.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-165.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-163.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-168.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-171.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-169.png" data-caption="">
-                                   <img>
-                                 </a>
-                               </div>
-                               <div class="gallery_column">
-                                 <span class="gallery-indicator"><i class="fa fa-fw fa-search"></i></span>
-                                 <a href="files/gallery_image-170.png" data-caption="">
-                                   <img src="">
-                                 </a>
-                               </div>
-                             </div>
-                           </div>
-                         </div>
-                       </div>
-                     </div>-->
+
                   </div>
 
                 </div>

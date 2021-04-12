@@ -39,7 +39,7 @@
                           dark
                           center
                       >
-                        mdi-cancel
+                        mdi-close
                       </v-icon>
                     </v-btn>
                     <input type="checkbox" size="is-small"
@@ -122,12 +122,13 @@
       <!--option to close/open bottom carousel-->
       <v-row justify="center" ><a @click="showCarousel = !showCarousel;" >Carousel</a></v-row>
       <!--bottom image carousel component-->
-<v-row style="background-color: black; overflow-x: scroll" >
+<v-row style="background-color: black; overflow-x: scroll" v-if="showCarousel" >
   <nav class="level">
 
     <div class="level-item"
          v-for="(item,i) in images"   :key="i"
     >
+      <v-btn @click="scrollTo()"></v-btn>
       <v-img :src="getImgUrl(i)" height="160" width="200" @click="sendToCarousel(i)"  >
         <input type="checkbox"
                size="is-small"
@@ -265,7 +266,7 @@ a:hover {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px purple;
+  box-shadow: transparent;
   border-radius: 10px;
   width: 0;
   height: 0;
@@ -273,13 +274,10 @@ a:hover {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: red;
+  background: transparent;
   border-radius: 10px;
   width: 0;
 }
 
-::-webkit-scrollbar-button{
-  color: #0e71de;
-  width: 0;
-}
+
 </style>

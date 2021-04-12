@@ -522,7 +522,7 @@
       this.searchCriteria.searchTerm = "";
       this.searchCriteria.chapter = "";
       this.searchCriteria.book = "";
-      this.searchCriteria.category = [];
+      //this.searchCriteria.category = [];
       this.searchCriteria.passuk = "";
       this.listOfChaptersInSelectedBook = [];
       this.freeTextSearchResultsVerseArray = [];

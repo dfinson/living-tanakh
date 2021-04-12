@@ -24,38 +24,65 @@
     <!--search instructions-->
     <v-col cols="12">
       <p v-if="englishSearch" style="color: white; font-family: 'Trebuchet MS'" >{{explantion}}</p>
-      <p v-else style="color: white; font-family: Arial" >הקלד טקסט לחיפוש בכל התנך, או סמן אופצייה אחת לחיפוש לפי ספר\פרק</p>
+      <p v-else style="color: white; font-family: Arial" dir="rtl" >הקלד טקסט לחיפוש בכל התנך, או סמן אופצייה אחת לחיפוש לפי ספר\פרק</p>
     </v-col>
 
     <!-- Search bar and check boxes element (rows 2,3)-->
     <div id='stacks_out_209' class='stacks_out'  @keypress.enter="updateSearchTermSelection">
       <!--row #2 - search bar with built-in hebrew keypad-->
-      <v-layout row style="margin-top: 5px" justify-center v-if="!displayKeypad">
-        <v-flex  md2 lg2 xl2 align-content="start">
-          <div class="my-2">
+      <v-row style="margin-top: 5px"  v-if="!displayKeypad"  justify="center" no-gutters>
+<v-col cols="2" class="d-flex justify-end">
+        <v-tooltip
+            bottom
+        >
+          <template v-slot:activator="{ on }">
             <v-btn
-                color="primary"
-                fab
+                style="margin-right: 2px"
                 small
+                fab
+                color="primary"
                 dark
+                @click="updateSearchTermSelection"
             >
-              <v-icon>mdi-magnify</v-icon>
+              <v-icon v-on="on" >
+                mdi-magnify
+              </v-icon>
             </v-btn>
-          </div>
-        </v-flex>
-        <v-flex md8 lg8 xl8 >
-          <b-field>
-            <b-button  style="max-width:70px; max-height: 39px;" type="is-info" @click="displayKeypad = !displayKeypad" v-if="!displayKeypad" >
-              {{ keyBoardLabel }}</b-button>
-            <b-input :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" style=" max-width: 150px; float: right" />
-          </b-field>
-        </v-flex>
+          </template>
+          {{ searchLabel }}
+        </v-tooltip>
+</v-col>
+        <v-col cols="9" class="d-flex justify-start">
+            <v-text-field
+                dense
+                full-width
+                :placeholder="searchInputLabel"
+                solo
+                background-color="white"
+                filled
+                :key="reloadKey"  dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected"  style="max-width: 13vw"
+            >
+              <template v-slot:prepend-inner>
+                <v-btn
+                    color="primary"
+                  x-small
+                    style=" font-size: 0.6vw ; max-width: 70px"
+                    @click="displayKeypad = !displayKeypad" v-if="!displayKeypad"
+                >
+                  {{ keyBoardLabel }}</v-btn>
+              </template>
 
-      </v-layout>
+            </v-text-field>
+        </v-col>
+
+
+
+
+      </v-row>
       <!--row #2.1 - hebrew keypad if activated-->
       <v-layout row v-if="displayKeypad" >
         <v-flex md11 lg11 xl11>
-          <v-card>
+          <v-card style="background-color: lightgray">
             <v-card-title>
               <button class="delete" @click="displayKeypad = !displayKeypad" ></button>
               <v-btn x-small @click="tempSearchTerm = ''">CLR</v-btn>
@@ -73,7 +100,7 @@
       </v-layout>
 
       <!--row #3  - 3 checkboxes to select torah, neviim or ketuvim-->
-      <v-row style="margin-bottom: 25px; margin-top: 25px;" no-gutters justify="center" >
+      <v-row no-gutters justify="center"  >
 
         <!--torah cb-->
 
@@ -128,9 +155,10 @@
     </div>
 
     <!--row #4 - dropdown list to select book once (if) one (only) category selected (i.e - torah, neviim or ketuvim-->
-    <v-row justify="center" >
-      <div class="sefer-dd" style="margin-bottom: 10px">
-        <b-select :placeholder="bookLabel" :expanded="true" style="width: 120px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
+    <v-row  no-gutters>
+      <v-col class="d-flex justify-center">
+      <div class="sefer-dd" >
+        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true" style="max-width: 130px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
           <option
               style="font-family: Arial; font-size: 12px"
               v-for="book in bookList"
@@ -141,20 +169,19 @@
         </b-select>
 
       </div> <!-- sefer dd-->
-    </v-row>
-
-    <!-- row #5 number input for a specific chapter-->
-    <v-row justify="center" >
-      <div class="perek-dd " style="margin-bottom: 10px" @keypress.enter="updateSearchTermSelection()">
-        <b-input :loading="chapLoading"  :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 120px" ></b-input>
+      </v-col>
+      <v-col class="d-flex justify-start">
+      <div class="perek-dd" style="max-width: 100px"  @keypress.enter="updateSearchTermSelection()">
+        <b-input :loading="chapLoading" dir="rtl" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 120px" ></b-input>
       </div> <!-- perek dd-->
+      </v-col>
+<v-col  class="d-flex justify-center">
+  <b-button type="is-danger" class="clear_btn" @click="clearAllResults">{{clearLabel}}</b-button>
+</v-col>
     </v-row>
 
-    <!-- row #6 search and clear buttons-->
-    <v-row justify="center" style="margin-top: 10px; margin-bottom: 10px" >
-      <b-button type="is-danger" class="clear_btn" @click="clearAllResults" style="margin-right: 5px">{{clearLabel}}</b-button>
-      <b-button type="is-info" class="search_btn" @click="updateSearchTermSelection" style="margin-left: 5px" v-on:keydown.native.enter="updateSearchTermSelection"  >{{searchLabel}}</b-button>
-    </v-row>
+
+
 
   </v-container>
 </template>
@@ -209,6 +236,7 @@ export default class SearchInputForm extends Vue{
   public searchLabel = "Search";
   public clearLabel = "Clear";
   public keyBoardLabel = "keyboard";
+  public searchInputLabel = "Keyword"
 
   public englishSearch = true;
 
@@ -220,6 +248,7 @@ export default class SearchInputForm extends Vue{
       this.clearLabel = "נקה";
       this.chapterLabel = "פרק"
       this.keyBoardLabel = "מקלדת"
+      this.searchInputLabel = "מילת חיפוש"
 
     }
     if(this.englishSearch) {
@@ -228,6 +257,7 @@ export default class SearchInputForm extends Vue{
       this.clearLabel = "Clear";
       this.chapterLabel = "Chapter"
       this.keyBoardLabel = "keyboard"
+      this.searchInputLabel = "Keyword"
 
     }
   }
@@ -383,15 +413,20 @@ export default class SearchInputForm extends Vue{
 
   public clearAllResults(): void{
     this.searchCriteria.category = [];
-    this.searchCriteria.book = "";
+    this.updateCategorySelection('TORAH');
+    this.updateCategorySelection('PROPHETS');
+    this.updateCategorySelection('WRITINGS');
+    this.searchCriteria.book = null;
     this.searchCriteria.chapter = "";
     this.searchCriteria.searchTerm = "";
+    this.tempSearchTerm = "";
     this.chapterSelected = false;
     this.bookList = [];
-    this.torahSelected = false;
-    this.writingsSelected = false;
-    this.prophetsSelected = false;
+    this.torahSelected = true;
+    this.writingsSelected = true;
+    this.prophetsSelected = true;
     this.chapterInput = this.searchCriteria.chapter;
+
     this.$emit('clear-all-results');
   }
 

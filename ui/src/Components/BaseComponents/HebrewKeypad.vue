@@ -1,34 +1,34 @@
 <template>
-  <v-container>
+  <v-container >
 
     <!--row #1-->
     <v-layout row justify-space-around>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ק')">ק</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ק')">ק</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ר')">ר</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ר')">ר</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block @click="emitLetter('א')">א</v-btn>
+        <v-btn  x-small  block @click="emitLetter('א')">א</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ט')">ט</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ט')">ט</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ו')">ו</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ו')">ו</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ן')">ן</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ן')">ן</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('ם')">ם</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('ם')">ם</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('פ')">פ</v-btn>
+        <v-btn  x-small  block  @click="emitLetter('פ')">פ</v-btn>
       </v-flex>
       <v-flex md1 lg1 xl1>
-        <v-btn  x-small outline block  @click="emitLetter('D')">
+        <v-btn  x-small  block  @click="emitLetter('D')">
           <span class="iconify" data-icon="ic-baseline-keyboard-backspace" data-inline="false"></span>
         </v-btn>
       </v-flex>
@@ -102,7 +102,7 @@
     <!--row #4-->
     <v-layout row justify-center>
       <v-flex md4 lg4 xl4>
-        <v-btn  x-small outline block  @click="emitLetter(' ')"><span class="iconify" data-icon="ic:baseline-space-bar" data-inline="false"></span></v-btn>
+        <v-btn  x-small  block  @click="emitLetter(' ')"><span class="iconify" data-icon="ic:baseline-space-bar" data-inline="false"></span></v-btn>
       </v-flex>
     </v-layout>
   </v-container>
