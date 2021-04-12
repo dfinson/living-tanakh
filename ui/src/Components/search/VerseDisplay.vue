@@ -5,8 +5,8 @@
      <span  class="paragraph-span" style="font:20px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-for="segment in verseToDisplay.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
        <span  class="paragraph-span" style="font:20px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>
       <span style="font:20px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
-       <span v-if="hasHighlighted(segment) && displayTrop" style="color: yellow" >{{segment.highlightedKeyword}}</span>
-        <span v-else-if="hasHighlighted(segment) && !displayTrop" style="color: yellow"  >{{segment.plainHebrewHighlightedKeyword}}</span></span>
+       <span v-if="hasHighlighted(segment) && displayTrop" style="color: darkorange" >{{segment.highlightedKeyword}}</span>
+        <span v-else-if="hasHighlighted(segment) && !displayTrop" style="color: darkorange"  >{{segment.plainHebrewHighlightedKeyword}}</span></span>
      <span style="font:20px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && displayTrop">{{ verseToDisplay.highlightedVerseSegments.finalSuffix}}</span>
          <span style="font:20px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:#ECECE1;" v-else-if="hasSuffix(verseToDisplay.highlightedVerseSegments) && !displayTrop">{{verseToDisplay.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
      </a>

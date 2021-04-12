@@ -1,21 +1,25 @@
 <template>
-  <div >
-<base-card>
-  <strong>
-    <b-button  :type="categoryColorCode" @click="pathSelected">{{result.humanReadablePath}}</b-button>
-<p style="direction: rtl; font-size: 15px">
+  <v-container>
+    <v-card shaped tile elevation="4" style="max-width: content-box; flex-shrink: 3" >
+      <v-row justify="center">
+        <v-chip  outlined style="font-size: 0.94vw" :color="categoryColorCode"  @click="pathSelected">{{result.humanReadablePath}}</v-chip>
+      </v-row>
+      <v-card-text >
+        <strong>
+          <p style="direction: rtl; font-size: 0.94vw">
   <span v-for="segment in result.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.id">
     <span v-if="hasPrefix(segment) && !displayTropToSearchResult" style="font-family: Arial">{{segment.plainHebrewPrefix}}</span>
         <span v-else-if="hasPrefix(segment) && displayTropToSearchResult" style="font-family: Arial">{{segment.prefix}}</span>
     <span v-if="!displayTropToSearchResult" style="background-color: yellow;font-family: Arial">{{segment.plainHebrewHighlightedKeyword + " "}}</span>
      <span v-else-if="displayTropToSearchResult" style="background-color: yellow; font-family: Arial">{{segment.highlightedKeyword + " "}}</span>
   </span>
-  <span v-if="hasSuffix(result.highlightedVerseSegments)&& !displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
-  <span v-else-if="hasSuffix(result.highlightedVerseSegments)&& displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.finalSuffix}}</span>
-</p>
-  </strong>
-</base-card>
-  </div>
+            <span v-if="hasSuffix(result.highlightedVerseSegments)&& !displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.plainHebrewFinalSuffix}}</span>
+            <span v-else-if="hasSuffix(result.highlightedVerseSegments)&& displayTropToSearchResult" style="font-family: Arial">{{ result.highlightedVerseSegments.finalSuffix}}</span>
+          </p>
+        </strong>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -38,14 +42,14 @@ export default class SearchResult extends Vue{
 
   public get categoryColorCode(): string{
     if(this.result.path.includes('TORAH')){
-      return 'is-primary is-light'
+      return 'indigo accent-4'
     }
     if(this.result.path.includes('PROPHETS')){
-      return 'is-info is-light'
+      return 'purple accent-4'
 
     }
     else{
-      return 'is-success is-light';
+      return 'green accent-4';
     }
   }
 
@@ -63,8 +67,8 @@ export default class SearchResult extends Vue{
 
   public hasHighlighted(segment: PrefixedVerseSegment): boolean {
     if(segment.highlightedKeyword !== ""){
-       //console.log(segment.highlightedKeyword + this.counter);
-       this.counter ++;
+      //console.log(segment.highlightedKeyword + this.counter);
+      this.counter ++;
       return true;}
     else
       return false;
@@ -81,5 +85,9 @@ export default class SearchResult extends Vue{
 </script>
 
 <style scoped>
-
+.v-btn {
+  min-width: 0;
+  padding-left: 12px;
+  padding-right: 12px;
+}
 </style>

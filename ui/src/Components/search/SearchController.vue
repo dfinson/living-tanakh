@@ -13,24 +13,21 @@
                 @clear-all-results="clearAllResults"
                 @change-trop = changeTrop($event)
         ></search-input-form>
-        <div class="form-group">
-            <div class="col-sm-10 col-sm-offset-2" style="margin-top: 18px;">
-            </div>
-        </div> <!-- will contain searchResults-->
+
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
-        <div style="height: 400px; overflow-y: auto; width: 359px">
-            <chapter-search-result-item
-                    :get-chapter-search-results="getChapterSearchResults"
-                    :selected-verse-numeral="selectedVerseNumeral"
-            ></chapter-search-result-item>
-    <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0"
+        <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
+
+    <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
             :search-results="freeTextSearchResultsVerseArray"
             :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
             :is-loading="isLoading"
             :display-trop-to-search-result="displayTropToSearchResult"
     ></search-results-list>
-
+          <chapter-search-result-item v-else
+                                      :get-chapter-search-results="getChapterSearchResults"
+                                      :selected-verse-numeral="selectedVerseNumeral"
+          ></chapter-search-result-item>
         </div>
 
   </div>

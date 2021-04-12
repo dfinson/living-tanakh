@@ -1,46 +1,49 @@
 <template>
-    <div v-if="getChapterSearchResults.book !== undefined" style="display: inline">
-        <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 10px;">{{"Chapter Selected:"}}</span>
-        <strong>
-       <b-button :type="categoryColorCode" style="height: 22px; margin-left: 10px;">{{getPath()}}</b-button>
-        </strong></div>
+  <v-container>
+    <v-row v-if="getChapterSearchResults.book !== undefined" justify="center"  style="margin-top: 10px">
+      <span class="title" style="color: darkcyan;">{{"Chapter Selected:"}}</span>
+    </v-row>
+    <v-row justify="center">
+      <b-button  :type="categoryColorCode" >{{getPath()}}</b-button>
+    </v-row>
+  </v-container>
 </template>
 <script lang="ts">
- import {Vue,Component, Prop,Watch} from "vue-property-decorator";
- import {Chapter, Verse} from "../../api/dto";
- import BaseCard from '@/Components/BaseComponents/BaseCard.vue';
+import {Vue,Component, Prop,Watch} from "vue-property-decorator";
+import {Chapter, Verse} from "../../api/dto";
+import BaseCard from '@/Components/BaseComponents/BaseCard.vue';
 
 
- @Component({
-     components:{
-         BaseCard
-     }
- })
-    export default class ChapterSearchResultItem extends Vue{
-        @Prop({required:true})
-        getChapterSearchResults: Chapter;
-      @Prop()
-        selectedVerseNumeral: string;
+@Component({
+  components:{
+    BaseCard
+  }
+})
+export default class ChapterSearchResultItem extends Vue{
+  @Prop({required:true})
+  getChapterSearchResults: Chapter;
+  @Prop()
+  selectedVerseNumeral: string;
 
 
-        public getPath(): string{
-           return  this.getChapterSearchResults.book?.hebrewName +" " +  this.getChapterSearchResults.hebrewNumeral + " " + this.selectedVerseNumeral;
-        }
+  public getPath(): string{
+    return  this.getChapterSearchResults.book?.hebrewName +" " +  this.getChapterSearchResults.hebrewNumeral.replace(/['"]+/g, '') + " " + this.selectedVerseNumeral.replace(/['"]+/g, '');
+  }
 
-            public get categoryColorCode(): string{
-         if(this.getChapterSearchResults.path.includes('TORAH')){
-             return 'is-primary is-light'
-         }
-         if(this.getChapterSearchResults.path.includes('PROPHETS')){
-             return 'is-info is-light'
+  public get categoryColorCode(): string{
+    if(this.getChapterSearchResults.path.includes('TORAH')){
+      return 'is-primary is-light'
+    }
+    if(this.getChapterSearchResults.path.includes('PROPHETS')){
+      return 'is-info is-light'
 
-         }
-         else{
-             return 'is-success is-light';
-         }
-     }
+    }
+    else{
+      return 'is-success is-light';
+    }
+  }
 
- }
+}
 
 
 

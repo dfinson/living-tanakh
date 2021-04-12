@@ -1,98 +1,111 @@
 <template>
-    <table class="is-fullwidth" >
-        <tbody>
-        <tr>
-            <td>
-            <b-button  class="btn" @click="emitLetter('ק')">ק</b-button>
-            </td>
-            <td>
-            <b-button  class="btn" @click="emitLetter('ר')">ר</b-button>
-            </td>
-            <td>
-            <b-button class="btn" @click="emitLetter('א')">א</b-button>
-            </td>
-            <td>
-            <b-button  class="btn" @click="emitLetter('ט')">ט</b-button>
-            </td>
-            <td>
-            <b-button  class="btn" @click="emitLetter('ו')">ו</b-button>
-            </td>
-            <td>
-            <b-button  class="btn" @click="emitLetter('ן')">ן</b-button>
-            </td>
-            <td>
-            <b-button class="btn" @click="emitLetter('ם')">ם</b-button>
-            </td>
-            <td>
-            <b-button class="btn" @click="emitLetter('פ')">פ</b-button>
-            </td>
-        </tr>
-      <tr>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ש')">ש</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ד')">ד</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ג')">ג</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('כ')">כ</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ע')">ע</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('י')">י</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ח')">ח</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ל')">ל</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ך')">ך</b-button>
-          </td>
-        </tr>
-      <tr>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ז')">ז</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ס')">ס</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ב')">ב</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ה')">ה</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('נ')">נ</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('מ')">מ</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('צ')">צ</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ת')">ת</b-button>
-          </td>
-          <td>
-          <b-button  class="btn" @click="emitLetter('ץ')">ץ</b-button>
-          </td>
-        </tr>
-      <tr>
-          <td>
-          <b-button  style="width: 25px; height: 25px" @click="emitLetter('D')">DEL</b-button>
-          </td>
+  <v-container>
 
-      </tr>
-        </tbody>
-  </table>
+    <!--row #1-->
+    <v-layout row justify-space-around>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ק')">ק</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ר')">ר</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block @click="emitLetter('א')">א</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ט')">ט</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ו')">ו</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ן')">ן</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('ם')">ם</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('פ')">פ</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small outline block  @click="emitLetter('D')">
+          <span class="iconify" data-icon="ic-baseline-keyboard-backspace" data-inline="false"></span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+
+    <!--row #2-->
+    <v-layout row  justify-space-around>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block @click="emitLetter('ש')">ש</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ד')">ד</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ג')">ג</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('כ')">כ</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ע')">ע</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('י')">י</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ח')">ח</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ל')">ל</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ך')">ך</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ף')">ף</v-btn>
+      </v-flex>
+    </v-layout>
+
+    <!--row #3-->
+    <v-layout row  justify-space-around>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block @click="emitLetter('ז')">ז</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ס')">ס</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ב')">ב</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ה')">ה</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('נ')">נ</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('מ')">מ</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('צ')">צ</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block @click="emitLetter('ת')">ת</v-btn>
+      </v-flex>
+      <v-flex md1 lg1 xl1>
+        <v-btn  x-small  block  @click="emitLetter('ץ')">ץ</v-btn>
+      </v-flex>
+    </v-layout>
+
+    <!--row #4-->
+    <v-layout row justify-center>
+      <v-flex md4 lg4 xl4>
+        <v-btn  x-small outline block  @click="emitLetter(' ')"><span class="iconify" data-icon="ic:baseline-space-bar" data-inline="false"></span></v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -102,21 +115,20 @@ import {Component, Vue,Prop} from "vue-property-decorator";
 export default class HebrewKeypad extends Vue{
 
 
-    public emitLetter(letter: string): void{
-            this.$emit('add-character',letter);
+  public emitLetter(letter: string): void{
+    this.$emit('add-character',letter);
 
-    }
+  }
 
 }
 </script>
-
 <style scoped>
- .td{
+.td{
 
- }
-.btn{
+}
+.primary{
 
-    width: 30px;
-    height: 30px;
+  font-size: 0.2vm;
+
 }
 </style>

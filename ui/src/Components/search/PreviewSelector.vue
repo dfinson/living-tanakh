@@ -22,6 +22,13 @@
         </b-carousel>
         <div >
             <span style="margin-top: 20px"><strong>Number Of Selected Images: {{selectedImages.length}}</strong></span>
+          <v-data-table style="margin-top: 10px"
+              :headers="headers"
+              :items="selectedImages"
+                        :items-per-page="5"
+                        dense
+              class="elevation-1"
+          ></v-data-table>
         </div>
     </section>
 </template>
@@ -49,6 +56,13 @@
         @Prop()
         imageToBeDeleted: GalleriaImageItem;
 
+        public headers = [  {
+          text: 'Image Description',
+          align: 'start',
+          sortable: false,
+          value: 'title',
+        },
+          { text: 'Size', value: 'calories' }]
         @Watch('selectedImage')
         onPropertyChanged(){
             let repeat = false;

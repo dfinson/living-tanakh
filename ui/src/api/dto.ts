@@ -57,6 +57,7 @@ export class MediaContent {
     signedUploadUrl?: string;
     mimeType?: string;
     signedThumbnailUrl?: string;
+
 }
 export class PrefixedVerseSegment {
     prefix: string;
@@ -91,6 +92,15 @@ export class GalleriaImageItem{
     title: string;
     description: string;
     toBeDownloaded?:boolean
+
+    /*constructor(img: GalleriaImageItem) {
+        this.itemImageSrc = img.itemImageSrc;
+        this.thumbnailImageSrc = img.thumbnailImageSrc;
+        this.toBeDownloaded = img.toBeDownloaded;
+        this.alt = img.alt;
+        this.description = img.description;
+        this.title - img.title;
+    }*/
 }
 
 export class GalleriaResponsiveOption{
@@ -113,3 +123,7 @@ export enum MediaType {
     OTHER = "OTHER",
 }
 
+export class SortingObject{
+    verse: Verse;
+    categoryNumber:number;
+}
