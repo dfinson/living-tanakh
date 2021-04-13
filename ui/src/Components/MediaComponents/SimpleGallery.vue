@@ -122,41 +122,54 @@
       <!--option to close/open bottom carousel-->
       <v-row justify="center" ><a @click="showCarousel = !showCarousel;" >Carousel</a></v-row>
       <!--bottom image carousel component-->
-<v-row style="background-color: black; overflow-x: scroll" v-if="showCarousel" >
-  <nav class="level">
+<v-row  v-if="showCarousel" justify="center">
 
-    <div class="level-item"
-         v-for="(item,i) in images"   :key="i"
+
+
+    <v-slide-group
+        dark
+        class="pa-4"
+        center-active
+        show-arrows
     >
+      <v-slide-item
+          v-for="(item,i) in images"   :key="i"
+          v-slot="{ active, toggle }"
+      >
 
-      <v-img :src="getImgUrl(i)" height="160" width="200" @click="sendToCarousel(i)"  >
-        <input type="checkbox"
-               size="is-small"
-               style=" width: 15px;
+
+          <v-img :src="getImgUrl(i)" height="160" width="200" @click="sendToCarousel(i)" v-on:click="toggle"  >
+            <input type="checkbox"
+                   size="is-small"
+                   style=" width: 15px;
               border:1px; padding: 1px; height: 15px;position: absolute;top: 5px;right: 5px;
                border-radius: 4px; background-color: transparent; "
-               :id="i" :value="i" v-model="checkedImages"  @change="sendImageOfOneTagToPreviewSelector(i)"
+                   :id="i" :value="i" v-model="checkedImages"  @change="sendImageOfOneTagToPreviewSelector(i)"
 
-        />
+            />
 
-        <template v-slot:placeholder>
-          <v-row
-              class="fill-height ma-0"
-              align="center"
-              justify="center"
-          >
-            <v-progress-circular
-                indeterminate
-                color="light-blue lighten-1"
-            ></v-progress-circular>
-          </v-row>
-        </template>
+            <template v-slot:placeholder>
+              <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+              >
+                <v-progress-circular
+                    indeterminate
+                    color="light-blue lighten-1"
+                ></v-progress-circular>
+              </v-row>
+            </template>
 
-      </v-img>
+          </v-img>
 
-    </div>
-  </nav>
+
+      </v-slide-item>
+    </v-slide-group>
+
+
 </v-row>
+
     </v-main >
   </v-app>
 </template>

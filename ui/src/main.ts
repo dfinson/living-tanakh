@@ -5,7 +5,7 @@ import apifiClient from "@/api/apifiClient";
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 import Galleria from 'primevue/galleria';
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable';
 
 
 Vue.use(Buefy);

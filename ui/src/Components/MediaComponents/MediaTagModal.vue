@@ -1,11 +1,5 @@
 <template>
   <div class="mediaStuff">
-    <!--    <Gallery :tag="tag" @closed-media-tag-modal="$emit('closed-media-tag-modal')"/>-->
-    <!-- <MediaPresenter :tags="tags"
-     @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
-     @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
-     :selected-media-tag-id="selectedMediaTagId"
-     ></MediaPresenter>-->
     <SimpleGallery :tags="tags"
                    @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
                    @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"

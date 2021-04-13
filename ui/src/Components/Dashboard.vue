@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-main>
-      <div class="fc-inner-wrapper" >
+    <v-main >
+      <div class="fc-inner-wrapper">
 
 
         <!-- left hand container column-->
@@ -73,20 +73,26 @@
               md="9"
               lg="9"
               xl="9"            class="grey darken-4" >
-            <section class="fc-content-area color-picker">
+            <section class="fc-content-area color-picker" >
               <!-- just a header for left column-->
 
               <!-- chapter display component-->
+
               <div id='stacks_out_68' class='stacks_out' style="margin-top: 20px">
                 <h1 v-if="selectedChapter !== undefined" style="font-size:20px; margin-right: 5px;
          'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:lightseagreen; text-align: center; margin-bottom:1px;" >{{selectedChapter.book.hebrewName + " " + selectedChapter.hebrewNumeral.replace(/['"]+/g, '') + colon}}<span>{{selectedVerse.hebrewNumeral.replace(/['"]+/g, '')}}</span></h1>
+
+
+
+
 
                 <div id='stacks_in_68' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
                   <div id="fontStackstacks_in_68" class="fontStack" >
                     <div id='stacks_out_70' class='stacks_out'  >
                       <div id='stacks_in_70' class='stacks_in com_cosculture_stack_scrollbar_1_stack'>
-                        <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr;" >
-                          <div id='stacks_out_72' class='stacks_out'  >
+                        <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr; margin-right: 5px" >
+                          <div id='stacks_out_72' class='stacks_out' >
+
 
                             <!-- chapter display-->
                             <chapter-display class="chapterD"
@@ -96,51 +102,52 @@
                                              @send-passuk-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
                                              @trop-changed="displayTrop = !displayTrop"
                             ></chapter-display>
-                          </div>
+
                         </div>
 
-                      </div>
+
+                        </div>
+
+                     </div>
                     </div>
                   </div>
                 </div>
               </div>
 
+
               <!-- verse and media display components-->
-              <div id='stacks_out_91' class='stacks_out'>
 
                 <div id='stacks_in_91' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
-                  <div id="fontStackstacks_in_91" class="fontStack ">
 
                     <!-- verse display component-->
-                    <div id='stacks_out_95' class='stacks_out' >
-                      <passuk-display
+
+                      <passuk-display dir="rtl"
                           :displayTrop="displayTrop"
                           :selected-verse="selectedVerse"
                           @send-tag-to-dashboard="sendTagToMediaPresenter($event)"
                       ></passuk-display>
 
-                    </div>
+
                     <!-- media display component-->
                     <div id='stacks_out_193' class='stacks_out' >
-                      <div id='stacks_in_193' class='stacks_in com_elixir_stacks_foundryImage_stack'>
-                        <div class="text-xs-center foundry-image-wrapper" >
+
+
                           <media-tag-modal
                               :tag-ids="tagIds"
                               :selected-media-tag-id="selectedMediaTagId"
                               @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
                               @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
                           ></media-tag-modal>
-                        </div>
 
-                      </div>
 
-                    </div>
+
+
 
                   </div>
 
                 </div>
 
-              </div>
+
 
             </section>
           </v-col>
