@@ -128,7 +128,7 @@
     <div class="level-item"
          v-for="(item,i) in images"   :key="i"
     >
-      <v-btn @click="scrollTo()"></v-btn>
+
       <v-img :src="getImgUrl(i)" height="160" width="200" @click="sendToCarousel(i)"  >
         <input type="checkbox"
                size="is-small"

@@ -9,12 +9,13 @@
 
     <!--row #1 - switches to change to Hebrew/English, and to turn off trop and nikud - in 2 columns-->
     <v-row>
-      <v-col sm5>
+      <v-col sm5 class="d-flex justify-center">
         <b-switch  :value="true" @input="changeLanguage" style="max-width: 70px">
-          <strong style="color: white; font-family: 'Trebuchet MS';font-size: 0.9vm">E</strong><strong style="color: white; font-family: Arial ;font-size: 0.9vm">/ע</strong>
+          <strong v-if="!englishSearch" style="color: white; font-family: 'Trebuchet MS';font-size: 0.9vm">E</strong>
+          <strong v-else style="color: white; font-family: Arial ;font-size: 0.9vm">ע</strong>
         </b-switch>
       </v-col>
-      <v-col  sm5>
+      <v-col  sm5 class="d-flex justify-center">
         <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
           <strong v-else style="color: white;font-size: 0.9vm; font-family: Arial">עם\בלי ניקוד</strong>
         </b-switch>
@@ -168,6 +169,7 @@
           </option>
         </b-select>
 
+
       </div> <!-- sefer dd-->
       </v-col>
       <v-col class="d-flex justify-start">
@@ -180,7 +182,12 @@
 </v-col>
     </v-row>
 
-
+    <draggable  @start="drag=true" @end="drag=false">
+      <div >
+        <v-btn>a</v-btn>
+        <v-btn>b</v-btn>
+      </div>
+    </draggable>
 
 
   </v-container>
