@@ -55,6 +55,7 @@
 </v-col>
         <v-col cols="9" class="d-flex justify-start">
             <v-text-field
+                ref="searchInputBar"
                 dense
                 full-width
                 :placeholder="searchInputLabel"
@@ -89,7 +90,7 @@
               <v-btn x-small @click="tempSearchTerm = ''">CLR</v-btn>
             </v-card-title>
             <v-card-subtitle>
-              <b-input :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+              <b-input ref="kepadSearchInputBar" :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
             </v-card-subtitle>
             <v-card-text>
               <hebrew-keypad
@@ -202,6 +203,7 @@ export default class SearchInputForm extends Vue{
 //region members
   //this object is shared via emits to the controller
   public searchCriteria = new SearchCriteria();
+
 
   //the list of chapters depends on the chosen category/book path, and is populated by an api call in the controller
   @Prop({default: 'Example'})
@@ -440,6 +442,7 @@ export default class SearchInputForm extends Vue{
       this.tempSearchTerm += letter;
     }
 
+      (this.$refs["kepadSearchInputBar"] as HTMLElement).focus();
 
   }
 
@@ -490,7 +493,15 @@ export default class SearchInputForm extends Vue{
 
     //letters in english that don't map to a hebrew letter:
     this.tempSearchTerm = this.tempSearchTerm.replace(/w/ig,'')
+    this.$nextTick(() => {
+      (this.$refs["searchInputBar"] as HTMLElement).focus();
+
+    });
     this.tempSearchTerm = this.tempSearchTerm.replace(/q/ig,'')
+    this.$nextTick(() => {
+      (this.$refs["searchInputBar"] as HTMLElement).focus();
+
+    });
     console.log(this.tempSearchTerm)
 
   }
