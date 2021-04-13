@@ -235,6 +235,11 @@ export default class Dashboard extends Vue{
   public activeTab = 0;
   public disableSelectedImagesTab = true;
 
+  /*variables associated with the results of searches:*/
+  public freeTextSearchResultsVerseArray: Verse[] = [];
+  public isLoading = false;
+  public displayTropToSearchResult = true;
+
   public imageToBeDeleted = new GalleriaImageItem({
     id:0,
     signedDownloadUrl: "",

@@ -15,13 +15,11 @@
         ></search-input-form>
 
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
-        <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
+        <div style="height: 100px; overflow-y: scroll; overflow-x: hidden">
 
     <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
             :search-results="freeTextSearchResultsVerseArray"
-            :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
-            :is-loading="isLoading"
             :display-trop-to-search-result="displayTropToSearchResult"
     ></search-results-list>
           <chapter-search-result-item v-else
@@ -97,7 +95,7 @@
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
-    public displayTropToSearchResult = true;
+    public displayTropToSearchResult = true; //
     //endregion
 
       //region methods

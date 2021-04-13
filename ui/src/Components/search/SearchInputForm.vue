@@ -182,12 +182,7 @@
 </v-col>
     </v-row>
 
-    <draggable  @start="drag=true" @end="drag=false">
-      <div >
-        <v-btn>a</v-btn>
-        <v-btn>b</v-btn>
-      </div>
-    </draggable>
+
 
 
   </v-container>

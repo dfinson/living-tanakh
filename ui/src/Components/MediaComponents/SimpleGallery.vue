@@ -25,7 +25,7 @@
                       v-for="(item,i) in images"
                       :key="i"
                       :src="getImgUrl(i)"
-                      style="border-radius: 10px; background-color: black"
+                      style="border-radius: 10px; background-color: black; max-height: 1000px"
                       transition="slide-y-transition"
                       contain
                   >
