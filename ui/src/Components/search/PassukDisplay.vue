@@ -1,6 +1,7 @@
 <template>
     <div id='stacks_in_95' class='stacks_in text_stack'>
         <p style="text-align:center;">
+            <!-- if you are going to use a style many times make a constant that has it's values or better yet a class -->
             <span style="font:19px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="selectedVerse.hebrewNumeral !== ''">{{ "(" + selectedVerse.hebrewNumeral  +    ") "}}</span>
             <span  style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-for="segment in selectedVerse.highlightedVerseSegments.segments" v-bind:value="segment" :key="segment.prefix">
        <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefix(segment) && displayTrop">{{segment.prefix}}</span>

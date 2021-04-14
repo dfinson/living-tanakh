@@ -1,7 +1,8 @@
 <template>
   <v-container>
     <v-row v-if="getChapterSearchResults.book !== undefined" justify="center"  style="margin-top: 10px">
-      <span class="title" style="color: darkcyan;">{{"Chapter Selected:"}}</span>
+      <span class="title" style="color: darkcyan;">{{"Chapter Selected:"}}</span> 
+      <!-- not a big fan of free standing strings best practice is to manage them all in a files suggestion: assets/texts.js -->
     </v-row>
     <v-row justify="center">
       <b-button  :type="categoryColorCode" >{{getPath()}}</b-button>
@@ -9,8 +10,8 @@
   </v-container>
 </template>
 <script lang="ts">
-import {Vue,Component, Prop,Watch} from "vue-property-decorator";
-import {Chapter, Verse} from "../../api/dto";
+import {Vue,Component, Prop } from "vue-property-decorator";
+import {Chapter } from "../../api/dto";
 import BaseCard from '@/Components/BaseComponents/BaseCard.vue';
 
 
@@ -31,6 +32,7 @@ export default class ChapterSearchResultItem extends Vue{
   }
 
   public get categoryColorCode(): string{
+    // these strings should be saved as constants somewhere (maybe in assets) and imported
     if(this.getChapterSearchResults.path.includes('TORAH')){
       return 'is-primary is-light'
     }
@@ -44,12 +46,4 @@ export default class ChapterSearchResultItem extends Vue{
   }
 
 }
-
-
-
-
-
 </script>
-
-<style scoped>
-</style>
