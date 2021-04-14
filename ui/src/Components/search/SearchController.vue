@@ -102,9 +102,9 @@
 
       //region methods
     //an api call is made, which populates the chaptersList (with objects of type 'Chapter'), which is passed as a prop to the form.
-    public getChapterList(): void{
+    public async getChapterList(): Promise<void>{
       this.listOfChaptersInSelectedBook = [];
-      apifiClient.findBookByUniquePath(this.searchCriteria.book,
+      const { data } = await apifiClient.findBookByUniquePath(this.searchCriteria.book,
               `{
 
       chapters{
@@ -113,24 +113,11 @@
         number
         path
       }
+            }`)
 
-
-
-            }`).then( res => {
-        let i;
-        for (i = 0; i < res['data'].findBookByUniquePath.chapters.length; i++) {
-          const ch = new Chapter();
-          ch.hebrewNumeral = res['data'].findBookByUniquePath.chapters[i].hebrewNumeral;
-          ch.id = res['data'].findBookByUniquePath.chapters[i].id;
-          ch.number = res['data'].findBookByUniquePath.chapters[i].number;
-          ch.path = res['data'].findBookByUniquePath.chapters[i].path;
-          this.listOfChaptersInSelectedBook.push(ch);
-          //console.log(this.chaptersList);
-        }
+      data?.findBookByUniquePath?.chapters.forEach((chapter: Chapter) => {
+          this.listOfChaptersInSelectedBook.push(chapter)
       });
-
-
-
     }
 
     //searching for a word when a search path has been specified

@@ -15,7 +15,7 @@
                 <a class="image">
                     <b-tooltip label="This will contain a description for the Image" style="margin-bottom: 40px"
                                position="is-bottom">
-                        <img :src="getThumbnailUrl(i)" style="border-radius: 10px; image-orientation: from-image"/>
+                        <img :src="(i)" style="border-radius: 10px; image-orientation: from-image"/>
                     </b-tooltip>
                 </a>
             </b-carousel-item>
@@ -42,7 +42,6 @@
      */
     import {Vue, Component, Prop, Watch} from "vue-property-decorator";
     import {GalleriaImageItem} from "@/api/dto";
-    import axios from 'axios';
 
 
     @Component
@@ -116,10 +115,9 @@
 
         public downloadImages(): void{
             const keyArr: string[] = [];
-            for(let i = 0; i < this.selectedImages.length; i++){
-                keyArr.push(this.selectedImages[i].title);
-            }
-
+            // it's 2021 let's use some es6 at least ;-)
+            (this.selectedImages || []).forEach(image => keyArr.push(image.title))
+            // this should not be here, move "opts" and call into some other foler a good place could be api (google vue api wrapper)
             const opts = {
                 method: "POST",
                 credentials: "include",
@@ -132,6 +130,7 @@
                 headers: { "Content-Type": "application/json" },
                 body: 'SamA-c17-Soch05.jpeg'
             }).then(res => console.log("yo!!!"));
+            // remove large chuncks of uncommentted code out.
             /*
             const axios = require('axios');
                 // Default options are marked with *
