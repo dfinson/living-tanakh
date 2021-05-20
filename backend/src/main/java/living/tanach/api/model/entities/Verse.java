@@ -19,7 +19,7 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
+import static dev.sanda.apifi.code_generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static living.tanach.api.utils.StaticUtils.toHebrewNumeral;

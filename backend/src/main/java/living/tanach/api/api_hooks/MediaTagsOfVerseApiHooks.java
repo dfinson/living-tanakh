@@ -1,6 +1,6 @@
 package living.tanach.api.api_hooks;
 
-import dev.sanda.apifi.service.EntityCollectionApiHooks;
+import dev.sanda.apifi.service.api_hooks.EntityCollectionApiHooks;
 import dev.sanda.datafi.service.DataManager;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;

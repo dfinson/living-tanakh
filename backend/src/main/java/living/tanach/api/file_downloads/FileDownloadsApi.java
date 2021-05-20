@@ -1,15 +1,15 @@
 package living.tanach.api.file_downloads;
 
+
 import living.tanach.api.utils.S3Service;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.joda.time.DateTime;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.Entity;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
