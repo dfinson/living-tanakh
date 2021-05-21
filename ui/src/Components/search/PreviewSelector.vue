@@ -63,6 +63,8 @@
           value: 'title',
         },
           { text: 'Size', value: 'calories' }]
+
+
         @Watch('selectedImage')
         onPropertyChanged(){
             let repeat = false;
@@ -114,46 +116,21 @@
 
         }
 
+
+      // http://localhost:5000/download-images?keys=['image1.jpg', 'image2.png', ...]
         public downloadImages(): void{
             const keyArr: string[] = [];
             for(let i = 0; i < this.selectedImages.length; i++){
                 keyArr.push(this.selectedImages[i].title);
             }
-
-            const opts = {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body:'SamA-c17-Soch05.jpeg'
-            };
-            fetch('http://localhost:5000/download-images', {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: 'SamA-c17-Soch05.jpeg'
-            }).then(res => console.log("yo!!!"));
-            /*
-            const axios = require('axios');
-                // Default options are marked with *
-            axios.post('http://localhost:5000/download-images', {
-               keys:['SamA-c17-Soch05.jpeg']
-            }).then((res: any)=>{
-                console.log("yo")
-            })*/
+            console.log("downloading " + keyArr);
 
 
-            /*axios({
-                url:"http://localhost:5000/download-images",
-                method:'POST',
-                responseType:'blob'
-            }).then(res=> {
-                const fileUrl = window.URL.createObjectURL(new Blob([res.data]))
-                const fileLink = document.createElement('a');
-                fileLink.href = fileUrl;
-                fileLink.setAttribute('download','image.jpg');
-                document.body.appendChild(fileLink);
-                fileLink.click();
-            })*/
+
+
+
+
+
         }
 
 

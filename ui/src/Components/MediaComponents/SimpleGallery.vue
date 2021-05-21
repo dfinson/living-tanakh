@@ -3,7 +3,7 @@
 
     <v-main style="background-color: black">
 
-      <v-layout row>
+      <v-row>
 
         <v-flex>
           <!-- the fullscreen image viewing component modal-->
@@ -117,7 +117,7 @@
 
         </v-flex>
 
-      </v-layout>
+      </v-row>
 
       <!--option to close/open bottom carousel-->
       <v-row justify="center" ><a @click="showCarousel = !showCarousel;" >Carousel</a></v-row>

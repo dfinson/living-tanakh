@@ -1,6 +1,6 @@
 <template>
     <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'  >
-        <a name="stacks_in_372-"></a>
+
         <!-- the actual form - dd's and inputs -->
         <search-input-form
                 @update-category-selection="updateCategorySelection($event)"
@@ -62,7 +62,7 @@
   */
 
   import {Component, Prop, Vue} from 'vue-property-decorator';
-  import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
+  import {Book, Chapter, PrefixedVerseSegment, SearchCriteria, Verse} from "@/api/dto";
   import SearchInputForm from "@/Components/search/SearchInputForm.vue";
   import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
   import {toHebrewBookName, TORAH} from "@/api/TANAKH";
@@ -132,12 +132,12 @@
     }
 
     //searching for a word when a search path has been specified
-    public freeTextSearchWithOnlyOneCategory(searchPath: string){
+    async freeTextSearchWithOnlyOneCategory(searchPath: string){
       this.isLoading = true;
       this.freeTextSearchResultsVerseArray = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
-      apifiClient.verseFreeTextSearch({
+      const { data } = await apifiClient.verseFreeTextSearch({
         customArgs: {
           validPathPrefixes:  [searchPath]
         },
@@ -167,39 +167,23 @@
            id
            number
            path
-           } }`).then(res => {
-        if (res['data'].verseFreeTextSearch.content.length > 0) {
-          let i;
-
-          for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
-            //console.log(res['data'].verseFreeTextSearch.content[i]);
-            const verse = new Verse();
-            verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
-            verse.number = res['data'].verseFreeTextSearch.content[i].number;
-            verse.path = res['data'].verseFreeTextSearch.content[i].path;
-            verse.id = res['data'].verseFreeTextSearch.content[i].id;
-            verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
-            verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
-            verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
-            verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
-            for(let i = 0; i < verse.highlightedVerseSegments.segments.length; i++)
-                verse.highlightedVerseSegments.segments[i].id = i;
-            this.freeTextSearchResultsVerseArray.push(verse);
+           } }`)
+      this.isLoading = false;
+      if(data?.verseFreeTextSearch?.content.length > 0){
+        data.verseFreeTextSearch.content.forEach((verse: Verse) => {
+          verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
+          this.freeTextSearchResultsVerseArray.push(verse);
+        }).sort((a: Verse,b: Verse) => {
+          if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
+            return -1;
+          else{
+            if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
+              return 1;
+            else return 0;
           }
-          console.log(this.searchCriteria.searchTerm + "controller");
-            this.freeTextSearchResultsVerseArray.sort((a,b) => {
-                if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-                    return -1;
-                else{
-                    if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-                        return 1;
-                    else return 0;
-                }
-            })
-
-          this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
-
-        }
+        })
+        this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+      }
         else {
             if (this.freeTextSearchResultsVerseArray.length === 0) {
                 this.$buefy.notification.open({
@@ -211,8 +195,8 @@
                 });
             }
         }
-      this.isLoading = false;});
-    }
+}
+
 
     //searching for a word when no search path has been specified
     public freeTextSearchWithMultipleCategories(categories: string[]): void{

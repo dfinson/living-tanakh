@@ -1,10 +1,10 @@
 <template>
-  <div class="mediaStuff">
+
     <SimpleGallery :tags="tags"
                    @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
                    @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
     ></SimpleGallery>
-  </div>
+  
 </template>
 
 <script lang="ts">

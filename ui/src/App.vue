@@ -1,8 +1,10 @@
 <template>
   <v-app>
-    <v-main>
+
+    <v-main >
       <dashboard/>
     </v-main>
+
   </v-app>
 </template>
 

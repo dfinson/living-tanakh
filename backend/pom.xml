@@ -15,7 +15,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
         <graphql-spqr-spring-boot-starter.version>0.0.4</graphql-spqr-spring-boot-starter.version>
         <apifi.version>0.0.5.6</apifi.version>
         <unirest-java.version>${re2j.version}.9</unirest-java.version>
@@ -38,10 +38,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
         <dependency>
             <groupId>dev.sanda</groupId>
             <artifactId>apifi</artifactId>
-            <version>${apifi.version}</version>
+            <version>1.0.0-BETA</version>
         </dependency>
 
         <dependency>
@@ -157,8 +158,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
