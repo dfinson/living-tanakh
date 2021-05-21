@@ -1,6 +1,6 @@
 <template>
     <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'  >
-        <a name="stacks_in_372-"></a>
+
         <!-- the actual form - dd's and inputs -->
         <search-input-form
                 @update-category-selection="updateCategorySelection($event)"

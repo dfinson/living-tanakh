@@ -66,12 +66,14 @@
             >
               <template v-slot:prepend-inner>
                 <v-btn
-                    color="primary"
+                    color="secondary"
                   x-small
-                    style=" font-size: 0.6vw ; max-width: 70px"
+
                     @click="displayKeypad = !displayKeypad" v-if="!displayKeypad"
                 >
-                  {{ keyBoardLabel }}</v-btn>
+                  <v-icon v-on="on" >
+                    mdi-keyboard
+                  </v-icon></v-btn>
               </template>
 
             </v-text-field>
@@ -111,9 +113,9 @@
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('TORAH')" >
           <template v-slot:label>
             <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
-              {{torahLabel}}
+              TORAH
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-if="!englishSearch">
               תורה
             </strong>
           </template>
@@ -126,9 +128,9 @@
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('PROPHETS')">
           <template v-slot:label>
             <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
-              {{prophetsLabel}}
+              PROPHETS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.9vw" v-if="!englishSearch">
               נביאים
             </strong>
           </template>
@@ -144,9 +146,9 @@
 
           <template v-slot:label>
             <strong style="color:ghostwhite; font-family: 'Trebuchet MS'; font-size: 0.9vw" v-if="englishSearch">
-              {{writingsLabel}}
+             WRITINGS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-if="!englishSearch">
               כתובים
             </strong>
           </template>
@@ -157,10 +159,11 @@
     </div>
 
     <!--row #4 - dropdown list to select book once (if) one (only) category selected (i.e - torah, neviim or ketuvim-->
-    <v-row  no-gutters>
+    <v-row  >
       <v-col class="d-flex justify-center">
       <div class="sefer-dd" >
-        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true" style="max-width: 130px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
+
+        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true"   v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
           <option
               style="font-family: Arial; font-size: 12px"
               v-for="book in bookList"

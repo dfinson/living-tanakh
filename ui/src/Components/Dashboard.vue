@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-main >
-      <div class="fc-inner-wrapper">
 
 
         <!-- left hand container column-->
@@ -26,9 +25,9 @@
               <!-- Special Circular image overlapped on top of the top image. -->
               <!-- Only displays if the top image is visible. -->
               <div class="card-block">
-                <div class="text-xs-left">
+
                   <h3 class="stacks_in_255_hdr theme_style  ">Ma'ayan Home Page</h3>
-                </div>
+
                 <p class='stacks_in_250 card-text   text-xs-left ' >
                   Welcome to the Ma'ayan demo page. Ma'ayan is being developed as the premier visual companion for the learning, teaching and development of TANACH. Click the link below to add your comments - we value your input!
                 </p>
@@ -38,7 +37,7 @@
               </div>
             </div><!-- column header-->
             <!-- search form-->
-            <div id='stacks_out_372' class='stacks_out' style="overflow-y: scroll; max-height: 600px">
+            <!--<div id='stacks_out_372' class='stacks_out' style="overflow-y: scroll; max-height: 600px">-->
 
               <b-tabs type="is-toggle" expanded v-model="activeTab">
                 <b-tab-item  icon="magnify"   animated="true">
@@ -57,12 +56,11 @@
                   ></preview-selector>
                 </b-tab-item>
               </b-tabs>
-<h1>hello its me!!!!!!</h1>
 
 
 
 
-            </div>
+            <!--</div>-->
           </v-col>
 
 
@@ -88,10 +86,9 @@
 
                 <div id='stacks_in_68' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
                   <div id="fontStackstacks_in_68" class="fontStack" >
-                    <div id='stacks_out_70' class='stacks_out'  >
-                      <div id='stacks_in_70' class='stacks_in com_cosculture_stack_scrollbar_1_stack'>
+
                         <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr; margin-right: 5px" >
-                          <div id='stacks_out_72' class='stacks_out' >
+
 
 
                             <!-- chapter display-->
@@ -103,12 +100,12 @@
                                              @trop-changed="displayTrop = !displayTrop"
                             ></chapter-display>
 
-                        </div>
 
 
-                        </div>
 
-                     </div>
+
+
+
                     </div>
                   </div>
                 </div>
@@ -152,7 +149,7 @@
             </section>
           </v-col>
         </v-row>
-      </div>
+
     </v-main>
   </v-app>
 </template>
