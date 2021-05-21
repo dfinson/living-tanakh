@@ -1,6 +1,6 @@
 package living.tanach.api.api_hooks;
 
-import dev.sanda.apifi.service.ApiHooks;
+import dev.sanda.apifi.service.api_hooks.ApiHooks;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.dto.Page;
 import dev.sanda.datafi.service.DataManager;

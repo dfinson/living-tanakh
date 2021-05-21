@@ -1,9 +1,8 @@
 package living.tanach.api.api_hooks;
 
-import dev.sanda.apifi.service.ApiHooks;
+import dev.sanda.apifi.service.api_hooks.ApiHooks;
 import dev.sanda.datafi.dto.FreeTextSearchPageRequest;
 import dev.sanda.datafi.service.DataManager;
-import living.tanach.api.model.entities.MediaContent;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
 import living.tanach.api.utils.S3Service;
@@ -12,7 +11,9 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

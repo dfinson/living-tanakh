@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static dev.sanda.apifi.generator.entity.CRUDEndpoints.*;
-import static dev.sanda.apifi.generator.entity.EntityCollectionEndpointType.*;
+import static dev.sanda.apifi.code_generator.entity.CRUDEndpoints.*;
+import static dev.sanda.apifi.code_generator.entity.EntityCollectionEndpointType.*;
 import static javax.persistence.CascadeType.ALL;
 import static org.hibernate.annotations.FetchMode.JOIN;
 
