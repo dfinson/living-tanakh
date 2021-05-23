@@ -34,6 +34,8 @@ public class S3Service {
     private String thumbnailsBucketName;
     @Value("#{new Integer('${s3.url-ttl:60}')}")
     private Integer urlTtl;
+    @Value("#{new Integer('${s3.download-url-ttl:500}')}")
+    private Integer downloadUrlTtl;
 
     private S3Client s3Client;
     private S3Presigner s3Presigner;
@@ -58,6 +60,26 @@ public class S3Service {
         val presignedRequest = s3Presigner.presignPutObject(presignRequest);
         val url = presignedRequest.url();
         return url.toString();
+    }
+
+    public String generateDownloadUUrl(String key){
+        try {
+            val getObjectRequest =
+                    GetObjectRequest.builder()
+                            .bucket(this.bucketName)
+                            .key(toPreviewKey(key))
+                            .build();
+            val getObjectPresignRequest =
+                    GetObjectPresignRequest.builder()
+                            .signatureDuration(Duration.ofMinutes(downloadUrlTtl))
+                            .getObjectRequest(getObjectRequest)
+                            .build();
+            val presignedGetObjectRequest = s3Presigner.presignGetObject(getObjectPresignRequest);
+            return presignedGetObjectRequest.url().toString();
+        } catch (S3Exception e) {
+            e.getStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     public String generatePreviewUrl(String key){
@@ -128,5 +150,12 @@ public class S3Service {
             log.error( e.getClass().getName() + " while getting object with key: \"" + key + "\" from S3. Message is: \n" + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+
+    public Long getFullSizeMediaObjectSize(String key){
+        val request = GetObjectRequest.builder().bucket(bucketName).key(key).build();
+        val response =  s3Client.getObjectAsBytes(request);
+        return response.response().contentLength();
     }
 }

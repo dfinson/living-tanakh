@@ -24,6 +24,7 @@ public class MediaContent {
     private String description;
     @Column(columnDefinition = "TEXT")
     private String key;
+    private Long sizeInBytes;
 
     public String getMimeType(){
         return mediaType.getMimeType();
@@ -32,6 +33,9 @@ public class MediaContent {
     @Transient
     @Getter(onMethod_ = @GraphQLQuery)
     private String signedDownloadUrl;
+    @Transient
+    @Getter(onMethod_ = @GraphQLQuery)
+    private String signedFullSizeObjectDownloadUrl;
     @Transient
     @Getter(onMethod_ = @GraphQLQuery)
     private String signedUploadUrl;
