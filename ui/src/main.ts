@@ -7,7 +7,6 @@ import 'buefy/dist/buefy.css'
 import Galleria from 'primevue/galleria';
 import draggable from 'vuedraggable';
 
-
 Vue.use(Buefy);
 Vue.component('Galleria', Galleria);
 Vue.component('draggable',draggable);

@@ -475,6 +475,7 @@
 
     public updateSearchTermSelection(searchTerm: string): void{
             this.searchCriteria.searchTerm = searchTerm;
+      this.$emit('update-search-term',this.searchCriteria.searchTerm);
             this.getChapterSearchResults = new Chapter();
             console.log(this.searchCriteria.searchTerm + " from controller, path: " + this.searchCriteria.book + "/ " + this.searchCriteria.chapter);
             this.generalSearchSorter();

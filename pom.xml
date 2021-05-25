@@ -14,6 +14,7 @@
     <description>Demo project for Spring Boot</description>
 
     <properties>
+        <start-class>living.tanach.api.ApiApplication</start-class>
         <java.version>11</java.version>
         <graphql-spqr-spring-boot-starter.version>0.0.4</graphql-spqr-spring-boot-starter.version>
         <apifi.version>1.0.0-BETA</apifi.version>
@@ -112,34 +113,6 @@
 
     <build>
         <plugins>
-
-            <plugin>
-                <groupId>cz.habarta.typescript-generator</groupId>
-                <artifactId>typescript-generator-maven-plugin</artifactId>
-                <version>2.24.612</version>
-                <executions>
-                    <execution>
-                        <id>generate</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <phase>process-classes</phase>
-                    </execution>
-                </executions>
-                <configuration>
-                    <jsonLibrary>jackson2</jsonLibrary>
-                    <classes>
-                        <class>living.tanach.api.model.entities.Book</class>
-                    </classes>
-                    <outputKind>module</outputKind>
-                    <outputFileType>implementationFile</outputFileType>
-                    <mapClasses>asClasses</mapClasses>
-                    <mapEnum>asEnum</mapEnum>
-                    <nonConstEnums>true</nonConstEnums>
-                    <optionalProperties>useLibraryDefinition</optionalProperties>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

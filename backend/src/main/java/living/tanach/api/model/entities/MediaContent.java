@@ -34,5 +34,8 @@ public class MediaContent {
     private String signedDownloadUrl;
     @Transient
     @Getter(onMethod_ = @GraphQLQuery)
+    private String signedHDDownloadUrl;
+    @Transient
+    @Getter(onMethod_ = @GraphQLQuery)
     private String signedUploadUrl;
 }

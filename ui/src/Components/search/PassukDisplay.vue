@@ -7,11 +7,11 @@
       <span style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-else-if="hasPrefix(segment) && !displayTrop" >{{segment.plainHebrewPrefix}}</span>
               <!-- a patch to add שוכה for demo purposes to prefix-->
        <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefixWithSocho(segment) && displayTrop">{{segment.prefix.slice(0,segment.prefix.indexOf("שׂוֹכֹ֥ה"))}}</span>
-             <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:darkorange;" v-if="hasPrefixWithSocho(segment) && displayTrop">שׂוֹכֹ֥ה </span>
+             <a  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:darkorange; text-decoration: none" v-if="hasPrefixWithSocho(segment) && displayTrop"  @click="sendTagToDashBoard(segment)">שׂוֹכֹ֥ה </a>
               <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefixWithSocho(segment) && displayTrop">{{segment.prefix.slice(segment.prefix.lastIndexOf("שׂוֹכֹ֥ה") + 8,segment.prefix.length)}}</span>
 
-             <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefixWithSocho(segment) && !displayTrop">{{segment.plainHebrewPrefix.slice(0,segment.plainHebrewPrefix.indexOf("שוכה") )}}</span>
-             <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:darkorange;" v-if="hasPrefixWithSocho(segment) && !displayTrop">שוכה </span>
+             <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;"  v-if="hasPrefixWithSocho(segment) && !displayTrop">{{segment.plainHebrewPrefix.slice(0,segment.plainHebrewPrefix.indexOf("שוכה") )}}</span>
+             <a  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:darkorange; text-decoration: none" @click="sendTagToDashBoard(segment)" v-if="hasPrefixWithSocho(segment) && !displayTrop">שוכה </a>
               <span  class="paragraph-span" style="font:23px 'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:black;" v-if="hasPrefixWithSocho(segment) && !displayTrop">{{segment.plainHebrewPrefix.slice(segment.plainHebrewPrefix.lastIndexOf("שוכה") + 4,segment.plainHebrewPrefix.length )}}</span>
 
        <a v-if="hasHighlighted(segment) && displayTrop" style="color: darkorange; text-decoration: none"  @click="sendTagToDashBoard(segment)">{{segment.highlightedKeyword}}</a>
@@ -63,8 +63,8 @@
     }
 
     public sendTagToDashBoard(segment: PrefixedVerseSegment): void {
-        console.log(segment.tag.id)
-        this.$emit('send-tag-to-dashboard', segment.tag.id);
+
+        this.$emit('send-tag-to-dashboard',  segment.tag.id);
 
     }
 

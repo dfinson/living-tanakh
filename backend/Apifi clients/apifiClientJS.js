@@ -20,78 +20,6 @@ export default{
 		includeCredentials = value;
 	},
 
-	async findBookByUniquePath(path, selectionGraph, customHeaders){
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query findBookByUniquePath($path: path) { findBookByUniquePath(path: $path)${selectionGraph} }`, 
-					variables: {
-						"path": path
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async findChapterByUniquePath(path, selectionGraph, customHeaders){
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query findChapterByUniquePath($path: path) { findChapterByUniquePath(path: $path)${selectionGraph} }`, 
-					variables: {
-						"path": path
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async errorReports(input, selectionGraph, customHeaders){
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query errorReports($input: PageRequestInput) { errorReports(input: $input)${selectionGraph} }`, 
-					variables: {
-						"input": input
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async createErrorReport(input, selectionGraph, customHeaders){
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `mutation createErrorReport($input: ErrorReportInput) { createErrorReport(input: $input)${selectionGraph} }`, 
-					variables: {
-						"input": input
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
 	async getMediaTagsByIds(input, selectionGraph, customHeaders){
 			let requestHeaders = { "Content-Type": "application/json" }
 			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
@@ -221,6 +149,60 @@ export default{
 			return await (await fetch(apiUrl, requestInit)).json();
 	},
 
+	async errorReports(input, selectionGraph, customHeaders){
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query errorReports($input: PageRequestInput) { errorReports(input: $input)${selectionGraph} }`, 
+					variables: {
+						"input": input
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async createErrorReport(input, selectionGraph, customHeaders){
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `mutation createErrorReport($input: ErrorReportInput) { createErrorReport(input: $input)${selectionGraph} }`, 
+					variables: {
+						"input": input
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async findChapterByUniquePath(path, selectionGraph, customHeaders){
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query findChapterByUniquePath($path: path) { findChapterByUniquePath(path: $path)${selectionGraph} }`, 
+					variables: {
+						"path": path
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
 	async associateMediaTagsWithVerse(owner, input, selectionGraph, customHeaders){
 			let requestHeaders = { "Content-Type": "application/json" }
 			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
@@ -306,6 +288,24 @@ export default{
 				headers: requestHeaders,
 				body: JSON.stringify({
 					query: `query findVerseByUniquePath($path: path) { findVerseByUniquePath(path: $path)${selectionGraph} }`, 
+					variables: {
+						"path": path
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async findBookByUniquePath(path, selectionGraph, customHeaders){
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query findBookByUniquePath($path: path) { findBookByUniquePath(path: $path)${selectionGraph} }`, 
 					variables: {
 						"path": path
 					}

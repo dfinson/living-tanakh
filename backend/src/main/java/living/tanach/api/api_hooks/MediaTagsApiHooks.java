@@ -27,7 +27,10 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
     @Override
     public void postGetBatchByIds(List<MediaTag> result, DataManager<MediaTag> dataManager) {
         result.forEach(mediaTag -> mediaTag.getLinkedContent()
-                .forEach(mediaContent -> mediaContent.setSignedDownloadUrl(s3Service.generatePreviewUrl(mediaContent.getKey())))
+                .forEach(mediaContent -> {
+                    mediaContent.setSignedDownloadUrl(s3Service.generatePreviewUrl(mediaContent.getKey()));
+                    mediaContent.setSignedHDDownloadUrl(s3Service.generateHDPreviewUrl(mediaContent.getKey()));
+                })
         );
     }
 

@@ -12,6 +12,4 @@ public class EnvironmentVariablesService {
     private String dbPassword;
     @Value("${DB_USERNAME}")
     private String dbUsername;
-    @Value("${HEBREW_NLP_PASSWORD}")
-    private String hebrewNlpPassword;
 }

@@ -112,10 +112,10 @@
         <v-checkbox v-model="torahSelected" dark
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('TORAH')" >
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.8vw" v-if="englishSearch">
               TORAH
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-if="!englishSearch">
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.8vw" v-if="!englishSearch">
               תורה
             </strong>
           </template>
@@ -127,10 +127,10 @@
         <v-checkbox v-model="prophetsSelected" dark
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('PROPHETS')">
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.8vw" v-if="englishSearch">
               PROPHETS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.9vw" v-if="!englishSearch">
+            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.8vw" v-if="!englishSearch">
               נביאים
             </strong>
           </template>
@@ -145,10 +145,10 @@
                     @click="updateCategorySelection('WRITINGS')">
 
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'; font-size: 0.9vw" v-if="englishSearch">
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'; font-size: 0.8vw" v-if="englishSearch">
              WRITINGS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-if="!englishSearch">
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.8vw" v-if="!englishSearch">
               כתובים
             </strong>
           </template>

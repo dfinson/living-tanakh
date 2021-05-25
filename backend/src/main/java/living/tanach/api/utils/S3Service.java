@@ -79,6 +79,25 @@ public class S3Service {
             throw new RuntimeException(e);
         }
     }
+    public String generateHDPreviewUrl(String key){
+        try {
+            val getObjectRequest =
+                    GetObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(toPreviewKey(key))
+                            .build();
+            val getObjectPresignRequest =
+                    GetObjectPresignRequest.builder()
+                            .signatureDuration(Duration.ofMinutes(urlTtl))
+                            .getObjectRequest(getObjectRequest)
+                            .build();
+            val presignedGetObjectRequest = s3Presigner.presignGetObject(getObjectPresignRequest);
+            return presignedGetObjectRequest.url().toString();
+        } catch (S3Exception e) {
+            e.getStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 
     public void deleteObjects(Collection<String> keys){
         deleteObjects(keys, bucketName);

@@ -18,7 +18,7 @@
             </div> <!-- column header-->
 
 
-            <div class="stacks_in_249-foundry-card card  ">
+            <div >
               <a href="http://www.foundationstone.org/page-5/" style="text-decoration: none">
                 <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg" class="img-fluid card-img-top" alt="Image">
               </a>
@@ -43,17 +43,18 @@
                 <b-tab-item  icon="magnify"   animated="true">
                   <search-controller
                       @display-selected-chapter="sendChapterToChapterDisplay($event)"
-                      @send-search-term-to-dashboard="sendSearchTermToChapterDisplay($event)"
-                      @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
+                      @send-search-term-to-dashboard="sendSearchTermToChapterDisplayAndMediaTagModal($event)"
+                      @send-selected-verse-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponentFromSearchResultItem($event)"
                       @change-trop = changeTrop($event)
                       :selected-verse-numeral="selectedVerse.hebrewNumeral"
+                      @update-search-term="updateSearchTerm($event)"
                   ></search-controller>
                 </b-tab-item>
                 <b-tab-item  icon="google-photos" style="text-decoration: none" animated="true" :disabled="disableSelectedImagesTab">
-                  <preview-selector
+                  <preview-selector ref="myChild"
                       :selected-image="this.selectedImage"
-                      :image-to-be-deleted="imageToBeDeleted"
-                  ></preview-selector>
+                      @uncheck-all-images="uncheckAllImages"
+               ></preview-selector>
                 </b-tab-item>
               </b-tabs>
 
@@ -76,7 +77,7 @@
 
               <!-- chapter display component-->
 
-              <div id='stacks_out_68' class='stacks_out' style="margin-top: 20px">
+              <div id='stacks_out_68' class='stacks_out' style="margin-top: 5px">
                 <h1 v-if="selectedChapter !== undefined" style="font-size:20px; margin-right: 5px;
          'Lucida Grande', LucidaGrande, Verdana, sans-serif; color:lightseagreen; text-align: center; margin-bottom:1px;" >{{selectedChapter.book.hebrewName + " " + selectedChapter.hebrewNumeral.replace(/['"]+/g, '') + colon}}<span>{{selectedVerse.hebrewNumeral.replace(/['"]+/g, '')}}</span></h1>
 
@@ -84,19 +85,20 @@
 
 
 
-                <div id='stacks_in_68' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
-                  <div id="fontStackstacks_in_68" class="fontStack" >
+               <!-- <div id='stacks_in_68' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>!-->
+                <div>
+                  <div >
 
                         <div id="scrollbar_stacks_in_70"  style="height: 135px; overflow: auto ;direction: ltr; margin-right: 5px" >
 
 
 
                             <!-- chapter display-->
-                            <chapter-display class="chapterD"
+                            <chapter-display class="chapterD" style="background-color: rgba(51, 51, 51, 1.00);"
                                              :displayTrop="displayTrop"
                                              :selected-chapter="this.selectedChapter"
                                              :search-term="this.searchTerm"
-                                             @send-passuk-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponent($event)"
+                                             @send-passuk-to-passuk-display="sendVerseToPassukDisplayAndSendTagIdToMediaComponentOfVerseFromChapter($event)"
                                              @trop-changed="displayTrop = !displayTrop"
                             ></chapter-display>
 
@@ -114,11 +116,7 @@
 
               <!-- verse and media display components-->
 
-                <div id='stacks_in_91' class='stacks_in com_stacks4stacks_stacks_fontstack_stack'>
-
-                    <!-- verse display component-->
-
-                      <passuk-display dir="rtl"
+                      <passuk-display dir="rtl" style="background-color: lightgrey"
                           :displayTrop="displayTrop"
                           :selected-verse="selectedVerse"
                           @send-tag-to-dashboard="sendTagToMediaPresenter($event)"
@@ -129,11 +127,14 @@
                     <div id='stacks_out_193' class='stacks_out' >
 
 
-                          <media-tag-modal
+                          <media-tag-modal ref="mediaTagModalRef"
                               :tag-ids="tagIds"
+                              :passuk-selected-from-chapter-display="passukSelectedFromChapterDisplay"
+                              :search-term="searchTerm"
                               :selected-media-tag-id="selectedMediaTagId"
                               @send-image-to-preview-selector="sendImageToPreviewSelector($event)"
                               @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
+                              :remove-checked-images="removeCheckedImages"
                           ></media-tag-modal>
 
 
@@ -142,7 +143,6 @@
 
                   </div>
 
-                </div>
 
 
 
@@ -244,23 +244,27 @@ export default class Dashboard extends Vue{
   public isLoading = false;
   public displayTropToSearchResult = true;
 
-  public imageToBeDeleted = new GalleriaImageItem({
-    id:0,
-    signedDownloadUrl: "",
-    key:"",
-    description:""
-
-  });
   public searchCriteria: SearchCriteria;
   public selectedChapter = new Chapter();
   public searchTerm = "";
   public selectedVerse = new Verse();
-
+  public passukSelectedFromChapterDisplay = false;
+  public removeCheckedImages = false;
   //endregion
 
   //region Methods
+  public updateSearchTerm(searchTerm: string){
+    this.searchTerm = searchTerm;
+  }
+
+
   private sendTagToMediaPresenter(id: number): void{
     this.selectedMediaTagId = id;
+    this.passukSelectedFromChapterDisplay = true;
+  }
+
+  public uncheckAllImages(): void{
+    (this.$refs.mediaTagModalRef as any).uncheckAllImages();
   }
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
@@ -292,22 +296,39 @@ export default class Dashboard extends Vue{
   }
 
 
-  public sendSearchTermToChapterDisplay(searchTerm: string): void{
+  public sendSearchTermToChapterDisplayAndMediaTagModal(searchTerm: string): void{
     this.searchTerm = searchTerm;
     console.log(this.searchTerm + "dashboard");
   }
 
 
   //this function will also send the media components the tags in this selected verse.
-  public sendVerseToPassukDisplayAndSendTagIdToMediaComponent(selectedVerse: Verse): void{
+  public sendVerseToPassukDisplayAndSendTagIdToMediaComponentFromSearchResultItem(selectedVerse: Verse): void{
     this.tagIds = [];
     this.colon = ":"
+    this.selectedMediaTagId = 0;
+    this.passukSelectedFromChapterDisplay = false;
+    // console.log(selectedVerse);
+    this.selectedVerse = selectedVerse;
+    if(this.selectedVerse.mediaTags !== undefined) {
+      for (const tag in this.selectedVerse.mediaTags) {
+        this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
+      }
+    }
+  }
+
+  public sendVerseToPassukDisplayAndSendTagIdToMediaComponentOfVerseFromChapter(selectedVerse: Verse): void{
+    this.tagIds = [];
+    this.colon = ":"
+    this.passukSelectedFromChapterDisplay = true;
+    //this.searchTerm = '';
     this.selectedMediaTagId = 0;
     // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
     if(this.selectedVerse.mediaTags !== undefined) {
       for (const tag in this.selectedVerse.mediaTags) {
-        this.tagIds.push(this.selectedVerse.mediaTags[tag].id);}
+        this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
+      }
     }
   }
 
@@ -318,21 +339,15 @@ export default class Dashboard extends Vue{
       key:image.alt,
       description:image.description
     });
-    console.log("dashboard recieved image:" + this.selectedImage);
+    //console.log("dashboard recieved image:" + this.selectedImage);
     this.disableSelectedImagesTab = false;
     setTimeout(()=>{
       this.activeTab = 1;
     }, 1000);
   }
 
-  public removeImageFromPreviewSelector(image: GalleriaImageItem): void{
-    this.imageToBeDeleted  = new GalleriaImageItem( {
-      id:Math.floor(Math.random() * 100) ,
-      signedDownloadUrl: image.itemImageSrc,
-      key:image.alt,
-      description:image.description
-    });
-
+  public removeImageFromPreviewSelector(title: string): void{
+    (this.$refs.myChild as any).deleteImage(title);
   }
 
   public changeTrop(trop: boolean): void{
