@@ -8,8 +8,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ChapterApiHooks implements ApiHooks<Chapter> {
-    @Override
-    public void postApiFindByUnique(String fieldName, Object fieldValue, Chapter result, DataManager<Chapter> dataManager) {
-        result.getVerses().forEach(verse -> verse.setHighlightedVerseSegments(new HighlightedVerseSegments(verse)));
-    }
+
+  @Override
+  public void postApiFindByUnique(
+    String fieldName,
+    Object fieldValue,
+    Chapter result,
+    DataManager<Chapter> dataManager
+  ) {
+    result
+      .getVerses()
+      .forEach(
+        verse ->
+          verse.setHighlightedVerseSegments(new HighlightedVerseSegments(verse))
+      );
+  }
 }
