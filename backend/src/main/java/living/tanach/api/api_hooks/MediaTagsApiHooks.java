@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+import living.tanach.api.model.entities.MediaContent;
 import living.tanach.api.model.entities.MediaTag;
 import living.tanach.api.model.entities.Verse;
 import living.tanach.api.utils.S3Service;
@@ -29,6 +30,7 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
   private final S3Service s3Service;
   private final VerseFreeTextSearchEngine searchEngine;
   private final DataManager<Verse> verseDataManager;
+  private final DataManager<MediaContent> mediaContentDataManager;
   private static final Executor executor = Executors.newFixedThreadPool(100);
 
   @Override
@@ -37,6 +39,7 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
     DataManager<MediaTag> dataManager
   ) {
     List<Runnable> tasks = new ArrayList<>();
+    List<MediaContent> toSave = new ArrayList<>();
     result.forEach(
       mediaTag ->
         mediaTag
@@ -51,11 +54,16 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
                   mediaContent.setSignedFullSizeObjectDownloadUrl(
                     s3Service.generateDownloadUUrl(mediaContent.getKey())
                   );
-                  if (
-                    mediaContent.getSizeInBytes() < 0
-                  ) mediaContent.setSizeInBytes(
-                    s3Service.getFullSizeMediaObjectSize(mediaContent.getKey())
-                  );
+                  if (mediaContent.getSizeInBytes() < 0) {
+                    mediaContent.setSizeInBytes(
+                      s3Service.getFullSizeMediaObjectSize(
+                        mediaContent.getKey()
+                      )
+                    );
+                    synchronized (toSave) {
+                      toSave.add(mediaContent);
+                    }
+                  }
                 }
               )
           )
@@ -65,6 +73,7 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
       .map(task -> CompletableFuture.runAsync(task, executor))
       .toArray(CompletableFuture[]::new);
     CompletableFuture.allOf(futures).join();
+    mediaContentDataManager.saveAll(toSave);
   }
 
   @Override
