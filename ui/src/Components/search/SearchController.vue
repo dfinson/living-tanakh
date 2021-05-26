@@ -1,6 +1,6 @@
 <template>
-    <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'  >
-        <a name="stacks_in_372-"></a>
+    <div  >
+
         <!-- the actual form - dd's and inputs -->
         <search-input-form
                 @update-category-selection="updateCategorySelection($event)"
@@ -15,14 +15,11 @@
         ></search-input-form>
 
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
-        <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
+      <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
 
     <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
             :search-results="freeTextSearchResultsVerseArray"
-            :display-options="displayOptions"
             @result-selected="sendResultQuery($event)"
-            :is-loading="isLoading"
-            :display-trop-to-search-result="displayTropToSearchResult"
     ></search-results-list>
           <chapter-search-result-item v-else
                                       :get-chapter-search-results="getChapterSearchResults"
@@ -63,8 +60,8 @@
 
   */
 
-  import {Component, Prop, Vue} from 'vue-property-decorator';
-  import {Book, Chapter, SearchCriteria, Verse} from "@/api/dto";
+  import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
+  import {Book, Chapter, PrefixedVerseSegment, SearchCriteria, Verse} from "@/api/dto";
   import SearchInputForm from "@/Components/search/SearchInputForm.vue";
   import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
   import {toHebrewBookName, TORAH} from "@/api/TANAKH";
@@ -97,7 +94,9 @@
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
-    public displayTropToSearchResult = true;
+
+    @Prop()
+    pathArr: string[];
     //endregion
 
       //region methods
@@ -134,12 +133,12 @@
     }
 
     //searching for a word when a search path has been specified
-    public freeTextSearchWithOnlyOneCategory(searchPath: string){
+    async freeTextSearchWithOnlyOneCategory(searchPath: string){
       this.isLoading = true;
       this.freeTextSearchResultsVerseArray = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
-      apifiClient.verseFreeTextSearch({
+      const { data } = await apifiClient.verseFreeTextSearch({
         customArgs: {
           validPathPrefixes:  [searchPath]
         },
@@ -169,39 +168,25 @@
            id
            number
            path
-           } }`).then(res => {
-        if (res['data'].verseFreeTextSearch.content.length > 0) {
-          let i;
-
-          for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
-            //console.log(res['data'].verseFreeTextSearch.content[i]);
-            const verse = new Verse();
-            verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
-            verse.number = res['data'].verseFreeTextSearch.content[i].number;
-            verse.path = res['data'].verseFreeTextSearch.content[i].path;
-            verse.id = res['data'].verseFreeTextSearch.content[i].id;
-            verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
-            verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
-            verse.chapter = res['data'].verseFreeTextSearch.content[i].chapter;
-            verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
-            for(let i = 0; i < verse.highlightedVerseSegments.segments.length; i++)
-                verse.highlightedVerseSegments.segments[i].id = i;
-            this.freeTextSearchResultsVerseArray.push(verse);
+           } }`)
+      this.isLoading = false;
+      if(data?.verseFreeTextSearch?.content.length > 0){
+        data.verseFreeTextSearch.content.forEach((verse: Verse) => {
+          verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
+          this.freeTextSearchResultsVerseArray.push(verse);
+        }).sort((a: Verse,b: Verse) => {
+          if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
+            return -1;
+          else{
+            if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
+              return 1;
+            else return 0;
           }
-          console.log(this.searchCriteria.searchTerm + "controller");
-            this.freeTextSearchResultsVerseArray.sort((a,b) => {
-                if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-                    return -1;
-                else{
-                    if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-                        return 1;
-                    else return 0;
-                }
-            })
-
-          this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
-
-        }
+        })
+        this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+        //send the search results array to dashboard, to be sent to SearchResultList component
+        this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
+      }
         else {
             if (this.freeTextSearchResultsVerseArray.length === 0) {
                 this.$buefy.notification.open({
@@ -213,8 +198,8 @@
                 });
             }
         }
-      this.isLoading = false;});
-    }
+}
+
 
     //searching for a word when no search path has been specified
     public freeTextSearchWithMultipleCategories(categories: string[]): void{
@@ -278,6 +263,8 @@
                         }
                     });
                   this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+                  //send the search results array to dashboard, to be sent to SearchResultList component
+                  this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
                 }
                 else{
                     if(this.freeTextSearchResultsVerseArray.length === 0)
@@ -493,16 +480,16 @@
 
     public updateSearchTermSelection(searchTerm: string): void{
             this.searchCriteria.searchTerm = searchTerm;
+      this.$emit('update-search-term',this.searchCriteria.searchTerm);
             this.getChapterSearchResults = new Chapter();
             console.log(this.searchCriteria.searchTerm + " from controller, path: " + this.searchCriteria.book + "/ " + this.searchCriteria.chapter);
             this.generalSearchSorter();
     }
 
     public updateVerseSelectionAndSendVerseToPassukDisplay(selectedVerseNumber: string): void{
-        //  console.log("looking for passuk " + this.searchCriteria.book + "/" + this.searchCriteria.chapter + "/" + selectedVerseNumber);
           for(let i = 0; i < this.getChapterSearchResults.verses.length; i++){
               if(this.getChapterSearchResults.verses[i].number === parseInt(selectedVerseNumber)){
-                  //console.log(this.getChapterSearchResults.verses[i]);
+                  console.log(this.getChapterSearchResults.verses[i]);
                   this.$emit('send-selected-verse-to-passuk-display',this.getChapterSearchResults.verses[i] );
               }
           }
@@ -510,12 +497,12 @@
 
 
     //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
-    public sendResultQuery(pathArr: string[]): void{
-        //pathArr[0] = chapter path
-     this.getChapterFromPathSearch(pathArr[0]);
-     //pathArr[1] = verse number (in string format)
-     setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(pathArr[1])},1000);
-
+    @Watch('pathArr')
+    onChange(){
+      if(this.pathArr.length > 0) {
+        this.getChapterFromPathSearch(this.pathArr[0]);
+        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},1000);
+      }
     }
 
     public clearAllResults(): void{
@@ -530,7 +517,7 @@
 
 
   public changeTrop(trop: boolean): void{
-        this.displayTropToSearchResult = trop;
+
         this.$emit('change-trop',trop);
   }
 

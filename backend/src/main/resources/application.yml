@@ -5,6 +5,10 @@ spring:
     hibernate.ddl-auto: update
     properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     #show-sql: true
+ # datasource:
+  #  url: jdbc:postgresql://tanakh-project-de.coaocvsxfsex.eu-central-1.rds.amazonaws.com/tanakh_db
+   # username: postgres
+    #password: gTPBK073vbyo5BYCpTU9sca4BP2q3t0z
 
 hibernate:
   search:
@@ -22,4 +26,3 @@ aws:
   s3:
     bucket-name: maayan-bucket
     thumbnails-bucket-name: maayan-thumbnails-bucket
-

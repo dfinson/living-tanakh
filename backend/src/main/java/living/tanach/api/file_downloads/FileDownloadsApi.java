@@ -34,7 +34,7 @@ import java.util.zip.ZipOutputStream;
 public class FileDownloadsApi {
 
     private final S3Service s3Service;
-    // http://localhost:5000/download-images?keys=['image1.jpg', 'image2.png', ...]
+    // http://localhost:5000/download-images
     @PostMapping(value = "/download-images", produces = "application/zip")
     public void downloadImagesEndpoint(@RequestBody List<String> keys, HttpServletResponse response) throws IOException {
         log.info("start process for download request for keys: [\"" + String.join("\", \"", keys) + "\"]");

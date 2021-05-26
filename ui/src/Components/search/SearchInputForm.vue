@@ -9,14 +9,15 @@
 
     <!--row #1 - switches to change to Hebrew/English, and to turn off trop and nikud - in 2 columns-->
     <v-row>
-      <v-col sm5>
+      <v-col sm5 class="d-flex justify-center">
         <b-switch  :value="true" @input="changeLanguage" style="max-width: 70px">
-          <strong style="color: white; font-family: 'Trebuchet MS';font-size: 0.9vm">E</strong><strong style="color: white; font-family: Arial ;font-size: 0.9vm">/ע</strong>
+          <strong v-if="!englishSearch" style="color: white; font-family: 'Trebuchet MS';font-size: 0.9vm">E</strong>
+          <strong v-else style="color: white; font-family: Arial ;font-size: 0.9vm">ע</strong>
         </b-switch>
       </v-col>
-      <v-col  sm5>
+      <v-col  sm5 class="d-flex justify-center">
         <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
-          <strong v-else style="color: white;font-size: 0.9vm; font-family: Arial">עם\בלי ניקוד</strong>
+          <strong v-else style="color: white;font-size: 0.9vm; font-family: Arial">ניקוד</strong>
         </b-switch>
       </v-col>
     </v-row>
@@ -54,6 +55,7 @@
 </v-col>
         <v-col cols="9" class="d-flex justify-start">
             <v-text-field
+                ref="searchInputBar"
                 dense
                 full-width
                 :placeholder="searchInputLabel"
@@ -64,12 +66,14 @@
             >
               <template v-slot:prepend-inner>
                 <v-btn
-                    color="primary"
+                    color="secondary"
                   x-small
-                    style=" font-size: 0.6vw ; max-width: 70px"
+
                     @click="displayKeypad = !displayKeypad" v-if="!displayKeypad"
                 >
-                  {{ keyBoardLabel }}</v-btn>
+                  <v-icon v-on="on" >
+                    mdi-keyboard
+                  </v-icon></v-btn>
               </template>
 
             </v-text-field>
@@ -88,7 +92,7 @@
               <v-btn x-small @click="tempSearchTerm = ''">CLR</v-btn>
             </v-card-title>
             <v-card-subtitle>
-              <b-input :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+              <b-input ref="kepadSearchInputBar" :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
             </v-card-subtitle>
             <v-card-text>
               <hebrew-keypad
@@ -108,10 +112,10 @@
         <v-checkbox v-model="torahSelected" dark
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('TORAH')" >
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
-              {{torahLabel}}
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.8vw" v-if="englishSearch">
+              TORAH
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.8vw" v-if="!englishSearch">
               תורה
             </strong>
           </template>
@@ -123,10 +127,10 @@
         <v-checkbox v-model="prophetsSelected" dark
                     class="shrink mr-2 mt-0" @click="updateCategorySelection('PROPHETS')">
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.9vw" v-if="englishSearch">
-              {{prophetsLabel}}
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS';  font-size: 0.8vw" v-if="englishSearch">
+              PROPHETS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial ;  font-size: 0.8vw" v-if="!englishSearch">
               נביאים
             </strong>
           </template>
@@ -141,10 +145,10 @@
                     @click="updateCategorySelection('WRITINGS')">
 
           <template v-slot:label>
-            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'; font-size: 0.9vw" v-if="englishSearch">
-              {{writingsLabel}}
+            <strong style="color:ghostwhite; font-family: 'Trebuchet MS'; font-size: 0.8vw" v-if="englishSearch">
+             WRITINGS
             </strong>
-            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.9vw" v-else>
+            <strong style="color:ghostwhite; font-family: Arial;  font-size: 0.8vw" v-if="!englishSearch">
               כתובים
             </strong>
           </template>
@@ -155,12 +159,13 @@
     </div>
 
     <!--row #4 - dropdown list to select book once (if) one (only) category selected (i.e - torah, neviim or ketuvim-->
-    <v-row  no-gutters>
+    <v-row  >
       <v-col class="d-flex justify-center">
       <div class="sefer-dd" >
-        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true" style="max-width: 130px; " v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
+
+        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true" style="width: 6.5vw"  v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
           <option
-              style="font-family: Arial; font-size: 12px"
+              style="font-family: Arial; font-size: 15px"
               v-for="book in bookList"
               :value="book"
               :key="book">
@@ -168,15 +173,16 @@
           </option>
         </b-select>
 
+
       </div> <!-- sefer dd-->
       </v-col>
       <v-col class="d-flex justify-start">
-      <div class="perek-dd" style="max-width: 100px"  @keypress.enter="updateSearchTermSelection()">
+      <div class="perek-dd" style="width: 5vw"  @keypress.enter="updateSearchTermSelection()">
         <b-input :loading="chapLoading" dir="rtl" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 120px" ></b-input>
       </div> <!-- perek dd-->
       </v-col>
 <v-col  class="d-flex justify-center">
-  <b-button type="is-danger" class="clear_btn" @click="clearAllResults">{{clearLabel}}</b-button>
+  <b-button type="is-danger" style="width: 5vw" @click="clearAllResults">{{clearLabel}}</b-button>
 </v-col>
     </v-row>
 
@@ -200,6 +206,7 @@ export default class SearchInputForm extends Vue{
 //region members
   //this object is shared via emits to the controller
   public searchCriteria = new SearchCriteria();
+
 
   //the list of chapters depends on the chosen category/book path, and is populated by an api call in the controller
   @Prop({default: 'Example'})
@@ -438,6 +445,7 @@ export default class SearchInputForm extends Vue{
       this.tempSearchTerm += letter;
     }
 
+      (this.$refs["kepadSearchInputBar"] as HTMLElement).focus();
 
   }
 
@@ -488,7 +496,15 @@ export default class SearchInputForm extends Vue{
 
     //letters in english that don't map to a hebrew letter:
     this.tempSearchTerm = this.tempSearchTerm.replace(/w/ig,'')
+    this.$nextTick(() => {
+      (this.$refs["searchInputBar"] as HTMLElement).focus();
+
+    });
     this.tempSearchTerm = this.tempSearchTerm.replace(/q/ig,'')
+    this.$nextTick(() => {
+      (this.$refs["searchInputBar"] as HTMLElement).focus();
+
+    });
     console.log(this.tempSearchTerm)
 
   }

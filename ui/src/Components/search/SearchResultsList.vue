@@ -1,8 +1,6 @@
 <template>
   <v-container>
-    <v-row justify="center" style="margin-bottom: 5px">
-      <span class="title" style="color: darkcyan; font-size: 22px; margin-top: 5px" v-if="searchResults.length !== 0">{{searchResults.length.toString() + " Results:"}}</span>
-    </v-row>
+
     <search-result  v-for="verse in sortedSearchResults" v-bind:value="verse" :key="verse.id"
                     :result="verse"
                     @result-selected="sendControllerSelectedChapterAndVerse($event)"
@@ -27,8 +25,6 @@ export default class SearchResultsList extends Vue{
   //the two lists of results we receive from the controller..
   @Prop({default: 'Object'})
   searchResults: Verse[];
-  @Prop({type: Boolean})
-  displayOptions: boolean;
 
   @Prop()
   displayTropToSearchResult: boolean;
@@ -36,9 +32,10 @@ export default class SearchResultsList extends Vue{
 
   public sendControllerSelectedChapterAndVerse(pathArr: string[]): void{
     this.$emit('result-selected',pathArr);
-    //console.log(this.searchResults);
+    console.log(pathArr);
   }
 
+  //really long method for sorting based on tanach order - a patch for a backend issue...
   public get sortedSearchResults(): Verse[]{
     console.log("sorting!!")
     const torah: SortingObject[] = [];

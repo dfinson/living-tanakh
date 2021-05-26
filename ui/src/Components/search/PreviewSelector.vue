@@ -1,34 +1,141 @@
 <template>
     <section>
+
         <b-field grouped group-multiline>
-            <button class="button field is-danger" @click="selectedImages = [], checkedRows = []"
+            <v-btn  color="error" @click="deleteAll" style="margin-right: 2vw"
                     :disabled="!selectedImages.length">
-                <span>Clear All</span>
-            </button>
-            <button class="button field is-info"
-                :disabled="!selectedImages.length" @click="downloadImages">
-                <span>Download</span>
-            </button>
+               Clear All
+            </v-btn>
+
+
+          <!--dialog element activated when download button pressed-->
+          <v-dialog
+              v-model="dialog"
+              scrollable
+              max-width="500px"
+              style="max-height: 500px"
+
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+
+                  :disabled="!selectedImages.length" @click="activateDialog"
+              >
+                Download
+              </v-btn>
+            </template>
+            <v-card style="overflow-x: hidden">
+              <v-card-title>Download the following Images?</v-card-title>
+              <v-card-subtitle>Total Size:</v-card-subtitle>
+              <v-divider></v-divider>
+              <v-card>
+                <v-row justify="center" style="margin-left: 3px; margin-right: 3px">
+                  <v-col
+                      v-for="item in selectedImages"
+                      :key="item.title"
+                      class="d-flex child-flex"
+                      cols="4"
+                  >
+                    <v-card style="border-radius: 5px">
+
+
+                    <v-img
+                        style="border-radius: 5px"
+                        :src="item.thumbnailImageSrc"
+                        aspect-ratio="1"
+                        class="grey lighten-2"
+                    >
+
+                      <template v-slot:placeholder>
+                        <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                        >
+                          <v-progress-circular
+                              indeterminate
+                              color="grey lighten-5"
+                          ></v-progress-circular>
+                        </v-row>
+                      </template>
+                    </v-img>
+                      <v-card-subtitle>{{item.title}}</v-card-subtitle>
+                    </v-card>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="green darken-1"
+                      text
+                      @click="dialog = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                      color="green darken-1"
+                      text
+                      @click="downloadImages"
+                  >
+                    Confirm
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-card>
+          </v-dialog>
         </b-field>
+
         <b-carousel :autoplay="false"  style="margin-top: 20px">
+
             <b-carousel-item v-for="(item, i) in selectedImages" :key="i">
                 <a class="image">
-                    <b-tooltip label="This will contain a description for the Image" style="margin-bottom: 40px"
+                    <b-tooltip :label="item.title" style="margin-bottom: 40px"
                                position="is-bottom">
                         <img :src="getThumbnailUrl(i)" style="border-radius: 10px; image-orientation: from-image"/>
                     </b-tooltip>
                 </a>
+
             </b-carousel-item>
         </b-carousel>
         <div >
-            <span style="margin-top: 20px"><strong>Number Of Selected Images: {{selectedImages.length}}</strong></span>
+
+
+          <h1 style="font-size:20px;font-family:Arial; color:#01579b;">{{selectedImages.length}} Image/s selected</h1>
+          <h1 style="font-size:10px;font-family:Arial; color:black;">Select from the list the images you'd like to download</h1>
+
           <v-data-table style="margin-top: 10px"
               :headers="headers"
               :items="selectedImages"
                         :items-per-page="5"
                         dense
               class="elevation-1"
-          ></v-data-table>
+                        hide-default-footer
+                        :page.sync="page"
+                        @page-count="pageCount = $event"
+          >
+
+            <template v-slot:item.toBeDownloaded="{ item }">
+              <v-simple-checkbox
+                  v-model="item.toBeDownloaded"
+
+              ></v-simple-checkbox>
+            </template>
+
+          </v-data-table>
+          <v-pagination
+              v-model="page"
+              :length="pageCount"
+          ></v-pagination>
+          <v-snackbar
+              v-model="errorMessage"
+              :timeout="2000"
+          >
+            No Images Selected
+          </v-snackbar>
+
         </div>
     </section>
 </template>
@@ -40,29 +147,44 @@
     title: string;
     description: string;
      */
+
     import {Vue, Component, Prop, Watch} from "vue-property-decorator";
     import {GalleriaImageItem} from "@/api/dto";
     import axios from 'axios';
-
-
+    import saveAs from 'file-saver';
     @Component
     export default class PreviewSelector extends Vue{
 
         public selectedImages: GalleriaImageItem[] = [];
         public showDetailIcon = false;
+        public errorMessage = false;
+        public downloading = false;
+        public selected: boolean[] = [];
+        public page = 1;
+        public pageCount = 0;
+        public dialog = false;
+
+
 
         @Prop()
         selectedImage: GalleriaImageItem;
-        @Prop()
-        imageToBeDeleted: GalleriaImageItem;
 
-        public headers = [  {
+
+        public headers = [
+          { text: '', value: 'toBeDownloaded',align: 'start', sortable: false },
+            {
           text: 'Image Description',
-          align: 'start',
-          sortable: false,
           value: 'title',
         },
-          { text: 'Size', value: 'calories' }]
+          { text: 'Size', value: 'calories' },
+       ]
+
+      public deleteAll(): void{
+        this.selectedImages = [];
+        this.checkedRows = [];
+        this.$emit('uncheck-all-images');
+      }
+
         @Watch('selectedImage')
         onPropertyChanged(){
             let repeat = false;
@@ -75,9 +197,12 @@
               });
               temp.toBeDownloaded = true;
               for(let i = 0; i < this.selectedImages.length; i++) {
-                  if (this.selectedImages[i].itemImageSrc === temp.itemImageSrc)
+                  if (this.selectedImages[i].title === temp.title)
                       repeat = true;
+                  else
+                    repeat = false;
                       }
+
               if(!repeat) {
                   console.log(temp.itemImageSrc)
                   this.selectedImages.push(temp);
@@ -92,17 +217,39 @@
 
         }
 
-        @Watch('imageToBeDeleted')
-        onChanged(){
-            if(this.imageToBeDeleted !== undefined && this.selectedImages.length > 0 && this.selectedImages !== undefined){
-                this.selectedImages =  this.selectedImages.filter(item => item.itemImageSrc !== this.imageToBeDeleted.itemImageSrc)
-                this.$buefy.toast.open({
-                    message: 'Image removed from Selected Images',
-                    type: 'is-danger',
-                    duration: 2000
-                })
-            }
+
+
+        public activateDialog(): void{
+          this.dialog = false;
+          let count = 0;
+          for(let i = 0; i < this.selectedImages.length; i++){
+            if(this.selectedImages[i].toBeDownloaded)
+              count++
+          }
+          if(count > 0){
+            this.dialog = true;
+          }
+          else{
+            console.log(count)
+            this.errorMessage = true;
+            this.dialog = false;
+          }
         }
+
+       public deleteImage(title: string): void{
+          console.log("previewSelector delete image " + title)
+            this.selectedImages = this.selectedImages.filter(function(image) {
+                return image.title !== title;
+              });
+         this.$buefy.toast.open({
+           message: 'Image removed from selected images',
+           type: 'is-danger',
+           duration: 2000
+         })
+            }
+
+
+
         public checkedRows = [];
 
         public getThumbnailUrl(index: number): string{
@@ -114,47 +261,48 @@
 
         }
 
+
+
+      // http://localhost:5000/download-images?keys=['image1.jpg', 'image2.png', ...]
         public downloadImages(): void{
+          this.downloading = true
+          this.dialog = false;
             const keyArr: string[] = [];
             for(let i = 0; i < this.selectedImages.length; i++){
-                keyArr.push(this.selectedImages[i].title);
+              if(this.selectedImages[i].toBeDownloaded)
+                  keyArr.push(this.selectedImages[i].title);
+            }
+            console.log("downloading " + keyArr);
+            if(keyArr.length > 0) {
+
+              const data = JSON.stringify(keyArr);
+
+              const xhr = new XMLHttpRequest();
+              xhr.withCredentials = true;
+
+              xhr.addEventListener("readystatechange", function () {
+                if (this.readyState === this.DONE) {
+                  console.log(this.responseText);
+                }
+              });
+
+              xhr.open("POST", "http://livingtanakhapplicationde-env.eba-i3mkpska.eu-central-1.elasticbeanstalk.com/download-images");
+              xhr.setRequestHeader("Content-Type", "application/json");
+              xhr.responseType = "blob";
+              xhr.send(data);
+              xhr.onload = function () {
+
+                const FileSaver = require('file-saver');
+                const fileName = "Downloaded_Images.zip";
+                FileSaver.saveAs(xhr.response, fileName);
+                // alert(xhr.response);
+
+              }
+              this.downloading = false;
             }
 
-            const opts = {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body:'SamA-c17-Soch05.jpeg'
-            };
-            fetch('http://localhost:5000/download-images', {
-                method: "POST",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: 'SamA-c17-Soch05.jpeg'
-            }).then(res => console.log("yo!!!"));
-            /*
-            const axios = require('axios');
-                // Default options are marked with *
-            axios.post('http://localhost:5000/download-images', {
-               keys:['SamA-c17-Soch05.jpeg']
-            }).then((res: any)=>{
-                console.log("yo")
-            })*/
-
-
-            /*axios({
-                url:"http://localhost:5000/download-images",
-                method:'POST',
-                responseType:'blob'
-            }).then(res=> {
-                const fileUrl = window.URL.createObjectURL(new Blob([res.data]))
-                const fileLink = document.createElement('a');
-                fileLink.href = fileUrl;
-                fileLink.setAttribute('download','image.jpg');
-                document.body.appendChild(fileLink);
-                fileLink.click();
-            })*/
         }
+
 
 
     }
