@@ -29,7 +29,7 @@ public class MediaTagsApiHooks implements ApiHooks<MediaTag> {
         result.forEach(mediaTag -> mediaTag.getLinkedContent()
                 .forEach(mediaContent -> {
                     mediaContent.setSignedDownloadUrl(s3Service.generatePreviewUrl(mediaContent.getKey()));
-                    mediaContent.setSignedHDDownloadUrl(s3Service.generateHDPreviewUrl(mediaContent.getKey()));
+                    mediaContent.setSignedFullSizeObjectDownloadUrl(s3Service.generateDownloadUUrl(mediaContent.getKey()));
                 })
         );
     }
