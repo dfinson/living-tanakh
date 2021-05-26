@@ -1,5 +1,5 @@
 <template>
-    <div id='stacks_in_372' class='stacks_in com_elixir_stacks_foundryForm_stack'  >
+    <div  >
 
         <!-- the actual form - dd's and inputs -->
         <search-input-form
@@ -15,12 +15,11 @@
         ></search-input-form>
 
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
-        <div style="height: 100px; overflow-y: scroll; overflow-x: hidden">
+      <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
 
     <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
             :search-results="freeTextSearchResultsVerseArray"
             @result-selected="sendResultQuery($event)"
-            :display-trop-to-search-result="displayTropToSearchResult"
     ></search-results-list>
           <chapter-search-result-item v-else
                                       :get-chapter-search-results="getChapterSearchResults"
@@ -61,7 +60,7 @@
 
   */
 
-  import {Component, Prop, Vue} from 'vue-property-decorator';
+  import {Component, Prop, Vue, Watch} from 'vue-property-decorator';
   import {Book, Chapter, PrefixedVerseSegment, SearchCriteria, Verse} from "@/api/dto";
   import SearchInputForm from "@/Components/search/SearchInputForm.vue";
   import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
@@ -95,7 +94,9 @@
     public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
-    public displayTropToSearchResult = true; //
+
+    @Prop()
+    pathArr: string[];
     //endregion
 
       //region methods
@@ -183,6 +184,8 @@
           }
         })
         this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+        //send the search results array to dashboard, to be sent to SearchResultList component
+        this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
       }
         else {
             if (this.freeTextSearchResultsVerseArray.length === 0) {
@@ -260,6 +263,8 @@
                         }
                     });
                   this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+                  //send the search results array to dashboard, to be sent to SearchResultList component
+                  this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
                 }
                 else{
                     if(this.freeTextSearchResultsVerseArray.length === 0)
@@ -482,10 +487,9 @@
     }
 
     public updateVerseSelectionAndSendVerseToPassukDisplay(selectedVerseNumber: string): void{
-        //  console.log("looking for passuk " + this.searchCriteria.book + "/" + this.searchCriteria.chapter + "/" + selectedVerseNumber);
           for(let i = 0; i < this.getChapterSearchResults.verses.length; i++){
               if(this.getChapterSearchResults.verses[i].number === parseInt(selectedVerseNumber)){
-                  //console.log(this.getChapterSearchResults.verses[i]);
+                  console.log(this.getChapterSearchResults.verses[i]);
                   this.$emit('send-selected-verse-to-passuk-display',this.getChapterSearchResults.verses[i] );
               }
           }
@@ -493,12 +497,12 @@
 
 
     //gets the selected verse from the search Result component, and sends it to the getChapterFromPath function.
-    public sendResultQuery(pathArr: string[]): void{
-        //pathArr[0] = chapter path
-     this.getChapterFromPathSearch(pathArr[0]);
-     //pathArr[1] = verse number (in string format)
-     setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(pathArr[1])},1000);
-
+    @Watch('pathArr')
+    onChange(){
+      if(this.pathArr.length > 0) {
+        this.getChapterFromPathSearch(this.pathArr[0]);
+        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},1000);
+      }
     }
 
     public clearAllResults(): void{
@@ -513,7 +517,7 @@
 
 
   public changeTrop(trop: boolean): void{
-        this.displayTropToSearchResult = trop;
+
         this.$emit('change-trop',trop);
   }
 

@@ -1,21 +1,98 @@
 <template>
     <section>
+
         <b-field grouped group-multiline>
-            <button class="button field is-danger" @click="deleteAll"
+            <v-btn  color="error" @click="deleteAll" style="margin-right: 2vw"
                     :disabled="!selectedImages.length">
-                <span>Clear All</span>
-            </button>
-            <button class="button field is-info"
-                :disabled="!selectedImages.length" @click="downloadImages">
-                <span>Download</span>
-            </button>
+               Clear All
+            </v-btn>
+
+
+          <!--dialog element activated when download button pressed-->
+          <v-dialog
+              v-model="dialog"
+              scrollable
+              max-width="500px"
+              style="max-height: 500px"
+
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                  color="primary"
+                  dark
+                  v-bind="attrs"
+
+                  :disabled="!selectedImages.length" @click="activateDialog"
+              >
+                Download
+              </v-btn>
+            </template>
+            <v-card style="overflow-x: hidden">
+              <v-card-title>Download the following Images?</v-card-title>
+              <v-card-subtitle>Total Size:</v-card-subtitle>
+              <v-divider></v-divider>
+              <v-card>
+                <v-row justify="center" style="margin-left: 3px; margin-right: 3px">
+                  <v-col
+                      v-for="item in selectedImages"
+                      :key="item.title"
+                      class="d-flex child-flex"
+                      cols="4"
+                  >
+                    <v-card style="border-radius: 5px">
+
+
+                    <v-img
+                        style="border-radius: 5px"
+                        :src="item.thumbnailImageSrc"
+                        aspect-ratio="1"
+                        class="grey lighten-2"
+                    >
+
+                      <template v-slot:placeholder>
+                        <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                        >
+                          <v-progress-circular
+                              indeterminate
+                              color="grey lighten-5"
+                          ></v-progress-circular>
+                        </v-row>
+                      </template>
+                    </v-img>
+                      <v-card-subtitle>{{item.title}}</v-card-subtitle>
+                    </v-card>
+                  </v-col>
+                </v-row>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="green darken-1"
+                      text
+                      @click="dialog = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                      color="green darken-1"
+                      text
+                      @click="downloadImages"
+                  >
+                    Confirm
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-card>
+          </v-dialog>
         </b-field>
 
         <b-carousel :autoplay="false"  style="margin-top: 20px">
 
             <b-carousel-item v-for="(item, i) in selectedImages" :key="i">
                 <a class="image">
-                    <b-tooltip label="This will contain a description for the Image" style="margin-bottom: 40px"
+                    <b-tooltip :label="item.title" style="margin-bottom: 40px"
                                position="is-bottom">
                         <img :src="getThumbnailUrl(i)" style="border-radius: 10px; image-orientation: from-image"/>
                     </b-tooltip>
@@ -25,15 +102,7 @@
         </b-carousel>
         <div >
 
-          <v-progress-linear v-if="downloading"
-              color="deep-purple accent-4"
-              :indeterminate="true"
-              rounded
-              height="6"
-              :active="true"
-              fixed-header
 
-          ></v-progress-linear>
           <h1 style="font-size:20px;font-family:Arial; color:#01579b;">{{selectedImages.length}} Image/s selected</h1>
           <h1 style="font-size:10px;font-family:Arial; color:black;">Select from the list the images you'd like to download</h1>
 
@@ -42,8 +111,10 @@
               :items="selectedImages"
                         :items-per-page="5"
                         dense
-                        loading-text="Loading... Please wait"
               class="elevation-1"
+                        hide-default-footer
+                        :page.sync="page"
+                        @page-count="pageCount = $event"
           >
 
             <template v-slot:item.toBeDownloaded="{ item }">
@@ -52,7 +123,12 @@
 
               ></v-simple-checkbox>
             </template>
+
           </v-data-table>
+          <v-pagination
+              v-model="page"
+              :length="pageCount"
+          ></v-pagination>
           <v-snackbar
               v-model="errorMessage"
               :timeout="2000"
@@ -84,7 +160,9 @@
         public errorMessage = false;
         public downloading = false;
         public selected: boolean[] = [];
-
+        public page = 1;
+        public pageCount = 0;
+        public dialog = false;
 
 
 
@@ -141,6 +219,23 @@
 
 
 
+        public activateDialog(): void{
+          this.dialog = false;
+          let count = 0;
+          for(let i = 0; i < this.selectedImages.length; i++){
+            if(this.selectedImages[i].toBeDownloaded)
+              count++
+          }
+          if(count > 0){
+            this.dialog = true;
+          }
+          else{
+            console.log(count)
+            this.errorMessage = true;
+            this.dialog = false;
+          }
+        }
+
        public deleteImage(title: string): void{
           console.log("previewSelector delete image " + title)
             this.selectedImages = this.selectedImages.filter(function(image) {
@@ -171,6 +266,7 @@
       // http://localhost:5000/download-images?keys=['image1.jpg', 'image2.png', ...]
         public downloadImages(): void{
           this.downloading = true
+          this.dialog = false;
             const keyArr: string[] = [];
             for(let i = 0; i < this.selectedImages.length; i++){
               if(this.selectedImages[i].toBeDownloaded)
@@ -203,9 +299,6 @@
 
               }
               this.downloading = false;
-            }
-            else {
-              this.errorMessage = true;
             }
 
         }

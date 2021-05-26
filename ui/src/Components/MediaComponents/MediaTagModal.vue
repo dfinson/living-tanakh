@@ -103,6 +103,7 @@ export default class MediaTagModal extends Vue {
   @Watch('tagIds')
   onPropertyChanged() {
     this.tags = [];
+
     if (this.tagIds.length !== 0) {
       console.log(this.tagIds + " tag id's from media modal");
       apifiClient.getMediaTagsByIds(this.tagIds, this.tagExpectedReturn).then(response => {

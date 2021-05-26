@@ -17,7 +17,7 @@
       </v-col>
       <v-col  sm5 class="d-flex justify-center">
         <b-switch type="is-success" @input="changeTrop" :value="true" style="max-width: 150px; "><strong v-if="englishSearch" style="color: white;font-size: 14px;">Nikud</strong>
-          <strong v-else style="color: white;font-size: 0.9vm; font-family: Arial">עם\בלי ניקוד</strong>
+          <strong v-else style="color: white;font-size: 0.9vm; font-family: Arial">ניקוד</strong>
         </b-switch>
       </v-col>
     </v-row>
@@ -163,9 +163,9 @@
       <v-col class="d-flex justify-center">
       <div class="sefer-dd" >
 
-        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true"   v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
+        <b-select :placeholder="bookLabel" dir="rtl" :expanded="true" style="width: 6.5vw"  v-model="searchCriteria.book" :disabled="!bookEnabled" @input="updateBookSelection">
           <option
-              style="font-family: Arial; font-size: 12px"
+              style="font-family: Arial; font-size: 15px"
               v-for="book in bookList"
               :value="book"
               :key="book">
@@ -177,12 +177,12 @@
       </div> <!-- sefer dd-->
       </v-col>
       <v-col class="d-flex justify-start">
-      <div class="perek-dd" style="max-width: 100px"  @keypress.enter="updateSearchTermSelection()">
+      <div class="perek-dd" style="width: 5vw"  @keypress.enter="updateSearchTermSelection()">
         <b-input :loading="chapLoading" dir="rtl" :placeholder="chapterLabel" @input="updateChapterSelection" v-model="chapterInput" :disabled="!searchCriteria.book|| !bookEnabled" type="text" style="max-width: 120px" ></b-input>
       </div> <!-- perek dd-->
       </v-col>
 <v-col  class="d-flex justify-center">
-  <b-button type="is-danger" class="clear_btn" @click="clearAllResults">{{clearLabel}}</b-button>
+  <b-button type="is-danger" style="width: 5vw" @click="clearAllResults">{{clearLabel}}</b-button>
 </v-col>
     </v-row>
 

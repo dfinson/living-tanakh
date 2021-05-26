@@ -49,7 +49,24 @@
                 20px;right: 50px; border-radius: 4px; background-color: transparent; margin-top: 15px "
                            :id="i" :value="item.title"  v-model="imagesAddedToPreview"  @change="sendImageOfOneTagToPreviewSelectorFromFullScreen(item)"               />
 
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 190px;">
 
+
+                          <v-icon style="background-color: darkcyan; border-radius: 20px"
+                                  dark
+                                  center
+                                  large
+                                  v-bind="attrs"
+                                  v-on="on"
+                          >
+                            mdi-information
+                          </v-icon>
+                        </div>
+                      </template>
+                      <span>  This will contain a description for {{images[i].title}}</span>
+                    </v-tooltip>
 
 
                   </v-carousel-item>
@@ -75,6 +92,7 @@
                 transition="slide-y-transition"
 
             >
+
               <input type="checkbox" size="is-small"
                      style=" width: 25px; border:1px;
                 padding: 1px; height: 25px;position: absolute;top:

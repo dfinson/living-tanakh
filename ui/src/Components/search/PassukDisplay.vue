@@ -70,7 +70,7 @@
 
   public hasPrefixWithSocho(segment: PrefixedVerseSegment): boolean{
     if(segment.plainHebrewPrefix?.includes("שוכה")){
-      console.log("prefix with socho");
+     // console.log("prefix with socho");
       return true;
     }
     else return false;
@@ -78,7 +78,7 @@
 
   public hasSuffixWithSocho(highlightedVerseSegment: HighlightedVerseSegments): boolean{
     if(highlightedVerseSegment.finalSuffix.includes("שוכה")){
-      console.log("suffix with socho");
+     // console.log("suffix with socho");
       return true;}
     else
       return false;

@@ -1,8 +1,8 @@
-<template>
-  <v-app>
+<template >
+  <v-app >
 
-    <v-main >
-      <dashboard/>
+    <v-main  >
+      <dashboard />
     </v-main>
 
   </v-app>

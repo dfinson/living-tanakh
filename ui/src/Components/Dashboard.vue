@@ -1,10 +1,10 @@
-<template>
-  <v-app>
+<template >
+  <v-app >
     <v-main >
 
 
         <!-- left hand container column-->
-        <v-row >
+        <v-row>
           <v-col
 
               md="3"
@@ -13,6 +13,7 @@
 
 
           >
+
             <div class="text-xs-center">
               <h5 class="stacks_in_352_hdr text-muted  ">TANACH VISUAL DATABASE</h5>
             </div> <!-- column header-->
@@ -22,8 +23,11 @@
               <a href="http://www.foundationstone.org/page-5/" style="text-decoration: none">
                 <img src="https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg" class="img-fluid card-img-top" alt="Image">
               </a>
+            </div>
               <!-- Special Circular image overlapped on top of the top image. -->
               <!-- Only displays if the top image is visible. -->
+
+            <div>
               <div class="card-block">
 
                   <h3 class="stacks_in_255_hdr theme_style  ">Ma'ayan Home Page</h3>
@@ -48,6 +52,8 @@
                       @change-trop = changeTrop($event)
                       :selected-verse-numeral="selectedVerse.hebrewNumeral"
                       @update-search-term="updateSearchTerm($event)"
+                      @send-search-results-to-dashboard="sendToSearchResultsList($event)"
+                      :path-arr="pathArr"
                   ></search-controller>
                 </b-tab-item>
                 <b-tab-item  icon="google-photos" style="text-decoration: none" animated="true" :disabled="disableSelectedImagesTab">
@@ -59,8 +65,6 @@
               </b-tabs>
 
 
-
-
             <!--</div>-->
           </v-col>
 
@@ -69,7 +73,7 @@
           <v-col
 
 
-              md="9"
+                 md="9"
               lg="9"
               xl="9"            class="grey darken-4" >
             <section class="fc-content-area color-picker" >
@@ -122,12 +126,32 @@
                           @send-tag-to-dashboard="sendTagToMediaPresenter($event)"
                       ></passuk-display>
 
-
-                    <!-- media display component-->
-                    <div id='stacks_out_193' class='stacks_out' >
+              <!--search_Results_List component - is minimized if there are images loaded into the gallery component, but can always be expanded-->
 
 
-                          <media-tag-modal ref="mediaTagModalRef"
+
+                    <div id='stacks_out_193' class='stacks_out'  >
+
+                      <!-- search Results List will be automatically minimized if a result with associated images is pressed-->
+                    <v-row justify="center" style="margin-top: 10px" v-if="resultsWindowActive">
+
+                      <v-card height="700" style="overflow-y: scroll; overflow-x: hidden">
+                        <v-row justify="center">
+                        <v-card-title style="color: darkcyan">
+                          {{freeTextSearchResultsVerseArray.length.toString() + " Result/s:"}}
+                        </v-card-title>
+                    </v-row>
+                        <search-results-list style="flex-shrink: 2"
+                                             :search-results="freeTextSearchResultsVerseArray"
+                                             :display-trop-to-search-result="displayTrop"
+                                             @result-selected="sendSearchSelectionToController($event)"
+                        ></search-results-list>
+                      </v-card>
+                    </v-row>
+
+
+                      <!-- media display component-->
+                          <media-tag-modal ref="mediaTagModalRef" v-if="!resultsWindowActive"
                               :tag-ids="tagIds"
                               :passuk-selected-from-chapter-display="passukSelectedFromChapterDisplay"
                               :search-term="searchTerm"
@@ -136,9 +160,6 @@
                               @remove-image-from-preview-selector="removeImageFromPreviewSelector($event)"
                               :remove-checked-images="removeCheckedImages"
                           ></media-tag-modal>
-
-
-
 
 
                   </div>
@@ -187,15 +208,17 @@ import { Component, Vue } from 'vue-property-decorator';
 import SearchController from "@/Components/search/SearchController.vue";
 import ChapterDisplay from "@/Components/search/ChapterDisplay.vue";
 import MediaTagModal from "@/Components/MediaComponents/MediaTagModal.vue";
-import {Chapter, GalleriaImageItem, SearchCriteria, Verse} from "@/api/dto";
+import {Chapter, GalleriaImageItem, PrefixedVerseSegment, SearchCriteria, Verse} from "@/api/dto";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
 import PassukDisplay from "@/Components/search/PassukDisplay.vue";
 import apifiClient from "@/api/apifiClient";
 import {PROPHETS, TORAH} from "@/api/TANAKH";
 import PreviewSelector from "@/Components/search/PreviewSelector.vue";
+import SearchResultsList from "@/Components/search/SearchResultsList.vue";
 
 @Component({
   components: {
+    SearchResultsList,
     PreviewSelector,
     ChapterDisplay,
     SearchController,
@@ -242,8 +265,8 @@ export default class Dashboard extends Vue{
   /*variables associated with the results of searches:*/
   public freeTextSearchResultsVerseArray: Verse[] = [];
   public isLoading = false;
-  public displayTropToSearchResult = true;
 
+  public pathArr: string[] = [];
   public searchCriteria: SearchCriteria;
   public selectedChapter = new Chapter();
   public searchTerm = "";
@@ -256,6 +279,23 @@ export default class Dashboard extends Vue{
   public updateSearchTerm(searchTerm: string){
     this.searchTerm = searchTerm;
   }
+
+  public sendSearchSelectionToController(pathArr: string[]): void{
+    this.pathArr = [];
+    for (const i of pathArr) {
+      this.pathArr.push(i);
+    }
+  }
+
+  private sendToSearchResultsList(searchResultsArray: Verse[]): void {
+    searchResultsArray.forEach((verse: Verse) => {
+      verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
+      this.freeTextSearchResultsVerseArray.push(verse)
+    })
+    this.resultsWindowActive = true;
+  }
+
+
 
 
   private sendTagToMediaPresenter(id: number): void{
@@ -289,7 +329,7 @@ export default class Dashboard extends Vue{
       })
       for(let i = 0; i < unique.length; i++)
         this.tagIds.push(unique[i]);
-      //console.log(this.tagIds);
+      console.log(this.tagIds);
     }
 
 
@@ -302,6 +342,8 @@ export default class Dashboard extends Vue{
   }
 
 
+  public resultsWindowActive = false;
+
   //this function will also send the media components the tags in this selected verse.
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponentFromSearchResultItem(selectedVerse: Verse): void{
     this.tagIds = [];
@@ -311,6 +353,8 @@ export default class Dashboard extends Vue{
     // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
     if(this.selectedVerse.mediaTags !== undefined) {
+      //turn off the search results tab
+      this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
@@ -326,6 +370,8 @@ export default class Dashboard extends Vue{
     // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
     if(this.selectedVerse.mediaTags !== undefined) {
+      //turn off the search results tab
+      this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
