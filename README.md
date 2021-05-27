@@ -1,1 +1,0 @@
-# living-tanach-project
