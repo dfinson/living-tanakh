@@ -113,6 +113,78 @@ export default{
 			return await (await fetch(apiUrl, requestInit)).json();
 	},
 
+	async findBookByUniquePath(path: string, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Book>>{
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit: RequestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query findBookByUniquePath($path: path) { findBookByUniquePath(path: $path)${selectionGraph} }`, 
+					variables: {
+						"path": path
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async findChapterByUniquePath(path: string, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Chapter>>{
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit: RequestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query findChapterByUniquePath($path: path) { findChapterByUniquePath(path: $path)${selectionGraph} }`, 
+					variables: {
+						"path": path
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async errorReports(input: PageRequest, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Page<ErrorReport>>>{
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit: RequestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `query errorReports($input: PageRequestInput) { errorReports(input: $input)${selectionGraph} }`, 
+					variables: {
+						"input": input
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
+	async createErrorReport(input: ErrorReport, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<ErrorReport>>{
+			let requestHeaders = { "Content-Type": "application/json" }
+			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
+			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
+			const requestInit: RequestInit = {
+				method: "POST",
+				credentials: !!includeCredentials ? 'include' : 'omit',
+				headers: requestHeaders,
+				body: JSON.stringify({
+					query: `mutation createErrorReport($input: ErrorReportInput) { createErrorReport(input: $input)${selectionGraph} }`, 
+					variables: {
+						"input": input
+					}
+				})
+			};
+			return await (await fetch(apiUrl, requestInit)).json();
+	},
+
 	async getMediaTagsByIds(input: Array<MediaTag>, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Array<MediaTag>>>{
 			let requestHeaders = { "Content-Type": "application/json" }
 			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
@@ -242,78 +314,6 @@ export default{
 			return await (await fetch(apiUrl, requestInit)).json();
 	},
 
-	async findChapterByUniquePath(path: string, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Chapter>>{
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit: RequestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query findChapterByUniquePath($path: path) { findChapterByUniquePath(path: $path)${selectionGraph} }`, 
-					variables: {
-						"path": path
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async findBookByUniquePath(path: string, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Book>>{
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit: RequestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query findBookByUniquePath($path: path) { findBookByUniquePath(path: $path)${selectionGraph} }`, 
-					variables: {
-						"path": path
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async errorReports(input: PageRequest, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<Page<ErrorReport>>>{
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit: RequestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `query errorReports($input: PageRequestInput) { errorReports(input: $input)${selectionGraph} }`, 
-					variables: {
-						"input": input
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
-	async createErrorReport(input: ErrorReport, selectionGraph: string, customHeaders?: Dictionary<string>): Promise<ExecutionResult<ErrorReport>>{
-			let requestHeaders = { "Content-Type": "application/json" }
-			if(customHeaders) requestHeaders = Object.assign({}, requestHeaders, customHeaders);
-			if(bearerToken) requestHeaders["Authorization"] = bearerToken;
-			const requestInit: RequestInit = {
-				method: "POST",
-				credentials: !!includeCredentials ? 'include' : 'omit',
-				headers: requestHeaders,
-				body: JSON.stringify({
-					query: `mutation createErrorReport($input: ErrorReportInput) { createErrorReport(input: $input)${selectionGraph} }`, 
-					variables: {
-						"input": input
-					}
-				})
-			};
-			return await (await fetch(apiUrl, requestInit)).json();
-	},
-
 }
 
 // project specific data model
@@ -345,13 +345,13 @@ export interface Verse{
 	highlightedVerseSegments?: any;
 }
 
-export interface MediaTag{
-	appliedScopePathPrefixes?: Array<string>;
-	description?: string;
+export interface Book{
+	hebrewName?: string;
+	path?: string;
+	englishName?: string;
+	chapters?: Array<Chapter>;
 	id?: number;
-	key?: string;
-	verses?: Set<Verse>;
-	linkedContent?: Set<MediaContent>;
+	tanakhSection?: TanakhSection;
 }
 
 export interface Chapter{
@@ -363,20 +363,34 @@ export interface Chapter{
 	verses?: Array<Verse>;
 }
 
-export interface Book{
-	hebrewName?: string;
-	path?: string;
-	englishName?: string;
-	chapters?: Array<Chapter>;
-	id?: number;
-	tanakhSection?: TanakhSection;
-}
-
 export interface ErrorReport{
 	occurredAt?: Date;
 	stacktrace?: string;
 	id?: number;
 	message?: string;
+}
+
+export interface MediaTag{
+	appliedScopePathPrefixes?: Array<string>;
+	description?: string;
+	id?: number;
+	key?: string;
+	verses?: Set<Verse>;
+	linkedContent?: Set<MediaContent>;
+}
+
+export enum Writings{
+	PSALMS,
+	PROVERBS,
+	JOB,
+	RUTH,
+	LAMENTATIONS,
+	ECCLESIASTES,
+	ESTHER,
+	DANIEL,
+	EZRA,
+	NEHEMIAH,
+	CHRONICLES
 }
 
 export enum Prophets{
@@ -412,12 +426,6 @@ export enum MediaType{
 	OTHER
 }
 
-export enum TanakhSection{
-	TORAH,
-	PROPHETS,
-	WRITINGS
-}
-
 export enum Torah{
 	GENESIS,
 	EXODUS,
@@ -426,18 +434,10 @@ export enum Torah{
 	DEUTERONOMY
 }
 
-export enum Writings{
-	PSALMS,
-	PROVERBS,
-	JOB,
-	RUTH,
-	LAMENTATIONS,
-	ECCLESIASTES,
-	ESTHER,
-	DANIEL,
-	EZRA,
-	NEHEMIAH,
-	CHRONICLES
+export enum TanakhSection{
+	TORAH,
+	PROPHETS,
+	WRITINGS
 }
 
 // Apifi utils object model

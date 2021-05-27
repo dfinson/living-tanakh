@@ -2,6 +2,7 @@ package org.maayan.maayanproject.config;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.availability.ApplicationAvailabilityBean;
 import org.springframework.stereotype.Component;
 
 @Component
