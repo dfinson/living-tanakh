@@ -27,19 +27,16 @@
               <!-- Special Circular image overlapped on top of the top image. -->
               <!-- Only displays if the top image is visible. -->
 
-            <div>
-              <div class="card-block">
-
-                  <h3 class="stacks_in_255_hdr theme_style  ">Ma'ayan Home Page</h3>
-
-                <p class='stacks_in_250 card-text   text-xs-left ' >
-                  Welcome to the Ma'ayan demo page. Ma'ayan is being developed as the premier visual companion for the learning, teaching and development of TANACH. Click the link below to add your comments - we value your input!
-                </p>
+           <v-card style="overflow-y: scroll; overflow-x: hidden" height="600">
+              <v-row justify="center" style="margin-top: 5px">
                 <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Sefaria</a>
                 <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link " style="text-decoration: none">Foundation Stone</a>
                 <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Ma'ayan</a>
-              </div>
-            </div><!-- column header-->
+              </v-row>
+             <v-row justify="center" style="margin-bottom: 5px">
+               <v-btn  elevation="2"  color="primary" @click="resultsWindowActive = !resultsWindowActive"
+                       small>Display Search results</v-btn>
+             </v-row>
             <!-- search form-->
             <!--<div id='stacks_out_372' class='stacks_out' style="overflow-y: scroll; max-height: 600px">-->
 
@@ -63,7 +60,7 @@
                ></preview-selector>
                 </b-tab-item>
               </b-tabs>
-
+           </v-card>
 
             <!--</div>-->
           </v-col>
@@ -151,7 +148,7 @@
 
 
                       <!-- media display component-->
-                          <media-tag-modal ref="mediaTagModalRef" v-if="!resultsWindowActive"
+                          <media-tag-modal ref="mediaTagModalRef" v-show="!resultsWindowActive"
                               :tag-ids="tagIds"
                               :passuk-selected-from-chapter-display="passukSelectedFromChapterDisplay"
                               :search-term="searchTerm"
@@ -289,6 +286,7 @@ export default class Dashboard extends Vue{
   }
 
   private sendToSearchResultsList(searchResultsArray: Verse[]): void {
+    this.freeTextSearchResultsVerseArray = [];
     searchResultsArray.forEach((verse: Verse) => {
       verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
       this.freeTextSearchResultsVerseArray.push(verse)

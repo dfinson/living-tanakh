@@ -2,7 +2,7 @@
   <!-- the search Input form allows to select a category, a book and chapter, as well as a free text search -->
   <v-container style="background-color:#4f4f4f; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  ">
     <!--the header for the search form-->
-   
+
 
     <!--row #1 - switches to change to Hebrew/English, and to turn off trop and nikud - in 2 columns-->
     <v-row>
