@@ -6,11 +6,8 @@
       <v-row>
 
         <v-flex>
-          <v-row justify="end" style="margin-top: 15px; margin-bottom: 1px">
-            <b-field>
-              <b-switch v-model="highResActive" type="is-success" style="margin-right: 40px"> <span style="color: white">HD</span></b-switch>
-            </b-field>
-          </v-row>
+
+
           <!-- the fullscreen image viewing component modal-->
 
             <div class="text-center" >
@@ -34,6 +31,12 @@
                       transition="slide-y-transition"
                       contain
                   >
+
+                      <b-field>
+                        <b-switch v-model="highResActive" type="is-success" style="position: absolute;top:25px;
+           left: 105px"> <span style="color: white">HD</span></b-switch>
+                      </b-field>
+
                     <v-btn style="position: absolute;top:
                 20px;right: 100px"
                         class="ma-2"
@@ -81,7 +84,11 @@
               </b-modal>
             </div>
 
-
+          <v-row justify="end" style="margin-top: 15px; margin-bottom: 5px; margin-right: 35px">
+            <b-field>
+              <b-switch v-model="highResActive" type="is-success"> <span style="color: white">HD</span></b-switch>
+            </b-field>
+          </v-row>
 
           <!-- main image viewing component-->
 
