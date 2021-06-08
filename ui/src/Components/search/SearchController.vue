@@ -494,7 +494,7 @@
       if(this.pathArr.length > 0) {
         this.getChapterFromPathSearch(this.pathArr[0]);
         console.log(this.pathArr[0] + " " + this.pathArr[1] + "from controller in test")
-       // setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},2000);
+        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},2000);
       }
     }
 

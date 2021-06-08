@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <search-result  v-for="verse in sortedSearchResults" v-bind:value="verse" :key="verse.path"
+    <search-result  v-for="verse in sortedSearchResults" v-bind:value="verse" :key="verse.id"
                     :result="verse"
                     @result-selected="sendControllerSelectedChapterAndVerse($event)"
                     :display-trop-to-search-result="displayTropToSearchResult"

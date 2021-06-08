@@ -100,6 +100,9 @@ export default class MediaTagModal extends Vue {
     }
   }
 
+  public foo(): void{
+    console.log("foo")
+  }
   @Watch('tagIds')
   onPropertyChanged() {
     this.tags = [];
