@@ -34,7 +34,7 @@
                 <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Ma'ayan</a>
               </v-row>
              <v-row justify="center" style="margin-bottom: 5px">
-               <v-btn  elevation="2"  color="primary" @click="resultsWindowActive = !resultsWindowActive"
+               <v-btn :disabled="!freeTextSearchResultsVerseArray.length > 0" elevation="2"  color="primary" @click="resultsWindowActive = !resultsWindowActive"
                        small>Display Search results</v-btn>
              </v-row>
             <!-- search form-->
