@@ -17,11 +17,7 @@
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
       <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
 
-    <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
-            :search-results="freeTextSearchResultsVerseArray"
-            @result-selected="sendResultQuery($event)"
-    ></search-results-list>
-          <chapter-search-result-item v-else
+          <chapter-search-result-item v-if="getChapterSearchResults"
                                       :get-chapter-search-results="getChapterSearchResults"
                                       :selected-verse-numeral="selectedVerseNumeral"
           ></chapter-search-result-item>
@@ -90,8 +86,6 @@
     public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
     public listOfChaptersInSelectedBook: Chapter[] = []; //will contain the list of chapters in the selected book, to be sent down to the form..
     public freeTextSearchResultsVerseArray: Verse[] = []; //will contain the results of our path search - I.e a chapter of verses...
-    public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
-    public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
 
@@ -330,8 +324,6 @@
 
     }
             }`).then(res => {
-        //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
-      //  console.log(res)
         const ch = new Chapter();
         ch.id = res['data'].findChapterByUniquePath.id;
         ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
@@ -501,7 +493,8 @@
     onChange(){
       if(this.pathArr.length > 0) {
         this.getChapterFromPathSearch(this.pathArr[0]);
-        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},1000);
+        console.log(this.pathArr[0] + " " + this.pathArr[1] + "from controller in test")
+       // setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},2000);
       }
     }
 

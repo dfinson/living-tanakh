@@ -57,19 +57,19 @@ export default class MediaTagModal extends Vue {
 
   public updateMediaTagList(tag: MediaTag): void{
     this.tags.push(tag);
-    //  console.log(tag);
+
     console.log("Media Tag List Updated");
   }
 
   //receive image to be added to previewSelector (via dashboard):
   public sendImageToPreviewSelector(image: GalleriaImageItem): void{
-    //console.log("sending to dashboard from tag modal")
+
     this.$emit('send-image-to-preview-selector', image);
   }
 
   //receive title of image to be removed from previewSelector:
   public removeImageFromPreviewSelector(title: string): void{
-    console.log("MTM delete image " + title )
+
     this.$emit('remove-image-from-preview-selector', title);
   }
 
@@ -103,12 +103,13 @@ export default class MediaTagModal extends Vue {
   @Watch('tagIds')
   onPropertyChanged() {
     this.tags = [];
-
+    console.log("from media tag modal")
     if (this.tagIds.length !== 0) {
       console.log(this.tagIds + " tag id's from media modal");
       apifiClient.getMediaTagsByIds(this.tagIds, this.tagExpectedReturn).then(response => {
         console.log(response);
         console.log(response['data'].getMediaTagsByIds.length > 0);
+
         if (response['data'].getMediaTagsByIds.length > 0) {
           for (let i = 0; i < response['data'].getMediaTagsByIds.length; i++) {
             //if there was no specific search term - we display all the images associated with a chapter
@@ -153,6 +154,8 @@ export default class MediaTagModal extends Vue {
 
     }
   }
+
+
 
 
 }

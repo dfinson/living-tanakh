@@ -281,6 +281,7 @@ export default class Dashboard extends Vue{
   }
 
   public sendSearchSelectionToController(pathArr: string[]): void{
+    //pathArr is passed as prop to searchController, which has a watcher set waiting for changes
     this.pathArr = [];
     for (const i of pathArr) {
       this.pathArr.push(i);
@@ -309,6 +310,7 @@ export default class Dashboard extends Vue{
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
+    this.resultsWindowActive = false;
     this.colon = "";
     const temp = [];
     this.selectedVerse.hebrewNumeral = "";
@@ -320,8 +322,6 @@ export default class Dashboard extends Vue{
       for (let i = 0; i < this.selectedChapter.verses.length; i++) {
         for (let j = 0; j < this.selectedChapter.verses[i].mediaTags.length; j++) {
           temp.push(this.selectedChapter.verses[i].mediaTags[j].id)
-          //this.tagIds.push(this.selectedChapter.verses[i].mediaTags[j].id);
-          // console.log(this.selectedChapter.verses[i].mediaTags[j].id);
         }
       }
       const unique = temp.filter(function(elem, index, self) {
@@ -331,6 +331,8 @@ export default class Dashboard extends Vue{
         this.tagIds.push(unique[i]);
       console.log(this.tagIds);
     }
+
+    
 
 
   }
@@ -350,14 +352,16 @@ export default class Dashboard extends Vue{
     this.colon = ":"
     this.selectedMediaTagId = 0;
     this.passukSelectedFromChapterDisplay = false;
-    // console.log(selectedVerse);
+     console.log("sendVerseToPassukDisplayAndSendTagIdToMediaComponentFromSearchResultItem");
     this.selectedVerse = selectedVerse;
+    console.log(this.selectedVerse + "from da")
     if(this.selectedVerse.mediaTags !== undefined) {
       //turn off the search results tab
       this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
+      console.log(this.tagIds + "from dash");
     }
   }
 
@@ -369,12 +373,14 @@ export default class Dashboard extends Vue{
     this.selectedMediaTagId = 0;
     // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
+
     if(this.selectedVerse.mediaTags !== undefined) {
       //turn off the search results tab
       this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
+
     }
   }
 

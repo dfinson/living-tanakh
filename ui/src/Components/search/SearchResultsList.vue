@@ -1,7 +1,7 @@
 <template>
   <v-container>
 
-    <search-result  v-for="verse in sortedSearchResults" v-bind:value="verse" :key="verse.id"
+    <search-result  v-for="verse in sortedSearchResults" v-bind:value="verse" :key="verse.path"
                     :result="verse"
                     @result-selected="sendControllerSelectedChapterAndVerse($event)"
                     :display-trop-to-search-result="displayTropToSearchResult"
@@ -30,6 +30,7 @@ export default class SearchResultsList extends Vue{
   displayTropToSearchResult: boolean;
 
 
+  //pathArr = [path, verseNumber]
   public sendControllerSelectedChapterAndVerse(pathArr: string[]): void{
     this.$emit('result-selected',pathArr);
     console.log(pathArr);

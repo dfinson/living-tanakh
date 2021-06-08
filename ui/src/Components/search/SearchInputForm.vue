@@ -71,7 +71,7 @@
 
                     @click="displayKeypad = !displayKeypad" v-if="!displayKeypad"
                 >
-                  <v-icon v-on="on" >
+                  <v-icon >
                     mdi-keyboard
                   </v-icon></v-btn>
               </template>
@@ -92,7 +92,11 @@
               <v-btn x-small @click="tempSearchTerm = ''">CLR</v-btn>
             </v-card-title>
             <v-card-subtitle>
-              <b-input ref="kepadSearchInputBar" :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+              <b-input ref="kepadSearchInputBar"
+                       :key="reloadKey"
+                       v-bind:placeholder="searchLabel"
+                       dir="rtl" v-model="tempSearchTerm"
+                       :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
             </v-card-subtitle>
             <v-card-text>
               <hebrew-keypad
