@@ -27,7 +27,7 @@
               <!-- Special Circular image overlapped on top of the top image. -->
               <!-- Only displays if the top image is visible. -->
 
-           <v-card style="overflow-y: scroll; overflow-x: hidden" height="600">
+           <v-card style="overflow-y: scroll; overflow-x: hidden" height="650">
               <v-row justify="center" style="margin-top: 5px">
                 <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Sefaria</a>
                 <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link " style="text-decoration: none">Foundation Stone</a>
@@ -388,7 +388,8 @@ export default class Dashboard extends Vue{
       id:Math.floor(Math.random() * 100) ,
       signedDownloadUrl: image.itemImageSrc,
       key:image.alt,
-      description:image.description
+      description:image.description,
+      sizeInBytes:(image.sizeInMB!) * Math.pow(1024,2)
     });
     //console.log("dashboard recieved image:" + this.selectedImage);
     this.disableSelectedImagesTab = false;

@@ -150,7 +150,7 @@
       </v-row>
 
       <!--option to close/open bottom carousel-->
-      <v-row justify="center" ><a v-if="images.length !== 0" @click="carouselButtonClicked" style="font-size: 15px" >Carousel</a></v-row>
+      <v-row justify="center" ><a v-if="images.length !== 0" @click="carouselButtonClicked" style="font-size: 15px" >Gallery</a></v-row>
       <!--bottom image carousel component-->
 <v-row  v-if="showCarousel " justify="center" style="margin-top: -5px">
 
@@ -223,6 +223,7 @@ export default class SimpleGallery extends Vue {
     if (this.tags.some(tag => !tag.linkedContent)) return [];
     return (this.tags.flatMap(x => x.linkedContent).map(x => new GalleriaImageItem(x!)));
   }
+
 
   public checkMark(image: GalleriaImageItem): boolean{
     return this.imagesAddedToPreview.includes(image.title);

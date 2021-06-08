@@ -29,12 +29,12 @@
             </template>
             <v-card style="overflow-x: hidden">
               <v-card-title>Download the following Images?</v-card-title>
-              <v-card-subtitle>Total Size:</v-card-subtitle>
+              <v-card-subtitle>Total Size: {{downLoadSize}}</v-card-subtitle>
               <v-divider></v-divider>
               <v-card>
                 <v-row justify="center" style="margin-left: 3px; margin-right: 3px">
                   <v-col
-                      v-for="item in selectedImages"
+                      v-for="item in imagesTBD"
                       :key="item.title"
                       class="d-flex child-flex"
                       cols="4"
@@ -169,6 +169,11 @@
         @Prop()
         selectedImage: GalleriaImageItem;
 
+        public getSizes(): void{
+          this.imagesTBD.forEach(x => {
+            console.log(x.sizeInMB)
+          })
+        }
 
         public headers = [
           { text: '', value: 'toBeDownloaded',align: 'start', sortable: false },
@@ -176,7 +181,7 @@
           text: 'Image Description',
           value: 'title',
         },
-          { text: 'Size', value: 'calories' },
+          { text: 'Size', value: 'sizeInMB' },
        ]
 
       public deleteAll(): void{
@@ -194,6 +199,7 @@
                   signedDownloadUrl: this.selectedImage.itemImageSrc,
                   key:this.selectedImage.alt,
                   description:this.selectedImage.description,
+                  sizeInBytes:this.selectedImage.sizeInMB! * Math.pow(1024,2)
               });
               temp.toBeDownloaded = true;
               for(let i = 0; i < this.selectedImages.length; i++) {
@@ -205,11 +211,12 @@
 
               if(!repeat) {
                   console.log(temp.itemImageSrc)
+
                   this.selectedImages.push(temp);
                   this.$buefy.toast.open({
                       message: 'Image Added to Selected Images',
                       type: 'is-success',
-                      duration: 2000
+                      duration: 1000
                   })
               }
               //console.log(this.selectedImages.length);
@@ -244,7 +251,7 @@
          this.$buefy.toast.open({
            message: 'Image removed from selected images',
            type: 'is-danger',
-           duration: 2000
+           duration: 1000
          })
             }
 
@@ -259,6 +266,17 @@
                 return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
             }
 
+        }
+
+
+        public get imagesTBD(){
+          return this.selectedImages.filter(img => img.toBeDownloaded);
+        }
+
+        public get downLoadSize(){
+          const sum = this.imagesTBD.reduce(function (acc, obj) { return acc + obj.sizeInMB!; }, 0);
+          console.log(sum)
+          return sum.toFixed(2);
         }
 
 

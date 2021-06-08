@@ -88,7 +88,7 @@ export class GalleriaImageItem{
         this.description = mediaContent.description ? mediaContent.description : '';
         this.toBeDownloaded = false;
         this.highResURL = mediaContent.signedFullSizeObjectDownloadUrl? mediaContent.signedFullSizeObjectDownloadUrl: "";
-        this.sizeInMB = mediaContent.sizeInBytes? (mediaContent.sizeInBytes /1024)/1024 : 0;
+        this.sizeInMB = mediaContent.sizeInBytes? parseFloat(((mediaContent.sizeInBytes /1024)/1024).toFixed(2) ): 0;
     }
 
     itemImageSrc: string;

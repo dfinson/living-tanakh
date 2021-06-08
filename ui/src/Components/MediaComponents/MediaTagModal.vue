@@ -128,8 +128,10 @@ export default class MediaTagModal extends Vue {
                 //temporary
                 if (response['data'].getMediaTagsByIds[i].linkedContent[j].key !== 'SamA-c17-Socho07.jpeg')
                   newTag.linkedContent.push(response['data'].getMediaTagsByIds[i].linkedContent[j]);
+
               }
               this.updateMediaTagList(newTag);
+
             }
             //if we have a search term we only want to include the tags relevant to that term
             else {
@@ -147,6 +149,7 @@ export default class MediaTagModal extends Vue {
                   //temporary
                   if (response['data'].getMediaTagsByIds[i].linkedContent[j].key !== 'SamA-c17-Socho07.jpeg')
                     newTag.linkedContent.push(response['data'].getMediaTagsByIds[i].linkedContent[j]);
+
                 }
                 this.updateMediaTagList(newTag);
               }
