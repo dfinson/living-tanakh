@@ -6,6 +6,11 @@
       <v-row>
 
         <v-flex>
+          <v-row justify="end" style="margin-top: 15px; margin-bottom: 1px">
+            <b-field>
+              <b-switch v-model="highResActive" type="is-success" style="margin-right: 40px"> <span style="color: white">HD</span></b-switch>
+            </b-field>
+          </v-row>
           <!-- the fullscreen image viewing component modal-->
 
             <div class="text-center" >
@@ -79,6 +84,7 @@
 
 
           <!-- main image viewing component-->
+
           <v-carousel hide-delimiters height="580" v-model="imageIndex" v-if="images.length !== 0" >
 
             <v-carousel-item
@@ -156,7 +162,7 @@
 
 
 
-          <v-img :src="getImgUrl(i)" height="112" width="140" @click="sendToCarousel(i)" v-on:click="toggle"  >
+          <v-img :src="getThumbnailUrl(i)" height="112" width="140" @click="sendToCarousel(i)" v-on:click="toggle"  >
             <input type="checkbox"
                    size="is-small"
                    style=" width: 15px;
@@ -201,6 +207,7 @@ import {GalleriaImageItem, MediaContent, MediaTag} from "@/api/dto";
 export default class SimpleGallery extends Vue {
 
 
+  public highResActive = false;
 
   @Prop({required: true})
   private tags: MediaTag[];
@@ -216,10 +223,20 @@ export default class SimpleGallery extends Vue {
 
   public getImgUrl(index: number): string {
     if (this.images[index] !== undefined && this.images.length !== 0) {
-      return this.images[index].itemImageSrc;
+      if(!this.highResActive)
+          return this.images[index].itemImageSrc;
+      else
+        return this.images[index].highResURL!;
     } else return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
   }
 
+  public getThumbnailUrl(index: number): string {
+    if (this.images[index] !== undefined && this.images.length !== 0) {
+
+        return this.images[index].itemImageSrc;
+
+    } else return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
+  }
 
   /*
    id: number;

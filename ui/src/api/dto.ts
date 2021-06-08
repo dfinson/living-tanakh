@@ -57,6 +57,9 @@ export class MediaContent {
     signedUploadUrl?: string;
     mimeType?: string;
     signedThumbnailUrl?: string;
+    sizeInBytes?: number;
+    signedFullSizeObjectDownloadUrl?: string;
+
 
 }
 export class PrefixedVerseSegment {
@@ -84,6 +87,8 @@ export class GalleriaImageItem{
         this.title = this.alt;
         this.description = mediaContent.description ? mediaContent.description : '';
         this.toBeDownloaded = false;
+        this.highResURL = mediaContent.signedFullSizeObjectDownloadUrl? mediaContent.signedFullSizeObjectDownloadUrl: "";
+        this.sizeInMB = mediaContent.sizeInBytes? (mediaContent.sizeInBytes /1024)/1024 : 0;
     }
 
     itemImageSrc: string;
@@ -91,7 +96,9 @@ export class GalleriaImageItem{
     alt: string;
     title: string;
     description: string;
-    toBeDownloaded?:boolean
+    toBeDownloaded?:boolean;
+    highResURL?: string;
+    sizeInMB?: number;
 
     /*constructor(img: GalleriaImageItem) {
         this.itemImageSrc = img.itemImageSrc;

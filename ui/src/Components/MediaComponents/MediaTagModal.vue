@@ -50,6 +50,8 @@ export default class MediaTagModal extends Vue {
     linkedContent{
       key
       signedDownloadUrl
+      signedFullSizeObjectDownloadUrl
+      sizeInBytes
       description
       id
     }
