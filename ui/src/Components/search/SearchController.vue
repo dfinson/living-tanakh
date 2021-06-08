@@ -132,7 +132,7 @@
       this.freeTextSearchResultsVerseArray = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
-      const { data } = await apifiClient.verseFreeTextSearch({
+      apifiClient.verseFreeTextSearch({
         customArgs: {
           validPathPrefixes:  [searchPath]
         },
@@ -162,36 +162,49 @@
            id
            number
            path
-           } }`)
-      this.isLoading = false;
-      if(data?.verseFreeTextSearch?.content.length > 0){
-        data.verseFreeTextSearch.content.forEach((verse: Verse) => {
-          verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
-          this.freeTextSearchResultsVerseArray.push(verse);
-        }).sort((a: Verse,b: Verse) => {
-          if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-            return -1;
-          else{
-            if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-              return 1;
-            else return 0;
-          }
-        })
-        this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
-        //send the search results array to dashboard, to be sent to SearchResultList component
-        this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
-      }
-        else {
-            if (this.freeTextSearchResultsVerseArray.length === 0) {
+           } }`).then(res => {
+            if (res['data'].verseFreeTextSearch.content.length > 0) {
+              let i
+              for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
+                //console.log(res['data'].verseFreeTextSearch.content[i]);
+                const verse = new Verse();
+                verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+                verse.number = res['data'].verseFreeTextSearch.content[i].number;
+                verse.path = res['data'].verseFreeTextSearch.content[i].path;
+                verse.id = res['data'].verseFreeTextSearch.content[i].id;
+                verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
+                verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
+                verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+                verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
+                this.freeTextSearchResultsVerseArray.push(verse);
+              }
+              this.freeTextSearchResultsVerseArray.sort((a,b) => {
+                if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
+                  return -1;
+                else{
+                  if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
+                    return 1;
+                  else return 0;
+                }
+              });
+              this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+              //send the search results array to dashboard, to be sent to SearchResultList component
+              this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
+            }
+            else{
+              if(this.freeTextSearchResultsVerseArray.length === 0)
                 this.$buefy.notification.open({
-                    duration: 5000,
-                    message: `No results have been found. Please enter a different search term, or expand the search path.`,
-                    position: 'is-bottom-right',
-                    type: 'is-danger',
-                    hasIcon: true
+                  duration: 5000,
+                  message: `No results found. Please enter a different search Term or expand the search parameters....`,
+                  position: 'is-bottom-right',
+                  type: 'is-danger',
+                  hasIcon: true
                 });
             }
-        }
+            this.isLoading = false;
+          }
+
+      );
 }
 
 

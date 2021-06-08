@@ -286,11 +286,13 @@ export default class Dashboard extends Vue{
   }
 
   private sendToSearchResultsList(searchResultsArray: Verse[]): void {
+
     this.freeTextSearchResultsVerseArray = [];
-    searchResultsArray.forEach((verse: Verse) => {
+    this.freeTextSearchResultsVerseArray = searchResultsArray;
+    /*searchResultsArray.forEach((verse: Verse) => {
       verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
       this.freeTextSearchResultsVerseArray.push(verse)
-    })
+    })*/
     this.resultsWindowActive = true;
   }
 

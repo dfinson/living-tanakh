@@ -10,7 +10,7 @@
 </template>
 
 <script lang = "ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
 import {Chapter, SortingObject, Verse} from "@/api/dto";
 import SearchResult from "@/Components/search/SearchResult.vue";
 import BaseCard from "@/Components/BaseComponents/BaseCard.vue";
@@ -203,6 +203,8 @@ export default class SearchResultsList extends Vue{
     return sortedResultArr;
 
   }
+
+
 
 }
 </script>

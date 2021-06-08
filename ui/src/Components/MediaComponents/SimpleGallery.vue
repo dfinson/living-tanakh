@@ -84,7 +84,7 @@
               </b-modal>
             </div>
 
-          <v-row justify="end" style="margin-top: 15px; margin-bottom: 5px; margin-right: 35px">
+          <v-row justify="end" style="margin-top: 15px; margin-bottom: 5px; margin-right: 35px" v-if="images.length !== 0">
             <b-field>
               <b-switch v-model="highResActive" type="is-success"> <span style="color: white">HD</span></b-switch>
             </b-field>
