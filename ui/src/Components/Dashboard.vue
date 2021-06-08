@@ -363,7 +363,7 @@ export default class Dashboard extends Vue{
       }
       console.log(this.tagIds + "from dash");
     }
-    (this.$refs.mediaTagModalRef as any).foo();
+   // (this.$refs.mediaTagModalRef as any).foo();
   }
 
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponentOfVerseFromChapter(selectedVerse: Verse): void{
