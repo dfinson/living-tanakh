@@ -289,9 +289,8 @@
           this.downloading = true
           this.dialog = false;
             const keyArr: string[] = [];
-            for(let i = 0; i < this.selectedImages.length; i++){
-              if(this.selectedImages[i].toBeDownloaded)
-                  keyArr.push(this.selectedImages[i].title);
+            for(let i = 0; i < this.imagesToBeDownloaded.length; i++){
+                  keyArr.push(this.imagesToBeDownloaded[i].title);
             }
             console.log("downloading " + keyArr);
             if(keyArr.length > 0) {
