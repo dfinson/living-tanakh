@@ -468,6 +468,7 @@ export default class SearchInputForm extends Vue{
   public mapToHebrewSearchTerm(): void{
 
     //letters in english that map to a hebrew letter:
+    this.tempSearchTerm = this.tempSearchTerm.replace("o", "ם")
     this.tempSearchTerm = this.tempSearchTerm.replace("t", "א")
     this.tempSearchTerm = this.tempSearchTerm.replace("c","ב")
     this.tempSearchTerm = this.tempSearchTerm.replace("d","ג")
