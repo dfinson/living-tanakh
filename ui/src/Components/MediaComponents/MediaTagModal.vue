@@ -76,6 +76,7 @@ export default class MediaTagModal extends Vue {
   }
 
 
+  //when we receive a single id
   @Watch('selectedMediaTagId')
   onChange() {
     if (this.selectedMediaTagId !== undefined && this.selectedMediaTagId > 0) {
@@ -102,13 +103,11 @@ export default class MediaTagModal extends Vue {
     }
   }
 
-  public foo(): void{
-    console.log("foo")
-  }
+
+  //when we receive a list of multiple id's
   @Watch('tagIds')
   onPropertyChanged() {
     this.tags = [];
-    console.log("from media tag modal")
     if (this.tagIds.length !== 0) {
       console.log(this.tagIds + " tag id's from media modal");
       apifiClient.getMediaTagsByIds(this.tagIds, this.tagExpectedReturn).then(response => {

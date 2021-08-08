@@ -9,7 +9,6 @@
 
 
           <!-- the fullscreen image viewing component modal-->
-
             <div class="text-center" >
               <b-modal
                   v-model="isImageModalActive"
@@ -32,6 +31,7 @@
                       contain
                   >
 
+                    <!-- HD toggle switch for fullscreen image viewing component-->
                       <b-field>
                         <b-switch v-model="highResActive" type="is-success" style="position: absolute;top:25px;
            left: 105px"> <span style="color: white">HD</span></b-switch>
@@ -84,13 +84,14 @@
               </b-modal>
             </div>
 
+          <!-- HD toggle switch for main image viewing component-->
           <v-row justify="end" style="margin-top: 15px; margin-bottom: 5px; margin-right: 35px" v-if="images.length !== 0">
             <b-field>
               <b-switch v-model="highResActive" type="is-success"> <span style="color: white">HD</span></b-switch>
             </b-field>
           </v-row>
 
-          <!-- main image viewing component-->
+          <!-- main image viewing component (not fullscreen)-->
 
           <v-carousel hide-delimiters height="580" v-model="imageIndex" v-if="images.length !== 0" >
 
@@ -106,16 +107,19 @@
 
             >
 
+              <!-- checkbox for selecting image for download-->
               <input type="checkbox" size="is-small"
                      style=" width: 25px; border:1px;
                 padding: 1px; height: 25px;position: absolute;top:
                 20px;right: 50px; border-radius: 4px; background-color: transparent; margin-top: 15px "
                      :id="i" :value="item.title"  v-model="imagesAddedToPreview" @change="isImageModalActive = false, sendImageOfOneTagToPreviewSelector(item)"  />
+             <!-- tooltip to display image description-->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
               <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 120px;">
 
 
+                <!-- information icon - when hovered over shows tooltip-->
                   <v-icon style="background-color: darkcyan; border-radius: 20px"
                       dark
                       center
@@ -127,7 +131,7 @@
                   </v-icon>
                 </div>
                 </template>
-                <span>  This will contain a description for {{images[i].title}}</span>
+                <span>Description: {{images[i].description}}</span>
               </v-tooltip>
 
 
@@ -304,9 +308,6 @@ export default class SimpleGallery extends Vue {
 
   }
   public sendImageOfOneTagToPreviewSelectorFromFullScreen(image: GalleriaImageItem): void {
-    //if images have been sent before we won't create a paradox
-
-    //if images have been sent before we won't create a paradox
 
     //if this image has never been sent before to previewSelector - we can send to be added to preview selector
     if (this.imagesAddedToPreview.includes(image.title)) {
@@ -363,7 +364,6 @@ export default class SimpleGallery extends Vue {
 
 
 
-//this.$set(this.someObject, 'b', 2)
 }
 </script>
 
