@@ -17,11 +17,7 @@
         <b-loading :is-full-page="false" v-model="isLoading" :can-cancel="true"></b-loading>
       <div style="height: 100px; overflow-y: hidden; overflow-x: hidden">
 
-    <search-results-list v-if="freeTextSearchResultsVerseArray.length > 0" style="flex-shrink: 2"
-            :search-results="freeTextSearchResultsVerseArray"
-            @result-selected="sendResultQuery($event)"
-    ></search-results-list>
-          <chapter-search-result-item v-else
+          <chapter-search-result-item v-if="getChapterSearchResults"
                                       :get-chapter-search-results="getChapterSearchResults"
                                       :selected-verse-numeral="selectedVerseNumeral"
           ></chapter-search-result-item>
@@ -90,8 +86,6 @@
     public searchCriteria = new SearchCriteria(); //will store all the search parameters the controller has to keep track of...
     public listOfChaptersInSelectedBook: Chapter[] = []; //will contain the list of chapters in the selected book, to be sent down to the form..
     public freeTextSearchResultsVerseArray: Verse[] = []; //will contain the results of our path search - I.e a chapter of verses...
-    public displayOptions = false//we will need to let the searchResults know if it should display links, or we've already done with it, and are now moving to chapter display
-    public displayResults = false //if we have a final chapter selected, we should only display the chapter and not the options
     public getChapterSearchResults = new Chapter();
     public isLoading = false;
 
@@ -138,7 +132,7 @@
       this.freeTextSearchResultsVerseArray = [] //wipe the searchResults array clean, to get rid of any previous results...
       console.log("searching with path " + searchPath + " " + this.searchCriteria.searchTerm);
       //the api call:
-      const { data } = await apifiClient.verseFreeTextSearch({
+      apifiClient.verseFreeTextSearch({
         customArgs: {
           validPathPrefixes:  [searchPath]
         },
@@ -168,36 +162,49 @@
            id
            number
            path
-           } }`)
-      this.isLoading = false;
-      if(data?.verseFreeTextSearch?.content.length > 0){
-        data.verseFreeTextSearch.content.forEach((verse: Verse) => {
-          verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
-          this.freeTextSearchResultsVerseArray.push(verse);
-        }).sort((a: Verse,b: Verse) => {
-          if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
-            return -1;
-          else{
-            if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
-              return 1;
-            else return 0;
-          }
-        })
-        this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
-        //send the search results array to dashboard, to be sent to SearchResultList component
-        this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
-      }
-        else {
-            if (this.freeTextSearchResultsVerseArray.length === 0) {
+           } }`).then(res => {
+            if (res['data'].verseFreeTextSearch.content.length > 0) {
+              let i
+              for (i = 0; i < res['data'].verseFreeTextSearch.content.length; i++){
+                //console.log(res['data'].verseFreeTextSearch.content[i]);
+                const verse = new Verse();
+                verse.hebrewNumeral = res['data'].verseFreeTextSearch.content[i].hebrewNumeral;
+                verse.number = res['data'].verseFreeTextSearch.content[i].number;
+                verse.path = res['data'].verseFreeTextSearch.content[i].path;
+                verse.id = res['data'].verseFreeTextSearch.content[i].id;
+                verse.fullHebrewText = res['data'].verseFreeTextSearch.content[i].fullHebrewText;
+                verse.chapter =  res['data'].verseFreeTextSearch.content[i].chapter;
+                verse.humanReadablePath = res['data'].verseFreeTextSearch.content[i].humanReadablePath;
+                verse.highlightedVerseSegments = res['data'].verseFreeTextSearch.content[i].highlightedVerseSegments;
+                this.freeTextSearchResultsVerseArray.push(verse);
+              }
+              this.freeTextSearchResultsVerseArray.sort((a,b) => {
+                if(a.path.includes('TORAH') && !b.path.includes('TORAH'))
+                  return -1;
+                else{
+                  if(!a.path.includes('TORAH') && b.path.includes('TORAH'))
+                    return 1;
+                  else return 0;
+                }
+              });
+              this.$emit("send-search-term-to-dashboard",this.searchCriteria.searchTerm);
+              //send the search results array to dashboard, to be sent to SearchResultList component
+              this.$emit("send-search-results-to-dashboard",this.freeTextSearchResultsVerseArray);
+            }
+            else{
+              if(this.freeTextSearchResultsVerseArray.length === 0)
                 this.$buefy.notification.open({
-                    duration: 5000,
-                    message: `No results have been found. Please enter a different search term, or expand the search path.`,
-                    position: 'is-bottom-right',
-                    type: 'is-danger',
-                    hasIcon: true
+                  duration: 5000,
+                  message: `No results found. Please enter a different search Term or expand the search parameters....`,
+                  position: 'is-bottom-right',
+                  type: 'is-danger',
+                  hasIcon: true
                 });
             }
-        }
+            this.isLoading = false;
+          }
+
+      );
 }
 
 
@@ -330,8 +337,6 @@
 
     }
             }`).then(res => {
-        //  if(res['data'].findChapterByUniquePath.verses.length > 0) {//making sure there are results
-      //  console.log(res)
         const ch = new Chapter();
         ch.id = res['data'].findChapterByUniquePath.id;
         ch.hebrewNumeral = res['data'].findChapterByUniquePath.hebrewNumeral;
@@ -501,7 +506,8 @@
     onChange(){
       if(this.pathArr.length > 0) {
         this.getChapterFromPathSearch(this.pathArr[0]);
-        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},1000);
+        console.log(this.pathArr[0] + " " + this.pathArr[1] + "from controller in test")
+        setTimeout(()=>{this.updateVerseSelectionAndSendVerseToPassukDisplay(this.pathArr[1])},2000);
       }
     }
 

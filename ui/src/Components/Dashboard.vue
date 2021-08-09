@@ -27,19 +27,16 @@
               <!-- Special Circular image overlapped on top of the top image. -->
               <!-- Only displays if the top image is visible. -->
 
-            <div>
-              <div class="card-block">
-
-                  <h3 class="stacks_in_255_hdr theme_style  ">Ma'ayan Home Page</h3>
-
-                <p class='stacks_in_250 card-text   text-xs-left ' >
-                  Welcome to the Ma'ayan demo page. Ma'ayan is being developed as the premier visual companion for the learning, teaching and development of TANACH. Click the link below to add your comments - we value your input!
-                </p>
+           <v-card style="overflow-y: scroll; overflow-x: hidden" height="650">
+              <v-row justify="center" style="margin-top: 5px">
                 <a href="http://sefaria.org" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Sefaria</a>
                 <a href="http://www.foundationstone.org" rel="" onclick="" target=""  class="card-link " style="text-decoration: none">Foundation Stone</a>
                 <a href="http://www.foundationstone.org/page-5/" rel="" onclick="" target=""  class="card-link  " style="text-decoration: none">Ma'ayan</a>
-              </div>
-            </div><!-- column header-->
+              </v-row>
+             <v-row justify="center" style="margin-bottom: 5px">
+               <v-btn :disabled="!freeTextSearchResultsVerseArray.length > 0" elevation="2"  color="primary" @click="resultsWindowActive = !resultsWindowActive"
+                       small>Display Search results</v-btn>
+             </v-row>
             <!-- search form-->
             <!--<div id='stacks_out_372' class='stacks_out' style="overflow-y: scroll; max-height: 600px">-->
 
@@ -63,7 +60,7 @@
                ></preview-selector>
                 </b-tab-item>
               </b-tabs>
-
+           </v-card>
 
             <!--</div>-->
           </v-col>
@@ -151,7 +148,7 @@
 
 
                       <!-- media display component-->
-                          <media-tag-modal ref="mediaTagModalRef" v-if="!resultsWindowActive"
+                          <media-tag-modal ref="mediaTagModalRef" v-show="!resultsWindowActive"
                               :tag-ids="tagIds"
                               :passuk-selected-from-chapter-display="passukSelectedFromChapterDisplay"
                               :search-term="searchTerm"
@@ -281,6 +278,7 @@ export default class Dashboard extends Vue{
   }
 
   public sendSearchSelectionToController(pathArr: string[]): void{
+    //pathArr is passed as prop to searchController, which has a watcher set waiting for changes
     this.pathArr = [];
     for (const i of pathArr) {
       this.pathArr.push(i);
@@ -288,10 +286,13 @@ export default class Dashboard extends Vue{
   }
 
   private sendToSearchResultsList(searchResultsArray: Verse[]): void {
-    searchResultsArray.forEach((verse: Verse) => {
+
+    this.freeTextSearchResultsVerseArray = [];
+    this.freeTextSearchResultsVerseArray = searchResultsArray;
+    /*searchResultsArray.forEach((verse: Verse) => {
       verse.highlightedVerseSegments.segments.forEach((segment: PrefixedVerseSegment, index: number) => segment.id = index)
       this.freeTextSearchResultsVerseArray.push(verse)
-    })
+    })*/
     this.resultsWindowActive = true;
   }
 
@@ -309,6 +310,7 @@ export default class Dashboard extends Vue{
 
   public sendChapterToChapterDisplay(selectedChapter: Chapter): void{
     this.selectedChapter = selectedChapter;
+    this.resultsWindowActive = false;
     this.colon = "";
     const temp = [];
     this.selectedVerse.hebrewNumeral = "";
@@ -320,8 +322,6 @@ export default class Dashboard extends Vue{
       for (let i = 0; i < this.selectedChapter.verses.length; i++) {
         for (let j = 0; j < this.selectedChapter.verses[i].mediaTags.length; j++) {
           temp.push(this.selectedChapter.verses[i].mediaTags[j].id)
-          //this.tagIds.push(this.selectedChapter.verses[i].mediaTags[j].id);
-          // console.log(this.selectedChapter.verses[i].mediaTags[j].id);
         }
       }
       const unique = temp.filter(function(elem, index, self) {
@@ -331,6 +331,8 @@ export default class Dashboard extends Vue{
         this.tagIds.push(unique[i]);
       console.log(this.tagIds);
     }
+
+
 
 
   }
@@ -350,15 +352,18 @@ export default class Dashboard extends Vue{
     this.colon = ":"
     this.selectedMediaTagId = 0;
     this.passukSelectedFromChapterDisplay = false;
-    // console.log(selectedVerse);
+     console.log("sendVerseToPassukDisplayAndSendTagIdToMediaComponentFromSearchResultItem");
     this.selectedVerse = selectedVerse;
+    console.log(this.selectedVerse + "from da")
     if(this.selectedVerse.mediaTags !== undefined) {
       //turn off the search results tab
       this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
+      console.log(this.tagIds + "from dash");
     }
+   // (this.$refs.mediaTagModalRef as any).foo();
   }
 
   public sendVerseToPassukDisplayAndSendTagIdToMediaComponentOfVerseFromChapter(selectedVerse: Verse): void{
@@ -369,12 +374,14 @@ export default class Dashboard extends Vue{
     this.selectedMediaTagId = 0;
     // console.log(selectedVerse);
     this.selectedVerse = selectedVerse;
+
     if(this.selectedVerse.mediaTags !== undefined) {
       //turn off the search results tab
       this.resultsWindowActive = false;
       for (const tag in this.selectedVerse.mediaTags) {
         this.tagIds.push(this.selectedVerse.mediaTags[tag].id);
       }
+
     }
   }
 
@@ -383,7 +390,8 @@ export default class Dashboard extends Vue{
       id:Math.floor(Math.random() * 100) ,
       signedDownloadUrl: image.itemImageSrc,
       key:image.alt,
-      description:image.description
+      description:image.description,
+      sizeInBytes:(image.sizeInMB!) * Math.pow(1024,2)
     });
     //console.log("dashboard recieved image:" + this.selectedImage);
     this.disableSelectedImagesTab = false;
