@@ -1,4 +1,4 @@
-package org.maayan.maayanproject.file_downloads;
+package org.maayan.maayanproject.custom_endpoints;
 
 import java.io.File;
 import java.io.FileInputStream;

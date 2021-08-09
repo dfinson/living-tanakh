@@ -53,6 +53,13 @@ public class LinkedMediaContentOfTagApiHooks
     DataManager<MediaContent> mediaContentDataManager,
     DataManager<MediaTag> ownerDataManager
   ) {
+    deleteObjectsFromS3(toRemoveInput, mediaContentDataManager);
+  }
+
+  public void deleteObjectsFromS3(
+    Collection<MediaContent> toRemoveInput,
+    DataManager<MediaContent> mediaContentDataManager
+  ) {
     val ids = toRemoveInput
       .stream()
       .map(MediaContent::getId)
