@@ -6,8 +6,9 @@
       <v-row>
 
         <v-flex>
-          <!-- the fullscreen image viewing component modal-->
 
+
+          <!-- the fullscreen image viewing component modal-->
             <div class="text-center" >
               <b-modal
                   v-model="isImageModalActive"
@@ -29,6 +30,13 @@
                       transition="slide-y-transition"
                       contain
                   >
+
+                    <!-- HD toggle switch for fullscreen image viewing component-->
+                      <b-field>
+                        <b-switch v-model="highResActive" type="is-success" style="position: absolute;top:25px;
+           left: 105px"> <span style="color: white">HD</span></b-switch>
+                      </b-field>
+
                     <v-btn style="position: absolute;top:
                 20px;right: 100px"
                         class="ma-2"
@@ -76,9 +84,15 @@
               </b-modal>
             </div>
 
+          <!-- HD toggle switch for main image viewing component-->
+          <v-row justify="end" style="margin-top: 15px; margin-bottom: 5px; margin-right: 35px" v-if="images.length !== 0">
+            <b-field>
+              <b-switch v-model="highResActive" type="is-success"> <span style="color: white">HD</span></b-switch>
+            </b-field>
+          </v-row>
 
+          <!-- main image viewing component (not fullscreen)-->
 
-          <!-- main image viewing component-->
           <v-carousel hide-delimiters height="580" v-model="imageIndex" v-if="images.length !== 0" >
 
             <v-carousel-item
@@ -93,16 +107,19 @@
 
             >
 
+              <!-- checkbox for selecting image for download-->
               <input type="checkbox" size="is-small"
                      style=" width: 25px; border:1px;
                 padding: 1px; height: 25px;position: absolute;top:
                 20px;right: 50px; border-radius: 4px; background-color: transparent; margin-top: 15px "
                      :id="i" :value="item.title"  v-model="imagesAddedToPreview" @change="isImageModalActive = false, sendImageOfOneTagToPreviewSelector(item)"  />
+             <!-- tooltip to display image description-->
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
               <div class="tooltip" style=" width: 35px; border:1px; padding: 1px; height: 35px;position: absolute;top: 20px; left: 120px;">
 
 
+                <!-- information icon - when hovered over shows tooltip-->
                   <v-icon style="background-color: darkcyan; border-radius: 20px"
                       dark
                       center
@@ -114,7 +131,7 @@
                   </v-icon>
                 </div>
                 </template>
-                <span>  This will contain a description for {{images[i].title}}</span>
+                <span>Description: {{images[i].description}}</span>
               </v-tooltip>
 
 
@@ -137,7 +154,7 @@
       </v-row>
 
       <!--option to close/open bottom carousel-->
-      <v-row justify="center" ><a v-if="images.length !== 0" @click="carouselButtonClicked" style="font-size: 15px" >Carousel</a></v-row>
+      <v-row justify="center" ><a v-if="images.length !== 0" @click="carouselButtonClicked" style="font-size: 15px" >Gallery</a></v-row>
       <!--bottom image carousel component-->
 <v-row  v-if="showCarousel " justify="center" style="margin-top: -5px">
 
@@ -156,7 +173,7 @@
 
 
 
-          <v-img :src="getImgUrl(i)" height="112" width="140" @click="sendToCarousel(i)" v-on:click="toggle"  >
+          <v-img :src="getThumbnailUrl(i)" height="112" width="140" @click="sendToCarousel(i)" v-on:click="toggle"  >
             <input type="checkbox"
                    size="is-small"
                    style=" width: 15px;
@@ -201,6 +218,7 @@ import {GalleriaImageItem, MediaContent, MediaTag} from "@/api/dto";
 export default class SimpleGallery extends Vue {
 
 
+  public highResActive = false;
 
   @Prop({required: true})
   private tags: MediaTag[];
@@ -210,16 +228,27 @@ export default class SimpleGallery extends Vue {
     return (this.tags.flatMap(x => x.linkedContent).map(x => new GalleriaImageItem(x!)));
   }
 
+
   public checkMark(image: GalleriaImageItem): boolean{
     return this.imagesAddedToPreview.includes(image.title);
   }
 
   public getImgUrl(index: number): string {
     if (this.images[index] !== undefined && this.images.length !== 0) {
-      return this.images[index].itemImageSrc;
+      if(!this.highResActive)
+          return this.images[index].itemImageSrc;
+      else
+        return this.images[index].highResURL!;
     } else return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
   }
 
+  public getThumbnailUrl(index: number): string {
+    if (this.images[index] !== undefined && this.images.length !== 0) {
+
+        return this.images[index].itemImageSrc;
+
+    } else return "https://maayan-assets.s3.eu-central-1.amazonaws.com/MaayanLogo.jpeg";
+  }
 
   /*
    id: number;
@@ -279,9 +308,6 @@ export default class SimpleGallery extends Vue {
 
   }
   public sendImageOfOneTagToPreviewSelectorFromFullScreen(image: GalleriaImageItem): void {
-    //if images have been sent before we won't create a paradox
-
-    //if images have been sent before we won't create a paradox
 
     //if this image has never been sent before to previewSelector - we can send to be added to preview selector
     if (this.imagesAddedToPreview.includes(image.title)) {
@@ -338,7 +364,6 @@ export default class SimpleGallery extends Vue {
 
 
 
-//this.$set(this.someObject, 'b', 2)
 }
 </script>
 

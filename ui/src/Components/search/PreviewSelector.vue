@@ -29,12 +29,12 @@
             </template>
             <v-card style="overflow-x: hidden">
               <v-card-title>Download the following Images?</v-card-title>
-              <v-card-subtitle>Total Size:</v-card-subtitle>
+              <v-card-subtitle>Total Size: {{downLoadSize}} MB</v-card-subtitle>
               <v-divider></v-divider>
               <v-card>
                 <v-row justify="center" style="margin-left: 3px; margin-right: 3px">
                   <v-col
-                      v-for="item in selectedImages"
+                      v-for="item in imagesToBeDownloaded"
                       :key="item.title"
                       class="d-flex child-flex"
                       cols="4"
@@ -88,47 +88,30 @@
           </v-dialog>
         </b-field>
 
-        <b-carousel :autoplay="false"  style="margin-top: 20px">
 
-            <b-carousel-item v-for="(item, i) in selectedImages" :key="i">
-                <a class="image">
-                    <b-tooltip :label="item.title" style="margin-bottom: 40px"
-                               position="is-bottom">
-                        <img :src="getThumbnailUrl(i)" style="border-radius: 10px; image-orientation: from-image"/>
-                    </b-tooltip>
-                </a>
 
-            </b-carousel-item>
-        </b-carousel>
+<v-row style="margin-bottom: 5px; margin-top: 15px">
+                        <v-img :src="selectedImageFromTable.thumbnailImageSrc"   height="250" style="border-radius: 10px"/>
+</v-row>
         <div >
 
 
           <h1 style="font-size:20px;font-family:Arial; color:#01579b;">{{selectedImages.length}} Image/s selected</h1>
+          <h1 style="font-size:15px;font-family:Arial; color:#01579b;">Download Size {{downLoadSize}} MB</h1>
           <h1 style="font-size:10px;font-family:Arial; color:black;">Select from the list the images you'd like to download</h1>
 
-          <v-data-table style="margin-top: 10px"
-              :headers="headers"
-              :items="selectedImages"
-                        :items-per-page="5"
-                        dense
-              class="elevation-1"
-                        hide-default-footer
-                        :page.sync="page"
-                        @page-count="pageCount = $event"
-          >
+          <b-table
+              :data="selectedImages"
+              :columns="columns"
+              :selected.sync="selectedImageFromTable"
+              :paginated="true"
+              :per-page="3"
+              checkable
+              :checked-rows.sync="imagesToBeDownloaded"
+              :header-checkable="false"
+              focusable>
+          </b-table>
 
-            <template v-slot:item.toBeDownloaded="{ item }">
-              <v-simple-checkbox
-                  v-model="item.toBeDownloaded"
-
-              ></v-simple-checkbox>
-            </template>
-
-          </v-data-table>
-          <v-pagination
-              v-model="page"
-              :length="pageCount"
-          ></v-pagination>
           <v-snackbar
               v-model="errorMessage"
               :timeout="2000"
@@ -163,25 +146,50 @@
         public page = 1;
         public pageCount = 0;
         public dialog = false;
-
+        public imagesToBeDownloaded: GalleriaImageItem[] = [];
+        public selectedImageFromTable = new GalleriaImageItem({
+          id:Math.floor(Math.random() * 100) ,
+          signedDownloadUrl: '',
+          description:'',
+          sizeInBytes:0
+        });
 
 
         @Prop()
         selectedImage: GalleriaImageItem;
 
 
+
+        public columns = [
+          {
+            field: 'title',
+            label: 'Image Description',
+            numeric: false
+          },
+          {
+            field: 'sizeInMB',
+            label: 'Size (MB)',
+          }
+        ]
         public headers = [
           { text: '', value: 'toBeDownloaded',align: 'start', sortable: false },
             {
           text: 'Image Description',
           value: 'title',
         },
-          { text: 'Size', value: 'calories' },
+          { text: 'Size', value: 'sizeInMB' },
        ]
 
       public deleteAll(): void{
         this.selectedImages = [];
         this.checkedRows = [];
+        this.selectedImageFromTable = new GalleriaImageItem({
+          id:Math.floor(Math.random() * 100) ,
+          signedDownloadUrl: '',
+          description:'',
+          sizeInBytes:0
+        });
+        this.imagesToBeDownloaded = [];
         this.$emit('uncheck-all-images');
       }
 
@@ -194,6 +202,7 @@
                   signedDownloadUrl: this.selectedImage.itemImageSrc,
                   key:this.selectedImage.alt,
                   description:this.selectedImage.description,
+                  sizeInBytes:this.selectedImage.sizeInMB! * Math.pow(1024,2)
               });
               temp.toBeDownloaded = true;
               for(let i = 0; i < this.selectedImages.length; i++) {
@@ -205,11 +214,14 @@
 
               if(!repeat) {
                   console.log(temp.itemImageSrc)
+
                   this.selectedImages.push(temp);
+                  this.imagesToBeDownloaded.push(temp);
+                  this.selectedImageFromTable = temp;
                   this.$buefy.toast.open({
                       message: 'Image Added to Selected Images',
                       type: 'is-success',
-                      duration: 2000
+                      duration: 1000
                   })
               }
               //console.log(this.selectedImages.length);
@@ -244,7 +256,7 @@
          this.$buefy.toast.open({
            message: 'Image removed from selected images',
            type: 'is-danger',
-           duration: 2000
+           duration: 1000
          })
             }
 
@@ -263,14 +275,22 @@
 
 
 
+
+        public get downLoadSize(){
+          const sum = this.imagesToBeDownloaded.reduce(function (acc, obj) { return acc + obj.sizeInMB!; }, 0);
+          console.log(sum)
+          return sum.toFixed(2);
+        }
+
+
+
       // http://localhost:5000/download-images?keys=['image1.jpg', 'image2.png', ...]
         public downloadImages(): void{
           this.downloading = true
           this.dialog = false;
             const keyArr: string[] = [];
-            for(let i = 0; i < this.selectedImages.length; i++){
-              if(this.selectedImages[i].toBeDownloaded)
-                  keyArr.push(this.selectedImages[i].title);
+            for(let i = 0; i < this.imagesToBeDownloaded.length; i++){
+                  keyArr.push(this.imagesToBeDownloaded[i].title);
             }
             console.log("downloading " + keyArr);
             if(keyArr.length > 0) {

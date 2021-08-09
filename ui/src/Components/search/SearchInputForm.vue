@@ -2,10 +2,7 @@
   <!-- the search Input form allows to select a category, a book and chapter, as well as a free text search -->
   <v-container style="background-color:#4f4f4f; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);  ">
     <!--the header for the search form-->
-    <v-row justify="center" style="background-color: #0d68ce;">
-      <h1 class="h1" style="color: white;  font-size: 2.2em; font-family: 'Trebuchet MS'" v-if="englishSearch">{{maayanSearch}}</h1>
-      <h1 class="h1" style="color: white;  font-size: 2.2em; font-family: Arial" v-else>חיפוש מעיין</h1>
-    </v-row>
+
 
     <!--row #1 - switches to change to Hebrew/English, and to turn off trop and nikud - in 2 columns-->
     <v-row>
@@ -71,7 +68,7 @@
 
                     @click="displayKeypad = !displayKeypad" v-if="!displayKeypad"
                 >
-                  <v-icon v-on="on" >
+                  <v-icon >
                     mdi-keyboard
                   </v-icon></v-btn>
               </template>
@@ -92,7 +89,11 @@
               <v-btn x-small @click="tempSearchTerm = ''">CLR</v-btn>
             </v-card-title>
             <v-card-subtitle>
-              <b-input ref="kepadSearchInputBar" :key="reloadKey" v-bind:placeholder="searchLabel" dir="rtl" v-model="tempSearchTerm" :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
+              <b-input ref="kepadSearchInputBar"
+                       :key="reloadKey"
+                       v-bind:placeholder="searchLabel"
+                       dir="rtl" v-model="tempSearchTerm"
+                       :disabled="!torahSelected && !prophetsSelected && !writingsSelected" />
             </v-card-subtitle>
             <v-card-text>
               <hebrew-keypad
@@ -467,6 +468,7 @@ export default class SearchInputForm extends Vue{
   public mapToHebrewSearchTerm(): void{
 
     //letters in english that map to a hebrew letter:
+    this.tempSearchTerm = this.tempSearchTerm.replace("o", "ם")
     this.tempSearchTerm = this.tempSearchTerm.replace("t", "א")
     this.tempSearchTerm = this.tempSearchTerm.replace("c","ב")
     this.tempSearchTerm = this.tempSearchTerm.replace("d","ג")
