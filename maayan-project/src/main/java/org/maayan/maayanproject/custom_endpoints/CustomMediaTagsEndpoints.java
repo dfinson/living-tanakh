@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
 import lombok.val;
 import org.maayan.maayanproject.api_hooks.LinkedMediaContentOfTagApiHooks;
 import org.maayan.maayanproject.model.entities.MediaContent;
@@ -28,6 +30,9 @@ public class CustomMediaTagsEndpoints {
 
   @Autowired
   private DataManager<MediaContent> mediaContentDataManager;
+
+  @Autowired
+  private DataManager<MediaTag> mediaTagDataManager;
 
   @Autowired
   private LinkedMediaContentOfTagApiHooks linkedMediaContentOfTagApiHooks;
@@ -61,13 +66,29 @@ public class CustomMediaTagsEndpoints {
               )
           )
     );
-    // execute tasks and block main thread pending completion
     CompletableFuture<?>[] futures = objectDeletionTasks
       .stream()
       .map(task -> CompletableFuture.runAsync(task, executor))
       .toArray(CompletableFuture[]::new);
     CompletableFuture.allOf(futures).join();
-    // rely on cascading to delete all media tags and content from DB
+    versesWithMediaTags
+      .stream()
+      .filter(verse -> verse.getMediaTags() != null)
+      .forEach(
+        verse ->
+          verse
+            .getMediaTags()
+            .forEach(
+              mediaTag -> {
+                mediaTag.setVerses(new HashSet<>());
+                mediaTag.setLinkedContent(new HashSet<>());
+              }
+            )
+      );
     versesWithMediaTags.forEach(verse -> verse.setMediaTags(new HashSet<>()));
+    mediaContentDataManager.findAll().forEach(mediaContent -> mediaContent.setMediaTag(null));
+    // delete orphaned db entries
+    mediaContentDataManager.deleteAll();
+    mediaTagDataManager.deleteAll();
   }
 }

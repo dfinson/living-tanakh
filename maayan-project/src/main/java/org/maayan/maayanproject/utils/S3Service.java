@@ -141,6 +141,10 @@ public class S3Service {
   }
 
   private void deleteObjects(Collection<String> keys, String bucketName) {
+    if (keys.isEmpty()) {
+      log.info("Keys array is empty, nothing to delete from s3");
+      return;
+    }
     try {
       val identifiers = keys
         .stream()

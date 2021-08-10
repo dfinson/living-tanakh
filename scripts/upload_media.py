@@ -1,4 +1,5 @@
 from os import listdir
+import os
 from threading import Thread
 from typing import Any
 from requests import put
@@ -18,7 +19,7 @@ class Verse:
 class MediaTag:
     def __init__(self, json_dict):
         self.id = json_dict.get('id', None)
-        self.title = json_dict['title']
+        self.key = json_dict['key']
         self.description = json_dict.get('description', None)
         self.verses = json_dict.get('verses', None)
         if self.verses:
@@ -34,6 +35,7 @@ class MediaTag:
 class MediaContent:
     def __init__(self, json_dict):
         self.id = json_dict.get('id', None)
+        self.description = json_dict.get('description', None)
         self.mediaTag = json_dict['mediaTag']
         self.mediaType = json_dict.get('mediaType', None)
         self.key = json_dict['key']
@@ -52,22 +54,19 @@ def to_json(obj):
 
 
 def get_verses_by_search_term(search_term):
-    global client, valid_path_prefixes
+    global client
     query = """
             query{
                 verseFreeTextSearch(input:{
                     fetchAll: true,
-                        searchTerm: "%s",
-                        customArgs:{
-                            validPathPrefixes: ["%s"]
-                        }
+                        searchTerm: "%s"
                     }){
                   content{
                     id
                   }
                 }
             }
-    """ % (search_term, ", ".join(valid_path_prefixes))
+    """ % search_term
     data = client.execute(query)
     content = data['data']['verseFreeTextSearch']['content']
     return [Verse(entry) for entry in content]
@@ -79,7 +78,7 @@ def associate_media_tag_with_verse(verse, media_tag):
         mutation associateMediaTagsWithVerse($owner: VerseInput, $input: [MediaTagInput]) { 
             associateMediaTagsWithVerse(owner: $owner, input: $input){
                 id
-                title
+                key
                 description
                 verses{
                     id
@@ -92,23 +91,26 @@ def associate_media_tag_with_verse(verse, media_tag):
     return MediaTag(data['data']['associateMediaTagsWithVerse'][0])
 
 
-def associate_tag_with_verses(verses, title):
-    media_tag = MediaTag({"title": title})
+def associate_tag_with_verses(verses, key):
+    media_tag = MediaTag({"key": key})
     for verse in verses:
         media_tag = associate_media_tag_with_verse(verse, media_tag)
     return media_tag
 
 
-def associate_media_contents_with_tag(media_tag, dir_name):
+def associate_media_contents_with_tag(media_tag, search_entry):
     global client
     global base_dir_path
-    files = listdir(base_dir_path + dir_name)
-    media_contents = [MediaContent({"key": filename, "mediaType": 'IMAGE', "mediaTag": media_tag}) for filename in
-                      files]
+    media_contents = [
+        MediaContent({"key": image_path, "mediaType": 'IMAGE', "mediaTag": media_tag, "description": image_description})
+        for image_path, image_description in
+        search_entry.images.items()
+    ]
     query = """"
         mutation associateLinkedContentWithMediaTag($owner: MediaTagInput, $input: [MediaContentInput]) { 
             associateLinkedContentWithMediaTag(owner: $owner, input: $input){
                 id
+                description
                 mediaTag{
                     id
                 }
@@ -126,10 +128,10 @@ def associate_media_contents_with_tag(media_tag, dir_name):
 
 class MediaUploader(Thread):
 
-    def __init__(self, media_content, target_dir):
+    def __init__(self, media_content, search_entry):
         Thread.__init__(self)
         self.media_content = media_content
-        self.target_dir = target_dir
+        self.search_entry = search_entry
 
     def run(self):
         self.upload_file_to_s3()
@@ -137,9 +139,8 @@ class MediaUploader(Thread):
     def upload_file_to_s3(self) -> Any:
         print(f'uploading {self.media_content.key} on thread {self.getName()}\n')
         global base_dir_path
-        target_dir = self.target_dir
         item = self.media_content
-        data = open(base_dir_path + target_dir + '/' + item.key, 'rb')
+        data = open(self.search_entry.original_image_paths[item.key], 'rb')
         url = item.signedUploadUrl
         response = put(url=url, data=data, headers={'Content-type': item.mimeType})
         if response.reason != 'OK':
@@ -147,31 +148,63 @@ class MediaUploader(Thread):
         print(f'done uploading {self.media_content.key} on thread {self.getName()}')
 
 
-def upload_media_contents(media_contents_to_upload, target_dir):
-    print(f'starting upload of {len(media_contents_to_upload)} items for {target_dir}')
+def upload_media_contents(media_contents_to_upload, search_entry):
+    print(f'starting upload of {len(media_contents_to_upload)} items for {search_entry.search_term}')
     tasks = []
     for item in media_contents_to_upload:
-        task = MediaUploader(item, target_dir)
+        task = MediaUploader(item, search_entry)
         tasks.append(task)
         task.start()
     for task in tasks:
         task.join()
 
 
-client = GraphqlClient('http://localhost:5000/api')
-base_dir_path = '/home/dave01/Downloads/17/Maayan/'
-valid_path_prefixes = ['PROPHETS/Samuel I/17']
-terms_to_process = [('socho','שכה'), ('azekah','עזקה'), ('shaarayim','שערים'), ('gat','גת')]
+client = GraphqlClient('http://livingtanakhapplicationde-env.eba-i3mkpska.eu-central-1.elasticbeanstalk.com/api')
+base_dir_path = 'C:/Maayan/'
+
+
+class SearchEntry:
+    def __init__(self, search_term, file_paths):
+        self.search_term = search_term
+        self.images = {file_path.replace(f'{search_term}/', ''): self.get_file_description(file_path) for file_path in file_paths}
+        self.original_image_paths = {image_name: base_dir_path + file_paths[i] for i, image_name in enumerate(self.images.keys())}
+
+    def get_file_description(self, file_path):
+        file_path_prefix, _ = os.path.splitext(base_dir_path + file_path)
+        description_file_path = file_path_prefix + ".txt"
+        if os.path.isfile(description_file_path):
+            return open(description_file_path, 'rb').read().decode("utf-8")
+        else:
+            return None
+
+
+def get_terms_to_process():
+    result = []
+    for _, subdirs, _ in os.walk(base_dir_path):
+        for subdir in subdirs:
+            file_paths = [subdir + '/' + file_name for file_name in listdir(base_dir_path + subdir) if not file_name.endswith('.txt')]
+            result.append(SearchEntry(search_term=subdir, file_paths=file_paths))
+    return result
 
 
 def process_terms():
-    global terms_to_process
-    for target_dir, search_term in terms_to_process:
-        verses = get_verses_by_search_term(search_term)
-        tag = associate_tag_with_verses(verses, search_term)
-        media_contents = associate_media_contents_with_tag(tag, target_dir)
-        upload_media_contents(media_contents, target_dir)
+    terms_to_process = get_terms_to_process()
+    for search_entry in terms_to_process:
+        verses = get_verses_by_search_term(search_entry.search_term)
+        tag = associate_tag_with_verses(verses, search_entry.search_term)
+        media_contents = associate_media_contents_with_tag(tag, search_entry)
+        upload_media_contents(media_contents, search_entry)
 
 
+def clear_existing_media():
+    global client
+    query = """
+        mutation{
+          deleteAllMediaTags
+        }
+        """
+    client.execute(query)
+
+
+clear_existing_media()
 process_terms()
-

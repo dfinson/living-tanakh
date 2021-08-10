@@ -29,7 +29,7 @@ public class MediaTagsOfVerseApiHooks
       .stream()
       .map(MediaTag::getKey)
       .collect(Collectors.toSet());
-    val illegalOverlappingTagKeys = toAssociateInput
+    val overlappingKeys = toAssociateInput
       .stream()
       .map(MediaTag::getKey)
       .filter(tagsAlreadyPresentKeys::contains)
@@ -40,9 +40,9 @@ public class MediaTagsOfVerseApiHooks
             msgBuilder.append("]\n Those keys are already present in the database. Did you mean to update?");
             throw new IllegalArgumentException(msgBuilder.toString());
         }*/
-    toAssociateInput.removeIf(
-      tag -> illegalOverlappingTagKeys.contains(tag.getKey())
-    );
+    verse
+      .getMediaTags()
+      .removeIf(tag -> overlappingKeys.contains(tag.getKey()));
   }
 
   @Override
