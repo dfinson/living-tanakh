@@ -7,7 +7,8 @@ The _upload_media.py_ file located in this directory serves as a convenient mean
 - Define a single root directory under which all media content will be stored. For example; _C:/Users/JohnDoe/Maayan-media/_. This value can be anything, as long as it's a valid directory path ending with a forward slash as in the provided example.
 
 ### First time setup
-Open up the _upload_media.py_ script in your preffered text editor and navigate to line number 163.  The lines' contents are `base_dir_path = 'C:/Maayan/'`. Change the value on the right hand side of the equals sign in between the single qoutes to whichever value you choose in the second step of prerequisites.
+ - Open up the _upload_media.py_ script in your preffered text editor and navigate to line number 163.  The lines' contents are `base_dir_path = 'C:/Maayan/'`. Change the value on the right hand side of the equals sign in between the single qoutes to whichever value you choose in the second step of prerequisites.
+ - open a bash terminal and run the command `pip install python-graphql-client`. If that doesn't work, try running `pip3 install python-graphql-client`.
 
 ### Running the script
 #### How it works
